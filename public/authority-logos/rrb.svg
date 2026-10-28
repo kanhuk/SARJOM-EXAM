@@ -1,0 +1,639 @@
+
+<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<title>Railway Recuitment Board, Bhubaneswar | Ministry of Railways, Govt of India</title>
+			<meta charset="utf-8" />
+			<meta name="viewport" content="width=device-width, initial-scale=1" />
+			<link rel="stylesheet" href="style.css" />
+			
+			
+			<!-- UIkit CSS -->
+			<link
+			rel="stylesheet"
+			href="css/uikit.min.css"/>
+			
+			<link
+			rel="stylesheet"
+			href="css/font-awesome.min.css"/>
+			
+			<!-- UIkit JS -->
+			<script src="js/uikit.min.js"></script>
+			<script src="js/uikit-icons.min.js"></script>
+			
+			<!-- Newly added favicon codes -->
+			<link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-touch-icon.png">
+			<link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
+			<link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
+			<link rel="manifest" href="images/favicon/site.webmanifest">
+			<link rel="mask-icon" href="images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+			
+		</head>
+		<body>
+			<header>
+				<div class="top">
+					<div class="uk-container">
+						<div class="uk-grid-collapse" uk-grid>
+							
+							<div class="uk-width-auto@s uk-visible@s uk-flex uk-flex-middle">
+								
+								
+							</div>
+							<div class="uk-width-auto@s uk-margin-auto-left">
+							</div>
+							<div class="uk-width-auto@s middle uk-visible@m">
+							<a uk-tooltip="title:Click to search ; pos: bottom" style="font-size:14px;"i class="fa fa-search"></i></a>
+							<div class="uk-drop" uk-drop="mode: click; pos: left-center; offset: 0" style="margin-left:10px !important;">
+								<form class="uk-search uk-search-navbar uk-width-1-1" action="search.php?action=searchWord" method="post">
+									<input class="uk-search-input" type="search" name="q" placeholder="Search" autocomplete="off" autofocus>
+								</form>
+							</div>
+						</div>
+						<div class="lq-vl middle uk-visible@m"></div>
+						<div class="uk-width-auto@s uk-visible@s middle">
+							<a href="#main" class="" uk-tooltip=" title:Skip to main content; pos: bottom" uk-scroll><i class="fa fa-share-square" style="transform: rotate(90deg);"></i>&nbsp;Main Content</a>
+						</div>
+						<div class="lq-vl middle uk-visible@s"></div>
+												<div class="uk-width-auto@s uk-visible@s middle">
+							<button id="fontinc"
+							type="button"
+							class="increase inc"
+							uk-tooltip="title:Increase Font Size; pos: bottom"
+							>
+								+
+							</button>
+							<button id="fontreset"
+							type="button"
+							class="resetMe inc"
+							uk-tooltip=" title:Default Font Size; pos: bottom"
+							>
+								A
+							</button>
+							<button id="fontdec"
+							type="button"
+							class="decrease inc"
+							uk-tooltip="title:Decrease Font Size; pos: bottom"
+							>
+								-
+							</button>
+							
+						</div>
+						<div class="lq-vl middle uk-visible@s"></div>
+						<div class="uk-width-auto@s uk-visible@s uk-padding-remove-vertical uk-padding-remove uk-padding-small middle">
+							
+							<button type="button" class="cv" id="" uk-tooltip="title:Contrast View; pos: bottom" onclick="myFunction()"></button>
+							
+						</div>
+						<div class="lq-vl middle uk-visible@s"></div>
+						
+						<div class="uk-width-auto@s middle">
+							<a href="javascript:void(0)" onclick="changeLanguage();" class="lq_cl_btn" uk-tooltip="title:हिंदी भाषा में बदलें ; pos: bottom" style="font-size:14px;font-weight:600;">हिंदी</a>
+							<div class="lq_cl_lbl" style="display:none;font-weight:bold;">बदल रहा</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="uk-container">
+				<div class="logo-header uk-grid-collapse uk-grid" uk-grid>
+					<div class="uk-width-expand@m uk-width-3-4 uk-first-column">
+						<a href="./"><img src="images/Header_RRB.svg" class="logo" uk-img></a>
+						<a href="./"><img src="images/Header_RRB_CV.svg" class="logo-light" uk-img></a>
+					</div>
+					<div class="uk-width-auto uk-margin-auto-left">
+						<img src="images/RRB_Blue.png" class="ologo" uk-img>
+					</div>
+				</div>
+			</div>
+			
+			<div class="">
+				
+				<div uk-sticky="animation: uk-animation-slide-top; sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; cls-inactive: uk-navbar-transparent uk-light; top: 200">
+					
+					<nav class="uk-navbar-container">
+						<div class="uk-container  desktop-menu">
+							<div uk-navbar>
+								<ul class="uk-navbar-nav">
+									<li  class=""><a href="./">Home</a></li>
+									<li class="">
+										<a href="#">About</a>
+										<div class="uk-navbar-dropdown uk-margin-remove">
+											<div class="uk-container uk-margin-remove-horizontal">
+												<div class="" uk-grid>
+													<div class="uk-width-1-4 ">
+														<h2 class="uk-heading-bullet lq-rrb-menu-heading">About</h2>
+													</div>
+													<div class="uk-width-1-4 ">
+														<ul class="uk-nav uk-navbar-dropdown-nav">
+																																																<li><a href="about.php">About Us</a></li>
+																																																																	<li class="uk-active"><a href="page.php?no=TWc9PQ==" target="">Organization Structure</a></li>
+																																																																																	<li class="uk-active"><a href="page.php?no=T0E9PQ==" target="">Vision &amp; Mission</a></li>
+																																																															
+														</ul>
+													</div>
+																											<div class="uk-width-1-4 ">
+															
+														</div>
+																																								<div class="uk-width-1-4 ">
+															<img src="images/aboutimage.svg" style="height:200px;" uk-img>
+														</div>
+																									</div>
+											</div>
+										</div>
+									</li>
+									<li class="uk-active">
+										<a href="#">Notice</a>
+										<div class="uk-navbar-dropdown uk-margin-remove">
+											<div class="uk-container uk-margin-remove-horizontal">
+												<div class="" uk-grid>
+													<div class="uk-width-1-5">
+														<h2 class="uk-heading-bullet lq-rrb-menu-heading">Notice</h2>
+													</div>
+													
+													<div class="uk-width-3-5 ">
+														<ul class="uk-nav uk-navbar-dropdown-nav">
+																															<li>
+																																			<a href="https://rrb.indianrailways.gov.in/bhubaneswar" target="blank"><strong></strong>Link for new website of RRB, Bhubaneswar.</a>
+																																	</li>
+																															<li>
+																																			<a href="https://rrb.indianrailways.gov.in/bhubaneswar" target="blank"><strong></strong>Link for new website of RRB, Bhubaneswar. Henceforth, no update will be available on the old website of RRB, Bhubaneswar i.e. https://www.rrbbbs.gov.in.</a>
+																																	</li>
+																															<li>
+																																			<a href="आरआरबी, भुवनेश्वर की नई वेबसाइट का लिंक। अतः अब से आरआरबी, भुवनेश्वर की पुरानी वेबसाइट https://www.rrbbbs.gov.in/ पर कोई भी अपडेट उपलब्ध नहीं कराया जाएगा।" target="blank"><strong></strong>Link for new website of RRB, Bhubaneswar. Henceforth, no update will be available on the old website of RRB, Bhubaneswar i.e. https://www.rrbbbs.gov.in.</a>
+																																	</li>
+																															<li>
+																																			<a href="https://rrb.indianrailways.gov.in/bhubaneswar" target="blank"><strong></strong>Link for new website of RRB, Bhubaneswar.</a>
+																																	</li>
+																													</ul>
+													</div>
+													
+													<div class="uk-width-1-5">
+														<ul class="uk-nav uk-navbar-dropdown-nav">
+															<li class="uk-active"><a href="notice.php">View All Notices</a></li>
+														</ul>
+													</div>
+													
+												</div>
+											</div>
+										</div>
+									</li>
+									<li class="">
+										<a href="#">Recruitment</a>
+										<div class="uk-navbar-dropdown uk-margin-remove">
+											<div class="uk-container uk-margin-remove-horizontal">
+												<div class="" uk-grid>
+													<div class="uk-width-1-4 ">
+														<h2 class="uk-heading-bullet lq-rrb-menu-heading">Recruitment</h2>
+													</div>
+													<div class="uk-width-1-4 ">
+														<ul class="uk-nav uk-navbar-dropdown-nav">
+															<li class="uk-active"><a href="notifications.php">Notifications (CEN)</a></li>
+															<li><a href="notice.php">Notices</a></li>
+															<li><a href="results.php">Results & Cutoffs</a></li>
+															<li><a href="panels.php">Panels</a></li>
+															<li><a href="marksdisclosure.php">Public Disclosure of Marks</a></li>
+															<!--<li><a href="apply.php">Apply</a></li>-->
+															<!--<li><a href="callletter.php">Call Letter / Admit Card</a></li>-->
+															<li><a href="scheduledprograms.php">Scheduled Programmes</a></li>
+														</ul>
+													</div>
+													<div class="uk-width-1-4 ">
+														<ul class="uk-nav uk-navbar-dropdown-nav">
+																															<li><a href="cen.php?prmt=TkRjPQ==">CEN&nbsp;03/2026</a></li>
+																															<li><a href="cen.php?prmt=TkRZPQ==">CEN&nbsp;02/2026</a></li>
+																															<li><a href="cen.php?prmt=TkRVPQ==">CEN&nbsp;01/2026</a></li>
+																															<li><a href="cen.php?prmt=TkRRPQ==">CEN&nbsp;09/2025</a></li>
+																															<li><a href="cen.php?prmt=TkRNPQ==">CEN&nbsp;08/2025</a></li>
+																															<li><a href="cen.php?prmt=TkRJPQ==">CEN&nbsp;05/2025</a></li>
+																														<li><a href="archives.php">Archives</a></li>
+														</ul>
+													</div>
+													<div class="uk-width-1-4 ">
+														<ul class="uk-nav uk-navbar-dropdown-nav">
+																													</ul>
+																													<img src="images/aboutimage.svg" style="height:200px;" uk-img>
+																											</div>
+												</div>
+											</div>
+										</div>
+									</li>
+									<li class="">
+										<a href="#">Knowledge Center</a>
+										<div class="uk-navbar-dropdown uk-margin-remove">
+											<div class="uk-container uk-margin-remove-horizontal">
+												<div class="" uk-grid>
+													<div class="uk-width-1-4 uk-text-nowrap">
+														<h2 class="uk-heading-bullet lq-rrb-menu-heading">Knowledge Center</h2>
+													</div>
+													<div class="uk-width-1-4 ">
+														<ul class="uk-nav uk-navbar-dropdown-nav">
+																															<li class="uk-active"><a href="kcpage.php?no=Tmc9PQ==" target="">Document Verification Process</a></li>
+																																															<li class="uk-active"><a href="kcpage.php?no=TlE9PQ==" target="">Recruitment Process</a></li>
+																																															<li class="uk-active"><a href="faq.php" target="">FAQ</a></li>
+																																													</ul>
+													</div>
+																											<div class="uk-width-1-4 ">
+															
+														</div>
+																																								<div class="uk-width-1-4 ">
+															<img src="images/aboutimage.svg" style="height:200px;" uk-img>
+														</div>
+																									</div>
+											</div>
+										</div>
+									</li>
+									<li  class=""><a href="downloads.php">Downloads</a></li>
+									<li  class=""><a href="tenders.php">Tenders</a></li>
+									<li  class=""><a href="#">RTI</a>
+										<div class="uk-navbar-dropdown uk-margin-remove">
+											<div class="uk-container uk-margin-remove-horizontal">
+												<div class="" uk-grid>
+													<div class="uk-width-1-4 uk-text-nowrap">
+														<h2 class="uk-heading-bullet lq-rrb-menu-heading">Right to Information</h2>
+													</div>
+													<div class="uk-width-1-4">
+														<ul class="uk-nav uk-navbar-dropdown-nav">
+																															<li class="uk-active"><a href="https://rtionline.gov.in/" target="_blank">Apply online</a></li>
+																																															<li class="uk-active"><a href="rtipage.php?no=Tnc9PQ==" target="">Right To Information</a></li>
+																																													</ul>
+													</div>
+																											<div class="uk-width-1-4 ">
+															
+														</div>
+																																								<div class="uk-width-1-4 ">
+															<img src="images/aboutimage.svg" style="height:200px;" uk-img>
+														</div>
+																									</div>
+											</div>
+										</div>	
+									</li>
+									<li class=""><a href="contact.php">Contact</a></li>
+								</ul>
+								
+							</div>
+						</div>
+						
+						<button class="menu-button" type="button" uk-toggle="target: #offcanvas-nav">
+							<span uk-icon="icon: menu"></span>
+						</button>
+						<div id="offcanvas-nav" uk-offcanvas="overlay: true">
+							<div class="uk-offcanvas-bar">
+								
+								<ul class="uk-nav-default uk-nav-parent-icon" uk-nav>
+									<li class=""><a href="./">Home</a></li>
+									<li class="uk-parent">
+										<a href="#">About</a>
+										<ul class="uk-nav-sub">
+																																				<li><a href="about.php">About Us</a></li>
+																																																	<li><a href="page.php?no=TWc9PQ==" target="">Organization Structure</a></li>
+																																																<li><a href="page.php?no=T0E9PQ==" target="">Vision &amp; Mission</a></li>
+																																	</ul>
+									</li>
+									<li class="uk-active"><a href="notice.php">Notices</a></li>
+									<li class="uk-parent">
+										<a href="#">Recruitment</a>
+										<ul class="uk-nav-sub">
+											<li class=""><a href="notifications.php">Notifications (CEN)</a></li>
+											<li><a href="notice.php">Notices</a></li>
+											<li><a href="results.php">Results & Cutoffs</a></li>
+											<li><a href="panels.php">Panels</a></li>
+											<li><a href="marksdisclosure.php">Public Disclosure of Marks</a></li>
+											<!--<li><a href="apply.php">Apply</a></li>
+											<li><a href="callletter.php">Call Letter / Admit Card</a></li>-->
+											<li><a href="scheduledprograms.php">Scheduled Programmes</a></li>
+											<li><a href="archives.php">Archives</a></li>
+																					</ul>
+									</li>
+									
+									<li class="uk-parent">
+										<a href="#">Knowledge Center</a>
+										<ul class="uk-nav-sub">
+																							<li class=""><a href="kcpage.php?no=Tmc9PQ==" target="">Document Verification Process</a></li>
+																							<li class=""><a href="kcpage.php?no=TlE9PQ==" target="">Recruitment Process</a></li>
+																							<li class=""><a href="faq.php" target="">FAQ</a></li>
+																					</ul>
+									</li>
+									<li  class=""><a href="downloads.php">Downloads</a></li>
+									<li  class=""><a href="tenders.php">Tenders</a></li>
+									<li class="uk-parent">
+										<a href="#">RTI</a>
+										<ul class="uk-nav-sub">
+																							<li class=""><a href="https://rtionline.gov.in/" target="_blank">Apply online</a></li>
+																							<li class=""><a href="rtipage.php?no=Tnc9PQ==" target="">Right To Information</a></li>
+																					</ul>
+									</li>
+									<li><a href="contact.php">Contact Us</a></li>
+									
+								</ul>
+								
+							</div>
+						</div>
+					</nav>
+				</div>
+				
+				
+				
+			</div>
+		</header>
+		
+										<div class="uk-position-relative uk-height-small mid-banner" id="main">
+    <h2 class="uk-position-center">Notices</h2>
+</div>
+
+<div class="uk-container">
+	
+	<div class="" uk-grid>
+		<div class="uk-width-1-5@m uk-visible@m">
+			<div class="vertical-menu uk-padding uk-padding-remove-horizontal uk-text-center">
+				<a href="notifications.php" class="">Notifications (CENs)</a>
+<a href="notice.php" class="active">Notices</a>
+<a href="results.php" class="">Results & Cutoffs</a>
+<a href="panels.php" class="">Panels</a>
+<a href="marksdisclosure.php" class="">Public Disclosure of Marks</a>
+<!--<a href="apply.php" class="">Apply</a>-->
+<!--<a href="callletter.php" class="">Call Letter / Admit Card</a>-->
+<a href="scheduledprograms.php" class="">Scheduled Programmes</a>
+			</div>
+		</div>
+		<div class="uk-width-4-5@m">
+			
+			<div class="uk-padding uk-padding-remove-horizontal">
+				
+				<div class="uk-overflow-auto">
+					<table class="uk-table uk-table-small uk-table-hover uk-table-divider lq-rrb-notice-table">
+						<thead>
+							<tr>
+								<th class="uk-text-nowrap uk-text-center">Date</th>
+								<th class="">Subject</th>
+								<th class="uk-text-center">View</th>
+							</tr>
+						</thead>
+						<tbody>
+																									<tr onClick="window.open('https://rrb.indianrailways.gov.in/bhubaneswar','_blank')">
+										<td class="uk-text-center uk-text-nowrap">10-08-2026</td>
+										<td colspan="2"><strong></strong><a class="" href="https://rrb.indianrailways.gov.in/bhubaneswar" target="blank"onClick="event.stopPropagation();">Link for new website of RRB, Bhubaneswar.</a>
+										&nbsp;&nbsp;<label class="uk-label">NEW</label>									</td>
+								</tr>
+																																<tr onClick="window.open('https://rrb.indianrailways.gov.in/bhubaneswar','_blank')">
+										<td class="uk-text-center uk-text-nowrap">10-08-2026</td>
+										<td colspan="2"><strong></strong><a class="" href="https://rrb.indianrailways.gov.in/bhubaneswar" target="blank"onClick="event.stopPropagation();">Link for new website of RRB, Bhubaneswar. Henceforth, no update will be available on the old website of RRB, Bhubaneswar i.e. https://www.rrbbbs.gov.in.</a>
+										&nbsp;&nbsp;<label class="uk-label">NEW</label>									</td>
+								</tr>
+																																<tr onClick="window.open('आरआरबी, भुवनेश्वर की नई वेबसाइट का लिंक। अतः अब से आरआरबी, भुवनेश्वर की पुरानी वेबसाइट https://www.rrbbbs.gov.in/ पर कोई भी अपडेट उपलब्ध नहीं कराया जाएगा।','_blank')">
+										<td class="uk-text-center uk-text-nowrap">10-08-2026</td>
+										<td colspan="2"><strong></strong><a class="" href="आरआरबी, भुवनेश्वर की नई वेबसाइट का लिंक। अतः अब से आरआरबी, भुवनेश्वर की पुरानी वेबसाइट https://www.rrbbbs.gov.in/ पर कोई भी अपडेट उपलब्ध नहीं कराया जाएगा।" target="blank"onClick="event.stopPropagation();">Link for new website of RRB, Bhubaneswar. Henceforth, no update will be available on the old website of RRB, Bhubaneswar i.e. https://www.rrbbbs.gov.in.</a>
+										&nbsp;&nbsp;<label class="uk-label">NEW</label>									</td>
+								</tr>
+																																<tr onClick="window.open('https://rrb.indianrailways.gov.in/bhubaneswar','_blank')">
+										<td class="uk-text-center uk-text-nowrap">10-08-2026</td>
+										<td colspan="2"><strong></strong><a class="" href="https://rrb.indianrailways.gov.in/bhubaneswar" target="blank"onClick="event.stopPropagation();">Link for new website of RRB, Bhubaneswar.</a>
+										&nbsp;&nbsp;<label class="uk-label">NEW</label>									</td>
+								</tr>
+																																	<tr onClick="window.open('documentexplorer.php?prmt=TVRrMU9RPT0=','_blank')">
+											<td class="uk-text-center uk-text-nowrap">06-08-2026</td>
+											<td><strong>CEN 06/2024&nbsp;:&nbsp;</strong>Result and Cut off marks along with additional list of candidates shortlisted for Document Verification and Medical Examination for all posts including Category No. 2 &amp; 3.											&nbsp;&nbsp;<label class="uk-label">NEW</label>																					</td>
+										<td class="uk-text-center"><a href="javascript:void(0)" class="view"><span class="" uk-icon="icon:file-pdf; ratio:0.9"></span>363.93&nbsp;KB</a></td>
+									</tr>
+																																			<tr onClick="window.open('documentexplorer.php?prmt=TVRrMk5RPT0=','_blank')">
+											<td class="uk-text-center uk-text-nowrap">05-08-2026</td>
+											<td><strong>CEN 01/2025&nbsp;:&nbsp;</strong>Notice for viewing and downloading CBT-II questions and responses with option to raise objections against questions and answer keys. (Hindi)											&nbsp;&nbsp;<label class="uk-label">NEW</label>																					</td>
+										<td class="uk-text-center"><a href="javascript:void(0)" class="view"><span class="" uk-icon="icon:file-pdf; ratio:0.9"></span>525.54&nbsp;KB</a></td>
+									</tr>
+																																			<tr onClick="window.open('documentexplorer.php?prmt=TVRrMk5BPT0=','_blank')">
+											<td class="uk-text-center uk-text-nowrap">05-08-2026</td>
+											<td><strong>CEN 01/2025&nbsp;:&nbsp;</strong>Notice for viewing and downloading CBT-II questions and responses with option to raise objections against questions and answer keys.(English)											&nbsp;&nbsp;<label class="uk-label">NEW</label>																							<br/>
+												<a class="" href="https://qa-efmprd.tcsion.com/EForms/configuredHtml/33128/97789/login.html" target="blank"onClick="event.stopPropagation();">Link to view CBT-II Questions, Responses, keys and Objection Tracker.</a>
+																					</td>
+										<td class="uk-text-center"><a href="javascript:void(0)" class="view"><span class="" uk-icon="icon:file-pdf; ratio:0.9"></span>519.9&nbsp;KB</a></td>
+									</tr>
+																																			<tr onClick="window.open('documentexplorer.php?prmt=TVRrMk13PT0=','_blank')">
+											<td class="uk-text-center uk-text-nowrap">05-08-2026</td>
+											<td><strong>CEN 02/2025&nbsp;:&nbsp;</strong>Statistics on applications received for Technician Grade-III Posts.											&nbsp;&nbsp;<label class="uk-label">NEW</label>																					</td>
+										<td class="uk-text-center"><a href="javascript:void(0)" class="view"><span class="" uk-icon="icon:file-pdf; ratio:0.9"></span>1113.64&nbsp;KB</a></td>
+									</tr>
+																																			<tr onClick="window.open('documentexplorer.php?prmt=TVRrMk1nPT0=','_blank')">
+											<td class="uk-text-center uk-text-nowrap">05-08-2026</td>
+											<td><strong>CEN 02/2025&nbsp;:&nbsp;</strong>Statistics on applications received for Technician Gr.I (Signal).											&nbsp;&nbsp;<label class="uk-label">NEW</label>																					</td>
+										<td class="uk-text-center"><a href="javascript:void(0)" class="view"><span class="" uk-icon="icon:file-pdf; ratio:0.9"></span>1116.1&nbsp;KB</a></td>
+									</tr>
+																																			<tr onClick="window.open('documentexplorer.php?prmt=TVRrMk1RPT0=','_blank')">
+											<td class="uk-text-center uk-text-nowrap">05-08-2026</td>
+											<td><strong>CEN 03/2025&nbsp;:&nbsp;</strong>1st Provisional Panel for various posts of Paramedical Category.  											&nbsp;&nbsp;<label class="uk-label">NEW</label>																					</td>
+										<td class="uk-text-center"><a href="javascript:void(0)" class="view"><span class="" uk-icon="icon:file-pdf; ratio:0.9"></span>339.59&nbsp;KB</a></td>
+									</tr>
+																																			<tr onClick="window.open('documentexplorer.php?prmt=TVRrMU9BPT0=','_blank')">
+											<td class="uk-text-center uk-text-nowrap">03-08-2026</td>
+											<td><strong>CEN 01/2024&nbsp;:&nbsp;</strong>Additional List No. 6 of candidates selected against CEN No. 01/2024, Post - Assistant Loco Pilot.											&nbsp;&nbsp;<label class="uk-label">NEW</label>																					</td>
+										<td class="uk-text-center"><a href="javascript:void(0)" class="view"><span class="" uk-icon="icon:file-pdf; ratio:0.9"></span>359.38&nbsp;KB</a></td>
+									</tr>
+																																			<tr onClick="window.open('documentexplorer.php?prmt=TVRrMU5BPT0=','_blank')">
+											<td class="uk-text-center uk-text-nowrap">31-07-2026</td>
+											<td><strong>CEN 08/2025&nbsp;:&nbsp;</strong>Notice for viewing and downloading CBT questions and responses with option to raise objections against questions and answer keys. (English)																																		<br/>
+												<a class="" href="https://rrb.digialm.com/EForms/configuredHtml/33128/101492/login.html" target="blank"onClick="event.stopPropagation();">Link to view CBT questions, responses, keys and Objection Tracker.</a>
+																					</td>
+										<td class="uk-text-center"><a href="javascript:void(0)" class="view"><span class="" uk-icon="icon:file-pdf; ratio:0.9"></span>849.38&nbsp;KB</a></td>
+									</tr>
+																																			<tr onClick="window.open('documentexplorer.php?prmt=TVRrMU13PT0=','_blank')">
+											<td class="uk-text-center uk-text-nowrap">31-07-2026</td>
+											<td><strong>CEN 08/2025&nbsp;:&nbsp;</strong>Notice for viewing and downloading CBT questions and responses with option to raise objections against questions and answer keys. (Hindi)																																</td>
+										<td class="uk-text-center"><a href="javascript:void(0)" class="view"><span class="" uk-icon="icon:file-pdf; ratio:0.9"></span>490.68&nbsp;KB</a></td>
+									</tr>
+																																		<tr onClick="window.open('https://rrb.digialm.com/EForms/configuredHtml/33128/101714/login.html ','_blank')">
+										<td class="uk-text-center uk-text-nowrap">31-07-2026</td>
+										<td colspan="2"><strong>CEN 09/2025&nbsp;:&nbsp;</strong><a class="" href="https://rrb.digialm.com/EForms/configuredHtml/33128/101714/login.html " target="blank"onClick="event.stopPropagation();">Link for Downloading e-Call letter for CBT of Level 1 Posts.</a>
+																			</td>
+								</tr>
+																																	<tr onClick="window.open('documentexplorer.php?prmt=TVRrMU5nPT0=','_blank')">
+											<td class="uk-text-center uk-text-nowrap">30-07-2026</td>
+											<td><strong>CEN 09/2025&nbsp;:&nbsp;</strong>Corrigendum No. 05 - Important instructions to the candidates of CEN No. 09/2025 (Level-1 posts). (Hindi)  																																</td>
+										<td class="uk-text-center"><a href="javascript:void(0)" class="view"><span class="" uk-icon="icon:file-pdf; ratio:0.9"></span>1260.25&nbsp;KB</a></td>
+									</tr>
+																																			<tr onClick="window.open('documentexplorer.php?prmt=TVRrMU5RPT0=','_blank')">
+											<td class="uk-text-center uk-text-nowrap">30-07-2026</td>
+											<td><strong>CEN 09/2025&nbsp;:&nbsp;</strong>Corrigendum No. 05 - Important instructions to the candidates of CEN No. 09/2025 (Level-1 posts). (English)																																</td>
+										<td class="uk-text-center"><a href="javascript:void(0)" class="view"><span class="" uk-icon="icon:file-pdf; ratio:0.9"></span>917.48&nbsp;KB</a></td>
+									</tr>
+																																			<tr onClick="window.open('documentexplorer.php?prmt=TVRrMU1BPT0=','_blank')">
+											<td class="uk-text-center uk-text-nowrap">30-07-2026</td>
+											<td><strong>CEN 09/2025&nbsp;:&nbsp;</strong>Revised tentative schedule of CBT of Level 1 posts.																																</td>
+										<td class="uk-text-center"><a href="javascript:void(0)" class="view"><span class="" uk-icon="icon:file-pdf; ratio:0.9"></span>582.7&nbsp;KB</a></td>
+									</tr>
+																																		<tr onClick="window.open('https://dc4-g22.digialm.com/OnlineAssessment/index.html?33015@@M224','_blank')">
+										<td class="uk-text-center uk-text-nowrap">28-07-2026</td>
+										<td colspan="2"><strong>CEN 09/2025&nbsp;:&nbsp;</strong><a class="" href="https://dc4-g22.digialm.com/OnlineAssessment/index.html?33015@@M224" target="blank"onClick="event.stopPropagation();">Click here for Mock Test of CBT for various posts in Level 1.</a>
+																			</td>
+								</tr>
+																																<tr onClick="window.open('https://rrb.digialm.com/EForms/configuredHtml/33128/101714/login.html ','_blank')">
+										<td class="uk-text-center uk-text-nowrap">25-07-2026</td>
+										<td colspan="2"><strong>CEN 09/2025&nbsp;:&nbsp;</strong><a class="" href="https://rrb.digialm.com/EForms/configuredHtml/33128/101714/login.html " target="blank"onClick="event.stopPropagation();">Link for City Intimation Slip of CBT for various posts of Level 1.</a>
+																			</td>
+								</tr>
+																																<tr onClick="window.open('https://www.rrbapply.gov.in/','_blank')">
+										<td class="uk-text-center uk-text-nowrap">25-07-2026</td>
+										<td colspan="2"><strong>CEN 07/2024&nbsp;:&nbsp;</strong><a class="" href="https://www.rrbapply.gov.in/" target="blank"onClick="event.stopPropagation();">Link for updating bank account details (only for those candidates whose application fee could not be refunded due to incorrect bank account details).</a>
+																			</td>
+								</tr>
+																		</tbody>
+			</table>
+		</div>
+				<ul class="uk-pagination uk-flex-right uk-margin-medium-top" uk-margin>
+										<li><a href="notice.php?pg=2">Next&nbsp;<span uk-pagination-next></span></a></li>
+					</ul>
+		
+	</div>
+</div>
+</div>
+</div>
+
+<footer class="uk-padding uk-padding-remove-bottom">
+    <div class="uk-container">
+        <div class="uk-child-width-1-1 uk-child-width-1-3@m" uk-grid>
+            <div class="ftr">
+				<h3>Stay Connected</h3>
+				&nbsp;
+													<a href="https://twitter.com/rrb_bbsr" target="_blank" onclick="return confirm('This link will take you to an external website');"><p class="lq-rrb-social-media"><span class="uk-margin-small-right" uk-icon="icon:twitter; ratio:1;"></span> Twitter</p></a>
+																			</div>
+            <div class="ftr">
+				<h3>Contact</h3>
+                <h4 class="lq-rrb-footer-heading">Railway Recruitment Board, Bhubaneswar</h4>
+				<p><span class="uk-margin-small-right" uk-icon="icon:location; ratio:1.5;"></span> D-79/80, Rail Vihar, Chandrasekharpur, Bhubaneswar, Odisha, PIN -751023</p>
+				<p><span class="uk-margin-small-right" uk-icon="icon:phone; ratio:1;"></span>Contact No.: <br/>0674-2303015</p>
+				<p><span class="uk-margin-small-right" uk-icon="icon:mail; ratio:1;"></span>Email ID: <br/>rrbbbs[dot]od[at]gov[dot]in</p>
+			</div>
+            <div class="ftr">
+				<h3>Important Links</h3>
+                <ul class="link-list">
+                    <li class="uk-hidden@s"><a href="./">Home</a></li>
+                    <li><a href="notice.php">Notice</a></li>
+                    <li><a href="notifications.php">Notifications (CEN)</a></li>
+                    <li><a href="about.php">About Us</a></li>
+                    <li><a href="rti.php">RTI</a></li>
+                    <li><a href="downloads.php">Downloads</a></li>
+                    						<li class="uk-hidden@s"><a href="ftrpage.php?no=TXpFPQ==" target="">Privacy Policy</a></li>
+											<li class="uk-hidden@s"><a href="ftrpage.php?no=TXpJPQ==" target="">Terms &amp; Conditions</a></li>
+					                    <li class="uk-hidden@s"><a href="sitemap.php">Sitemap</a></li>
+                    <li class="uk-hidden@s"><a href="faq.php">FAQ</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+    <div class="uk-container uk-margin-top">
+		<div class="uk-flex uk-flex-between uk-margin-small-bottom uk-flex-middle">
+			
+			<div>
+				<div class="center">
+					<p class="vis uk-visible@s">VISITORS :</p>
+					<span>2</span>&nbsp;
+					<span>2</span>&nbsp;
+					<span>4</span>&nbsp;
+					<span>4</span>&nbsp;
+					<span>0</span>&nbsp;
+					<span>1</span>&nbsp;
+					<span>6</span>&nbsp;
+					<span>7</span>
+					<small class="vis uk-visible@s uk-margin-small-left">(Since: 1 January 2022)</small>
+				</div>
+			</div>
+			<div class="uk-visible@s">
+				<p class="vis">LAST UPDATED ON : 11-08-2026</p>
+			</div>
+		</div>
+	</div>
+    
+</footer>
+<div class="end-footer uk-flex uk-flex-center uk-visible@s" >
+	<ul class="ftrlinks">
+		
+		<li><a href="./">Home</a></li>
+					<li><a href="ftrpage.php?no=TXpFPQ==" target="">Privacy Policy</a></li>
+					<li><a href="ftrpage.php?no=TXpJPQ==" target="">Terms &amp; Conditions</a></li>
+				<li><a href="sitemap.php">Sitemap</a></li>
+		<li><a href="faq.php">FAQ</a></li>
+	</ul>
+</div>
+<div class="end-footer" >
+    <p class="uk-margin-remove" style="width:100%;text-align:center;">Copyright &copy;  2026,  Railway Recruitment Board, Bhubaneswar</p>
+</div>
+
+<button onclick="topFunction()" id="top" uk-tooltip="title:Go to top; pos: left" class="uk-align-center">
+    <span uk-icon="icon:triangle-up"></span>
+</button>
+
+
+<script>
+	function setCookie(name,value,days) {
+		var expires = "";
+		if (days) {
+			var date = new Date();
+			date.setTime(date.getTime() + (days*24*60*60*1000));
+			expires = "; expires=" + date.toUTCString();
+		}
+		document.cookie = name + "=" + (value || "")  + expires + "; path=/;Secure";
+	}
+	function getCookie(name) {
+		var nameEQ = name + "=";
+		var ca = document.cookie.split(';');
+		for(var i=0;i < ca.length;i++) {
+			var c = ca[i];
+			while (c.charAt(0)==' ') c = c.substring(1,c.length);
+			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+		}
+		return null;
+	}
+	var color_state=getCookie("color_state");
+	if(color_state=="contrast"){
+		document.body.classList.add("dark-mode");
+	}
+	function myFunction() {
+		var element = document.body;
+		//var cbtn = document.getElementById('contrast');
+		element.classList.toggle("dark-mode");
+		if(color_state=="contrast"){
+			setCookie("color_state","normal");
+		}
+		else{
+			setCookie("color_state","contrast");
+		}
+		//cbtn.classList.toggle("act");
+	}
+</script>
+
+<script>
+	//Get the button
+	var mybutton = document.getElementById("top");
+	
+	// When the user scrolls down 20px from the top of the document, show the button
+	window.onscroll = function() {scrollFunction()};
+	
+	function scrollFunction() {
+		if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+			mybutton.style.display = "block";
+			} else {
+			mybutton.style.display = "none";
+		}
+	}
+	
+	// When the user clicks on the button, scroll to the top of the document
+	function topFunction() {
+		window.scrollTo({top: 0, behavior: 'smooth'});
+	}
+	
+	function changeLanguage(){
+		//alert("Changing Language");
+		$(".lq_cl_btn").hide();
+		$(".lq_cl_lbl").show();
+		
+		var xmlhttp = new XMLHttpRequest();
+		//UIkit.modal.dialog('<h4><div class=center uk-spinner>Loading. . .&nbsp;&nbsp;&nbsp;</div></h4>');
+		xmlhttp.open("GET", "linqu/languageSwitch.php", true);
+		xmlhttp.send();
+		setTimeout(function () {
+			location.reload(true); // forces a reload from the server
+		}, 600);
+	}
+</script>
+
+<script type="text/javascript" src="js/jquery-new.min.js"></script>
+<script type="text/javascript" src="js/text-size.js?v=123"></script>   
+</body>
+</html>

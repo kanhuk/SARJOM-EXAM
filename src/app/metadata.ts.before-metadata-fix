@@ -1,0 +1,9 @@
+﻿import type { Metadata } from "next/navigation";
+
+export const metadata: Metadata = {
+  title: "SARJOM EXAM - Academic Examination & Practice Portal",
+  description: "Verified official syllabus blueprints, real exam mode PYQs, and verified notifications.",
+  icons: {
+    icon: "/favicon.png",
+  },
+};
