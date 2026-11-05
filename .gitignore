@@ -1,0 +1,69 @@
+﻿# Dependencies
+node_modules/
+**/node_modules/
+
+# Build output and caches
+dist/
+**/dist/
+.next/
+**/.next/
+.next-before-bom-repair/
+**/.next-before-bom-repair/
+.turbo/
+.cache/
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Vercel
+.vercel/
+**/.vercel/
+
+# Logs and generated TypeScript files
+*.log
+*.tsbuildinfo
+
+# Historical backups - preserve locally, exclude from upload
+SARJOM_SOURCE_BACKUPS/
+sarjom-ai-final-backup/
+sarjom-ai-integration-backup/
+backup-lifecycle-integration/
+
+# Local audit reports and diagnostic artifacts
+SARJOM_*.txt
+SARJOM_*.log
+
+# Local reference and test artifacts
+frontend-reference/
+freejobalert-test.html
+test-dummy.pdf
+vercel.json.backup*
+
+
+# Historical documentation and local maintenance utilities
+SARJOM_CORE_V1.md
+FIX-SARJOM-AUTH.ps1
+
+# Historical source snapshots - preserve locally
+*.bak
+*.bak_*
+*.before-*
+*.before.*
+*.phase1-bak
+*.backup-*
+*.backup-results
+*.old
+*.orig
+
+# Empty unexplained temporary file
+/frontend/{
+
+# Backup files with timestamp suffix
+*.bak-*
+n# Unexplained empty frontend filen/frontend/{'
+/frontend/{'

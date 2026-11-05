@@ -1,0 +1,23 @@
+{
+  "name": "sarjom-baha-api",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@google/genai": "^2.17.1",
+    "@google/generative-ai": "^0.24.1",
+    "@upstash/redis": "^1.38.2",
+    "pdf-parse": "^2.4.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "@types/node": "^26.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test:core": "node dist/lib/sarjom-core/test-core.js",
+    "build:clean": "tsc --pretty false",
+    "dev:api": "node --env-file=.env.local dist/local-api-server.js"
+  }
+}

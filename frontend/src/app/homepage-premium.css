@@ -1,0 +1,653 @@
+﻿/* SARJOM EXAM - REFINED ACADEMIC DESIGN SYSTEM */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
+
+nextjs-portal, 
+[data-nextjs-toast-wrapper],
+div[class*="nextjs-toast"] {
+  display: none !important;
+}
+
+:root {
+  --bg-mist: #D8E3F0;
+  --bg-mist-gradient: radial-gradient(circle at 50% -10%, rgba(220, 230, 245, 0.45) 0%, transparent 55%),
+                      radial-gradient(circle at 10% 25%, rgba(200, 218, 240, 0.5) 0%, transparent 50%),
+                      linear-gradient(180deg, #d8e3f0 0%, #cfdceb 50%, #c6d5e6 100%);
+  --header-black: #080A0F;
+  --card-navy: #10192D;
+  --card-navy-hover: #15213b;
+  --accent-mint: #00DDB0;
+  --accent-mint-dim: rgba(0, 221, 176, 0.12);
+  --accent-mint-border: rgba(0, 221, 176, 0.35);
+  --text-dark: #090e17;
+  --text-slate: #475569;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+.sarjom-viewport {
+  background: var(--bg-mist-gradient);
+  background-color: var(--bg-mist);
+  background-attachment: fixed;
+  color: var(--text-dark);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.sarjom-canvas {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1rem 2rem 3.5rem;
+}
+
+@media (max-width: 768px) {
+  .sarjom-canvas {
+    padding: 0.85rem 1rem 2.5rem;
+  }
+}
+
+/* 02: READABLE LIVE NOTICES TICKER */
+.sarjom-ticker-strip {
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+  background: var(--header-black);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 0.55rem 1rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 4px 18px rgba(8, 10, 15, 0.18);
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.sarjom-ticker-badge {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #020617;
+  background: var(--accent-mint);
+  padding: 0.26rem 0.65rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.sarjom-ticker-track-wrapper {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  width: 100%;
+  mask-image: linear-gradient(90deg, transparent 0%, black 3%, black 97%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 3%, black 97%, transparent 100%);
+}
+
+.sarjom-ticker-track {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  gap: 2.75rem;
+  animation: tickerSlide 38s linear infinite;
+}
+
+.sarjom-ticker-track:hover,
+.sarjom-ticker-track:focus-within {
+  animation-play-state: paused;
+}
+
+@keyframes tickerSlide {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sarjom-ticker-track {
+    animation: none;
+    overflow-x: auto;
+  }
+}
+
+.sarjom-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+}
+
+.sarjom-ticker-item:hover {
+  color: var(--accent-mint);
+}
+
+.sarjom-ticker-tag {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 800;
+  padding: 0.16rem 0.5rem;
+  border-radius: 5px;
+  letter-spacing: 0.04em;
+}
+
+.tag-notice { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+.tag-admit { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
+.tag-key { background: rgba(192, 132, 252, 0.15); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.3); }
+.tag-result { background: var(--accent-mint-dim); color: var(--accent-mint); border: 1px solid var(--accent-mint-border); }
+.tag-lastdate { background: rgba(248, 113, 113, 0.15); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
+
+/* 01 & 05: COMPACT HERO SECTION */
+.sarjom-hero-matrix {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  padding: 2.25rem 2rem 2.25rem;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 
+    0 14px 34px -12px rgba(8, 10, 15, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .sarjom-hero-matrix {
+    padding: 1.5rem 1.15rem 1.65rem;
+  }
+}
+
+.sarjom-kicker-sm {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #0369a1;
+  text-transform: uppercase;
+}
+
+.sarjom-core-heading {
+  font-family: var(--font-sans);
+  font-size: 2.35rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  color: var(--text-dark);
+  max-width: 920px;
+  margin-top: 0.35rem;
+}
+
+@media (max-width: 768px) {
+  .sarjom-core-heading {
+    font-size: 1.65rem;
+    line-height: 1.2;
+  }
+}
+
+.sarjom-muted-line {
+  display: block;
+  color: #334155;
+}
+
+.sarjom-electric-text {
+  display: block;
+  background: linear-gradient(90deg, #080A0F 0%, #15213b 45%, #059669 85%, #0284c7 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textFlow 7s ease-in-out infinite alternate;
+  margin-top: 0.15rem;
+}
+
+@keyframes textFlow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+.sarjom-descriptor {
+  margin-top: 0.75rem;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--text-slate);
+  max-width: 660px;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .sarjom-descriptor {
+    font-size: 0.9rem;
+  }
+}
+
+/* SEARCH BAR AS HERO'S PRIMARY ACTION */
+.sarjom-omni-bar {
+  display: flex;
+  align-items: center;
+  margin-top: 1.5rem;
+  background: var(--header-black);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  padding: 0.35rem 0.45rem 0.35rem 1rem;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 740px;
+  box-shadow: 0 10px 28px -6px rgba(8, 10, 15, 0.25);
+  transition: all 0.2s ease;
+}
+
+.sarjom-omni-bar:focus-within {
+  border-color: var(--accent-mint);
+  box-shadow: 0 0 0 3px var(--accent-mint-dim), 0 12px 32px -6px rgba(8, 10, 15, 0.35);
+  transform: translateY(-1px);
+}
+
+.sarjom-search-icon {
+  font-size: 1.15rem;
+  color: var(--accent-mint);
+}
+
+.sarjom-omni-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 0.92rem;
+  min-width: 0;
+}
+
+.sarjom-omni-field::placeholder {
+  color: #64748b;
+}
+
+.sarjom-btn-single-search {
+  background: var(--accent-mint);
+  color: #020617;
+  font-size: 0.86rem;
+  font-weight: 800;
+  padding: 0.65rem 1.45rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.sarjom-btn-single-search:hover {
+  background: #00f2c3;
+  transform: translateY(-1px);
+}
+
+/* 4 TO 5 POPULAR CORE EXAM CHIPS */
+.sarjom-quick-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-top: 1.1rem;
+}
+
+.sarjom-strip-head {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #64748b;
+  margin-right: 0.2rem;
+}
+
+.sarjom-speed-pill {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #1e293b;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  padding: 0.26rem 0.68rem;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sarjom-speed-pill:hover {
+  background: var(--card-navy);
+  color: var(--accent-mint);
+  border-color: var(--card-navy);
+  transform: translateY(-1px);
+}
+
+/* SECTION TITLES */
+.sarjom-section-meta {
+  margin-bottom: 1.1rem;
+}
+
+.sarjom-section-meta h2 {
+  font-family: var(--font-sans);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-top: 0.2rem;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+/* 03: ACTIVE WORKSPACES WITH DISTINCT SIMPLE ICONS */
+.sarjom-bento-trio {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 860px) {
+  .sarjom-bento-trio {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.sarjom-bento-tile {
+  position: relative;
+  background: var(--card-navy);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 1.65rem 1.55rem;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 24px -10px rgba(8, 10, 15, 0.22);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.sarjom-bento-tile:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-mint-border);
+  background: var(--card-navy-hover);
+}
+
+.sarjom-tile-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.1rem;
+}
+
+.sarjom-icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--accent-mint-dim);
+  border: 1px solid var(--accent-mint-border);
+  color: var(--accent-mint);
+}
+
+.sarjom-tile-num {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #64748b;
+}
+
+.sarjom-bento-tile h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.015em;
+}
+
+.sarjom-bento-tile p {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #94a3b8;
+  margin-top: 0.45rem;
+  flex: 1;
+}
+
+.sarjom-tile-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent-mint);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 0.85rem;
+}
+
+.sarjom-arrow {
+  transition: transform 0.2s ease;
+}
+
+.sarjom-bento-tile:hover .sarjom-arrow {
+  transform: translateX(4px);
+}
+
+/* 04: SECONDARY & COMPACT PLANNED WORKSPACES */
+.sarjom-roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 860px) {
+  .sarjom-roadmap-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sarjom-roadmap-card {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px dashed rgba(15, 23, 42, 0.22);
+  border-radius: 14px;
+  padding: 1.15rem 1.25rem;
+  backdrop-filter: blur(8px);
+}
+
+.sarjom-status-pill {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 800;
+  padding: 0.16rem 0.5rem;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.status-planned {
+  background: rgba(100, 116, 139, 0.12);
+  color: #475569;
+  border: 1px solid rgba(100, 116, 139, 0.25);
+}
+
+.status-dev {
+  background: rgba(2, 132, 199, 0.1);
+  color: #0284c7;
+  border: 1px solid rgba(2, 132, 199, 0.25);
+}
+
+.sarjom-roadmap-card h3 {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.sarjom-roadmap-card p {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin-top: 0.3rem;
+  line-height: 1.45;
+}
+
+/* FOOTER */
+.sarjom-terminal-footer {
+  border-top: 1px solid rgba(15, 23, 42, 0.1);
+  padding: 1.65rem 0 1.25rem;
+  margin-top: 2.5rem;
+}
+
+.sarjom-foot-cluster {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .sarjom-foot-cluster {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+}
+
+/* TICKER SCROLLBAR HIDE & MASK FIX */
+.sarjom-ticker-strip {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1.25rem !important;
+  background: var(--header-black) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  padding: 0.55rem 1rem !important;
+  margin-bottom: 1.25rem !important;
+  overflow: hidden !important;
+  position: relative !important;
+  width: 100% !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.sarjom-ticker-strip::-webkit-scrollbar {
+  display: none !important;
+}
+
+.sarjom-ticker-track-wrapper {
+  flex: 1 !important;
+  overflow: hidden !important;
+  position: relative !important;
+  display: flex !important;
+  width: 100% !important;
+  padding-left: 0.75rem !important;
+  mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%) !important;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%) !important;
+  scrollbar-width: none !important;
+}
+
+.sarjom-ticker-track-wrapper::-webkit-scrollbar,
+.sarjom-ticker-track::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* TICKER SCROLLBAR HIDE & MASK FIX */
+.sarjom-ticker-strip {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1.25rem !important;
+  background: var(--header-black) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  padding: 0.55rem 1rem !important;
+  margin-bottom: 1.25rem !important;
+  overflow: hidden !important;
+  position: relative !important;
+  width: 100% !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.sarjom-ticker-strip::-webkit-scrollbar {
+  display: none !important;
+}
+
+.sarjom-ticker-track-wrapper {
+  flex: 1 !important;
+  overflow: hidden !important;
+  position: relative !important;
+  display: flex !important;
+  width: 100% !important;
+  padding-left: 0.75rem !important;
+  mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%) !important;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%) !important;
+  scrollbar-width: none !important;
+}
+
+.sarjom-ticker-track-wrapper::-webkit-scrollbar,
+.sarjom-ticker-track::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* HEADER WIDTH BALANCE & COMPACT FIX */
+header,
+nav,
+.sarjom-header,
+header > div,
+nav > div {
+  max-width: 1280px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
+}
+
+@media (max-width: 768px) {
+  header,
+  nav,
+  .sarjom-header,
+  header > div,
+  nav > div {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
+/* TICKER PYQ RELEASE BADGE */
+.tag-pyq {
+  background: rgba(0, 221, 176, 0.15) !important;
+  color: #00DDB0 !important;
+  border: 1px solid rgba(0, 221, 176, 0.35) !important;
+}
+
+@keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
+
+
+@keyframes sarjomMarquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.sarjom-marquee-active {
+  display: flex !important;
+  width: max-content !important;
+  animation: sarjomMarquee 30s linear infinite !important;
+}
+
+.sarjom-marquee-active:hover {
+  animation-play-state: paused !important;
+}
