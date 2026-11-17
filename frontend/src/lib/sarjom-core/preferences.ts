@@ -4,3 +4,11 @@ export async function addExamPreference(userId: string, examId: string) { return
 export async function removeExamPreference(userId: string, examId: string) { return true; }
 export async function getPreferences() { return {}; }
 export async function savePreferences(pref: any) { return pref; }
+export default {
+  getCandidatePreferences,
+  saveCandidatePreferences,
+  addExamPreference,
+  removeExamPreference,
+  getPreferences,
+  savePreferences
+};
