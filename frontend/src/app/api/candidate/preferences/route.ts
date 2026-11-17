@@ -1,12 +1,12 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import {
   getCandidatePreferences,
   saveCandidatePreferences,
   addExamPreference,
   removeExamPreference,
-} from "../../../../../../lib/sarjom-core/preferences";
-import { listExams } from "../../../../../../lib/sarjom-core/exams";
+} from "@/lib/sarjom-core/preferences";
+import { listExams } from "@/lib/sarjom-core/exams";
 
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

@@ -1,5 +1,5 @@
-﻿import { NextResponse } from "next/server";
-import { listExams } from "../../../../../../lib/sarjom-core/exams";
+import { NextResponse } from "next/server";
+import { listExams } from "@/lib/sarjom-core/exams";
 
 export async function GET() {
   try {

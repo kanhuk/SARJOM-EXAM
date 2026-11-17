@@ -88,7 +88,6 @@ export default function LoginPage() {
           </button>
         </form>
         <p className="mt-5 text-sm text-slate-600">New to SARJOM? <Link href="/signup" className="font-semibold text-emerald-700">Create an account</Link></p>
-        <p className="mt-3 text-sm"><Link href="/admin/login" className="text-slate-500 underline">Admin sign in</Link></p>
       </section>
     </main>
   );

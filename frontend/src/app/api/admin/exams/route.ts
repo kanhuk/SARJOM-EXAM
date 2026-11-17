@@ -1,9 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { isValidAdminSession } from "@/lib/admin-session";
-import { listExams, saveExam } from "../../../../../../lib/sarjom-core/exams";
-import { sarjomRepository } from "../../../../../../lib/sarjom-core/repository";
-import type { AdminChange, SarjomGenericRecord } from "../../../../../../lib/sarjom-core/types";
+import { listExams, saveExam } from "@/lib/sarjom-core/exams";
+import { sarjomRepository } from "@/lib/sarjom-core/repository";
+import type { AdminChange, SarjomGenericRecord } from "@/lib/sarjom-core/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

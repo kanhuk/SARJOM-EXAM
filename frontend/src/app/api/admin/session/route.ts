@@ -15,6 +15,16 @@ function json(body: unknown, status = 200) {
     headers: { "Cache-Control": "no-store" }
   });
 }
+function clearAdminCookie(response: NextResponse) {
+  response.cookies.set(SARJOM_ADMIN_COOKIE, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/",
+    maxAge: 0
+  });
+  return response;
+}
 
 export async function GET(request: NextRequest) {
   return json({ authenticated: isValidAdminSession(request) });
@@ -35,7 +45,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json().catch(() => null);
     const accessToken = typeof body?.accessToken === "string" ? body.accessToken : "";
     if (!accessToken || accessToken.length > 10000) {
-      return json({ success: false, error: "A valid signed-in session is required." }, 401);
+      return clearAdminCookie(json({ success: false, error: "A valid signed-in session is required." }, 401));
     }
 
     const supabase = createClient(url, key, {
@@ -44,11 +54,11 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase.auth.getUser(accessToken);
 
     if (error || !data.user?.email) {
-      return json({ success: false, error: "Your sign-in session is invalid or expired." }, 401);
+      return clearAdminCookie(json({ success: false, error: "Your sign-in session is invalid or expired." }, 401));
     }
 
     if (data.user.email.trim().toLowerCase() !== expectedEmail) {
-      return json({ success: false, error: "This account is not authorized as an administrator." }, 403);
+      return clearAdminCookie(json({ success: false, error: "This account is not authorized as an administrator." }, 403));
     }
 
     const session = createAdminSession();

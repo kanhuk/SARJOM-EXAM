@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { isValidAdminSession } from "@/lib/admin-session";
 const API_BASE_URL = process.env.SARJOM_API_URL || process.env.NEXT_PUBLIC_SARJOM_API_URL || "http://localhost:4000";
 export async function POST(request: NextRequest) {

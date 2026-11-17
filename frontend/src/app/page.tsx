@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import "./homepage-premium.css";
 
@@ -188,14 +188,16 @@ export default function HomePage() {
     <div className="sarjom-viewport">
       <div className="sarjom-canvas">
         {/* LIVE NOTICES CONTINUOUS MARQUEE STRIP */}
-        <div className="w-full rounded-2xl border border-slate-800 bg-[#0A0E17] shadow-lg mb-6 overflow-hidden flex items-center">
-          <div className="bg-[#00DDB0] text-slate-950 font-mono text-[11px] font-black px-4 py-2.5 flex items-center gap-2 flex-shrink-0 z-10 uppercase tracking-wider">
-            <span className="h-2 w-2 rounded-full bg-slate-950 animate-ping" />
-            <span>LIVE NOTICES</span>
+        <div className="sarjom-live-rail mb-6">
+          <div className="sarjom-live-label" aria-label="Live notices">
+            <span className="sarjom-live-pulse" />
+            <span className="sarjom-live-word">LIVE</span>
+            <span className="sarjom-live-divider" />
+            <span className="sarjom-live-label-detail">OFFICIAL UPDATES</span>
           </div>
 
-          <div className="relative overflow-hidden w-full py-2.5 flex items-center group">
-            <div className="flex items-center gap-8 whitespace-nowrap will-change-transform sarjom-marquee-active group-hover:[animation-play-state:paused]">
+          <div className="sarjom-live-window group" aria-label="Latest official updates">
+            <div className="sarjom-live-track sarjom-marquee-active group-hover:[animation-play-state:paused]">
               {displayNotices.map((item, idx) => (
                 item.link.startsWith("http") ? (
                   <a

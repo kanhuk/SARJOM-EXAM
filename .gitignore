@@ -1,4 +1,4 @@
-﻿# Dependencies
+# Dependencies
 node_modules/
 **/node_modules/
 
@@ -60,10 +60,6 @@ FIX-SARJOM-AUTH.ps1
 *.old
 *.orig
 
-# Empty unexplained temporary file
-/frontend/{
 
 # Backup files with timestamp suffix
 *.bak-*
-n# Unexplained empty frontend filen/frontend/{'
-/frontend/{'

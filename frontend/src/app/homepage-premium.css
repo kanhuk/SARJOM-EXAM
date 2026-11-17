@@ -1,4 +1,4 @@
-﻿/* SARJOM EXAM - REFINED ACADEMIC DESIGN SYSTEM */
+/* SARJOM EXAM - REFINED ACADEMIC DESIGN SYSTEM */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
 
@@ -650,4 +650,148 @@ nav > div {
 
 .sarjom-marquee-active:hover {
   animation-play-state: paused !important;
+}
+
+/* ============================================================
+   SARJOM PREMIUM LIVE NOTICE RAIL
+   Existing notice data and marquee animation are preserved.
+   ============================================================ */
+
+.sarjom-live-rail {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-height: 54px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 221, 176, 0.22);
+  border-radius: 15px;
+  background: linear-gradient(110deg, #0b1420 0%, #080e18 55%, #0b1420 100%);
+  box-shadow:
+    0 8px 24px rgba(4, 12, 24, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+.sarjom-live-label {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 9px;
+  padding: 0 17px;
+  color: #061b19;
+  background: linear-gradient(135deg, #00e0b5, #00c9a5);
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  white-space: nowrap;
+}
+
+.sarjom-live-pulse {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: #063b32;
+  box-shadow: 0 0 0 4px rgba(6, 59, 50, 0.12);
+  animation: sarjomLivePulse 1.8s ease-in-out infinite;
+}
+
+.sarjom-live-word {
+  font-size: 11px;
+}
+
+.sarjom-live-divider {
+  width: 1px;
+  height: 18px;
+  background: rgba(6, 59, 50, 0.28);
+}
+
+.sarjom-live-label-detail {
+  font-size: 9px;
+  letter-spacing: 0.09em;
+}
+
+.sarjom-live-window {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  align-items: center;
+  overflow: hidden;
+  padding: 13px 0;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 22px,
+    #000 calc(100% - 22px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 22px,
+    #000 calc(100% - 22px),
+    transparent 100%
+  );
+}
+
+.sarjom-live-track {
+  align-items: center;
+  gap: 32px;
+  padding: 0 22px;
+}
+
+.sarjom-live-track > a {
+  text-decoration: none;
+  outline-offset: 5px;
+}
+
+.sarjom-live-track > a:focus-visible {
+  outline: 2px solid #00ddb0;
+  border-radius: 4px;
+}
+
+@keyframes sarjomLivePulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.82);
+  }
+}
+
+@media (max-width: 600px) {
+  .sarjom-live-rail {
+    min-height: 48px;
+    border-radius: 12px;
+  }
+
+  .sarjom-live-label {
+    gap: 7px;
+    padding: 0 11px;
+  }
+
+  .sarjom-live-label-detail {
+    display: none;
+  }
+
+  .sarjom-live-window {
+    padding: 11px 0;
+  }
+
+  .sarjom-live-track {
+    gap: 24px;
+    padding: 0 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sarjom-live-pulse {
+    animation: none;
+  }
 }

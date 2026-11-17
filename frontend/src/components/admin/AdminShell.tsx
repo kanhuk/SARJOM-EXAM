@@ -1,8 +1,9 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 const adminLinks = [
   { href: "/admin", label: "Dashboard", icon: "▦" },
@@ -60,11 +61,11 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           setAuthenticated(true);
           setChecking(false);
         } else {
-          router.replace("/admin/login");
+          router.replace("/login");
         }
       })
       .catch(() => {
-        if (active) router.replace("/admin/login");
+        if (active) router.replace("/login");
       });
 
     return () => { active = false; };
@@ -86,16 +87,18 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   async function signOut() {
     if (signingOut) return;
     setSigningOut(true);
-    try {
-      await fetch("/api/admin/session", {
+
+    await Promise.allSettled([
+      supabase.auth.signOut(),
+      fetch("/api/admin/session", {
         method: "DELETE",
         credentials: "same-origin",
-        cache: "no-store",
-      });
-    } finally {
-      router.replace("/admin/login");
-      router.refresh();
-    }
+        cache: "no-store"
+      })
+    ]);
+
+    router.replace("/login");
+    router.refresh();
   }
 
   if (isLogin) return <>{children}</>;
@@ -228,6 +231,15 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
             <span className="sm:hidden">Website</span>
             <span aria-hidden="true">↗</span>
           </a>
+
+          <button
+            type="button"
+            onClick={signOut}
+            disabled={signingOut}
+            className="inline-flex shrink-0 items-center gap-1 rounded-xl border border-red-200 bg-white px-3 py-2.5 text-xs font-bold text-red-600 transition hover:bg-red-50 disabled:opacity-50 sm:text-sm"
+          >
+            {signingOut ? "Signing out…" : "Logout"}
+          </button>
         </div>
       </header>
 
