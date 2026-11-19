@@ -1,4 +1,4 @@
-const API_BASE_URL =
+﻿const API_BASE_URL =
   process.env.NEXT_PUBLIC_SARJOM_API_URL ||
   "http://localhost:4000";
 
@@ -152,11 +152,25 @@ export async function getContent(
   if (id) search.set("id", id);
 
   const query = search.toString();
+  const path = `/api/content${query ? `?${query}` : ""}`;
 
-  return request<{
-    success: boolean;
-    records: Record<string, unknown>[];
-  }>(`/api/content${query ? `?${query}` : ""}`);
+  try {
+    return await request<{
+      success: boolean;
+      records: Record<string, unknown>[];
+    }>(path);
+  } catch {
+    if (typeof window !== "undefined") {
+      const localRes = await fetch(path, { cache: "no-store" });
+      if (localRes.ok) {
+        return (await localRes.json()) as {
+          success: boolean;
+          records: Record<string, unknown>[];
+        };
+      }
+    }
+    return { success: true, records: [] };
+  }
 }
 
 /*
@@ -178,3 +192,4 @@ export async function getGeography() {
     geography: Record<string, unknown> | unknown[];
   }>("/api/geography");
 }
+

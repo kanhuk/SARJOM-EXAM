@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import "@/app/homepage-premium.css";
 import { Suspense, useEffect, useMemo, useState, useRef } from "react";
@@ -16,6 +16,8 @@ type Question = {
     topic?: string;
     year?: string;
     paper?: string;
+    passage?: string;
+    passage_or?: string;
     question: string;
     question_or?: string;
     options: string[];
@@ -1423,11 +1425,11 @@ const [questions, setQuestions] = useState<Question[]>([
                     className="flex flex-col justify-between rounded-2xl border border-white/10 bg-[#0E1524] p-4.5 text-white transition hover:border-[#00DDB0]/50 shadow-lg"
                   >
                     <div>
-                      <div className="flex items-center justify-between">
-                        <span className="rounded bg-[#00DDB0]/15 px-2 py-0.5 font-mono text-[10px] font-bold text-[#00DDB0]">
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="inline-flex items-center whitespace-nowrap shrink-0 rounded-md border border-[#00DDB0]/25 bg-[#00DDB0]/15 px-2 py-0.5 font-mono text-[10px] font-bold text-[#00DDB0]">
                           {card.paper} • {card.year}
                         </span>
-                        <span className="font-mono text-[10px] text-slate-400">
+                        <span className="inline-flex items-center whitespace-nowrap shrink-0 rounded-md bg-white/5 px-2 py-0.5 font-mono text-[10px] text-slate-300">
                           {card.shift}
                         </span>
                       </div>
@@ -1440,10 +1442,10 @@ const [questions, setQuestions] = useState<Question[]>([
                         {card.subject}
                       </p>
 
-                      <div className="mt-3 flex items-center gap-2.5 font-mono text-[10px] text-slate-400 border-t border-white/5 pt-2.5">
-                        <span>📝 {card.questionsCount} Qs</span>
-                        <span>⏱ {card.durationMinutes} Mins</span>
-                        {card.isBilingual && <span className="text-[#00DDB0] font-bold">🌐 Odia/Eng</span>}
+                      <div className="mt-3 flex flex-wrap items-center gap-2 font-mono text-[10px] text-slate-400 border-t border-white/5 pt-2.5">
+                        <span className="inline-flex items-center whitespace-nowrap shrink-0">📝 {card.questionsCount} Qs</span>
+                        <span className="inline-flex items-center whitespace-nowrap shrink-0">⏱ {card.durationMinutes} Mins</span>
+                        {card.isBilingual && <span className="inline-flex items-center whitespace-nowrap shrink-0 rounded bg-[#00DDB0]/10 px-1.5 py-0.5 text-[#00DDB0] font-bold">🌐 Odia/Eng</span>}
                       </div>
                     </div>
 
@@ -1938,7 +1940,7 @@ const [questions, setQuestions] = useState<Question[]>([
               </div>
             )}
 
-            <header className="h-14 border-b border-white/10 bg-[#0B0F19] px-4 sm:px-6 flex items-center justify-between flex-shrink-0 z-20">
+            <header className="w-full h-14 border-b border-white/10 bg-[#0B0F19] px-4 sm:px-6 flex items-center justify-between flex-shrink-0 z-20">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <span className="h-2.5 w-2.5 rounded-full bg-[#00DDB0] animate-pulse" />
@@ -1989,10 +1991,10 @@ const [questions, setQuestions] = useState<Question[]>([
               </div>
             </header>
 
-            <div className="flex-1 flex overflow-hidden">
-              <div className="flex-1 flex flex-col justify-between overflow-y-auto p-5 sm:p-8">
+            <div className="flex-1 flex min-h-0 overflow-hidden">
+              <div className="flex-1 min-w-0 flex flex-col overflow-y-auto px-5 pt-5 pb-24 sm:px-8 sm:pt-8 sm:pb-24">
                 {q ? (
-                  <div className="max-w-4xl w-full mx-auto flex flex-col h-full justify-between">
+                  <div className="max-w-4xl w-full mx-auto flex flex-col flex-1 justify-between">
                     <div>
                       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
                         <div className="flex items-center gap-3">
@@ -2034,6 +2036,24 @@ const [questions, setQuestions] = useState<Question[]>([
                           </button>
                         </div>
                       </div>
+
+                      {(examLanguage === "or" ? q.metadata?.passage_or || q.metadata?.passage : q.metadata?.passage) && (
+                        <div className="mt-4 rounded-xl border border-indigo-500/30 bg-[#0B1322] p-4 sm:p-5">
+                          <div className="mb-2 flex items-center justify-between gap-2">
+                            <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-indigo-300">
+                              {q.metadata?.topic || "Reading Comprehension"} Passage
+                            </span>
+                            <span className="font-mono text-[10px] text-slate-400">
+                              Read carefully before answering
+                            </span>
+                          </div>
+                          <div className="max-h-52 overflow-y-auto pr-1 text-sm leading-relaxed text-slate-200 whitespace-pre-line">
+                            {examLanguage === "or"
+                              ? q.metadata?.passage_or || q.metadata?.passage
+                              : q.metadata?.passage}
+                          </div>
+                        </div>
+                      )}
 
                       <div className="mt-5 text-base sm:text-lg font-medium text-slate-100 leading-relaxed font-sans whitespace-pre-line">
                         {activeQuestionText}
@@ -2118,7 +2138,7 @@ const [questions, setQuestions] = useState<Question[]>([
                       )}
                     </div>
 
-                    <div className="mt-8 pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
+                    <div className="sticky bottom-0 z-20 mt-8 -mx-5 sm:-mx-8 px-5 sm:px-8 py-3.5 border-t border-white/10 bg-[#0B0F19]/95 backdrop-blur flex flex-wrap items-center justify-between gap-3">
                       <div className="flex items-center gap-2">
                         <button
                           type="button"

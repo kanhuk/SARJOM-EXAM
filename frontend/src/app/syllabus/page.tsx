@@ -90,11 +90,11 @@ export default function SyllabusPage() {
     <div className="sarjom-viewport">
       <div className="sarjom-canvas">
         <header className="sarjom-hero-matrix">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <span className="sarjom-kicker-sm">SARJOM SYLLABUS DIRECTORY</span>
             <Link
               href="/pyq"
-              className="sarjom-speed-pill !border-[#00F299]/30 !bg-[#0f172a] !text-[#00F299] hover:!border-[#00F299]"
+              className="sarjom-speed-pill shrink-0 whitespace-nowrap !border-[#00F299]/30 !bg-[#0f172a] !text-[#00F299] hover:!border-[#00F299]"
             >
               Go to PYQ Practice →
             </Link>
@@ -137,11 +137,16 @@ export default function SyllabusPage() {
         </header>
 
         {error && (
-          <div role="alert" className="sarjom-not-found-box mt-6">
-            <div className="sarjom-not-found-icon">⚠</div>
+          <div
+            role="alert"
+            className="mt-6 flex items-start gap-3 rounded-2xl border border-amber-400/50 bg-amber-50 px-5 py-4 text-slate-900 shadow-sm"
+          >
+            <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-200/80 text-sm font-bold text-amber-900">
+              ⚠
+            </span>
             <div>
-              <h4>Notice</h4>
-              <p>{error}</p>
+              <h4 className="text-sm font-bold text-amber-950">Notice</h4>
+              <p className="mt-0.5 text-sm text-amber-900">{error}</p>
             </div>
           </div>
         )}
