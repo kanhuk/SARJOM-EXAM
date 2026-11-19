@@ -1,11 +1,10 @@
-"use client";
+﻿"use client";
 
 import "./homepage-premium.css";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useLanguage } from "@/components/language/LanguageProvider";
+import { motion, useReducedMotion } from "framer-motion";
 import { getContent } from "@/lib/api";
 
 type SearchResponse = {
@@ -51,7 +50,7 @@ const workspaces = [
     href: "/exams",
     action: "Explore exams",
     icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
       </svg>
     ),
@@ -63,7 +62,7 @@ const workspaces = [
     href: "/syllabus",
     action: "Browse syllabus",
     icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
       </svg>
     ),
@@ -75,7 +74,7 @@ const workspaces = [
     href: "/pyq",
     action: "Start practice",
     icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
@@ -104,8 +103,7 @@ const plannedWorkspaces = [
 ];
 
 export default function HomePage() {
-  const router = useRouter();
-  const { t } = useLanguage();
+  const prefersReducedMotion = useReducedMotion();
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<SearchResponse | null>(null);
@@ -125,7 +123,14 @@ export default function HomePage() {
               id: String(r.id),
               title: String(r.title || "Official Notification"),
               category: type,
-              label: type === "admit-card" ? "ADMIT CARD" : type === "answer-key" ? "ANSWER KEY" : type === "result" ? "RESULT" : "NOTIFICATION",
+              label:
+                type === "admit-card"
+                  ? "ADMIT CARD"
+                  : type === "answer-key"
+                  ? "ANSWER KEY"
+                  : type === "result"
+                  ? "RESULT"
+                  : "NOTIFICATION",
               link: `/exams/${type}/${encodeURIComponent(r.id)}`,
               source: r.officialSource ? String(r.officialSource) : undefined,
             }));
@@ -142,7 +147,9 @@ export default function HomePage() {
     }
 
     void loadLiveNotices();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, []);
 
   async function handleSearch(e: React.FormEvent) {
@@ -173,12 +180,18 @@ export default function HomePage() {
 
   function getBadgeClass(cat: string) {
     switch (cat) {
-      case "pyq": return "bg-[#00DDB0]/15 text-[#00DDB0] border border-[#00DDB0]/40";
-      case "exam": return "bg-blue-500/15 text-blue-300 border border-blue-500/40";
-      case "admit-card": return "bg-amber-400/15 text-amber-300 border border-amber-400/40";
-      case "answer-key": return "bg-emerald-500/15 text-emerald-300 border border-emerald-500/40";
-      case "result": return "bg-purple-500/15 text-purple-300 border border-purple-500/40";
-      default: return "bg-slate-700/50 text-slate-300 border border-slate-600";
+      case "pyq":
+        return "bg-primary/15 text-primary border border-primary/40";
+      case "exam":
+        return "bg-sky-500/15 text-sky-300 border border-sky-500/40";
+      case "admit-card":
+        return "bg-amber-400/15 text-amber-300 border border-amber-400/40";
+      case "answer-key":
+        return "bg-emerald-500/15 text-emerald-300 border border-emerald-500/40";
+      case "result":
+        return "bg-violet-500/15 text-violet-300 border border-violet-500/40";
+      default:
+        return "bg-slate-700/50 text-slate-200 border border-slate-600";
     }
   }
 
@@ -186,7 +199,12 @@ export default function HomePage() {
 
   return (
     <div className="sarjom-viewport">
-      <div className="sarjom-canvas">
+      <motion.div
+        initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: prefersReducedMotion ? 0 : 0.28 }}
+        className="sarjom-canvas"
+      >
         {/* LIVE NOTICES CONTINUOUS MARQUEE STRIP */}
         <div className="sarjom-live-rail mb-6">
           <div className="sarjom-live-label" aria-label="Live notices">
@@ -198,21 +216,21 @@ export default function HomePage() {
 
           <div className="sarjom-live-window group" aria-label="Latest official updates">
             <div className="sarjom-live-track sarjom-marquee-active group-hover:[animation-play-state:paused]">
-              {displayNotices.map((item, idx) => (
+              {displayNotices.map((item, idx) =>
                 item.link.startsWith("http") ? (
                   <a
                     key={`${item.id}-${idx}`}
                     href={item.link}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2.5 text-xs text-slate-200 hover:text-[#00DDB0] transition flex-shrink-0 font-medium"
+                    className="inline-flex flex-shrink-0 items-center gap-2.5 text-xs font-medium text-slate-200 transition hover:text-primary"
                   >
-                    <span className={`px-2 py-0.5 rounded font-mono text-[10px] font-bold ${getBadgeClass(item.category)}`}>
+                    <span className={`rounded px-2 py-0.5 font-mono text-[10px] font-bold ${getBadgeClass(item.category)}`}>
                       {item.label}
                     </span>
                     <span>{item.title}</span>
                     {item.source && (
-                      <span className="text-[11px] text-slate-500 font-mono">[{item.source}]</span>
+                      <span className="font-mono text-[11px] text-slate-400">[{item.source}]</span>
                     )}
                     <span className="text-slate-600">●</span>
                   </a>
@@ -220,19 +238,19 @@ export default function HomePage() {
                   <Link
                     key={`${item.id}-${idx}`}
                     href={item.link}
-                    className="inline-flex items-center gap-2.5 text-xs text-slate-200 hover:text-[#00DDB0] transition flex-shrink-0 font-medium"
+                    className="inline-flex flex-shrink-0 items-center gap-2.5 text-xs font-medium text-slate-200 transition hover:text-primary"
                   >
-                    <span className={`px-2 py-0.5 rounded font-mono text-[10px] font-bold ${getBadgeClass(item.category)}`}>
+                    <span className={`rounded px-2 py-0.5 font-mono text-[10px] font-bold ${getBadgeClass(item.category)}`}>
                       {item.label}
                     </span>
                     <span>{item.title}</span>
                     {item.source && (
-                      <span className="text-[11px] text-slate-500 font-mono">[{item.source}]</span>
+                      <span className="font-mono text-[11px] text-slate-400">[{item.source}]</span>
                     )}
                     <span className="text-slate-600">●</span>
                   </Link>
                 )
-              ))}
+              )}
             </div>
           </div>
         </div>
@@ -240,10 +258,12 @@ export default function HomePage() {
         {/* HERO SECTION */}
         <header className="sarjom-hero-matrix">
           <span className="sarjom-kicker-sm">ACADEMIC PREPARATION WORKSPACE</span>
-          
+
           <h1 className="sarjom-core-heading">
             <span className="sarjom-muted-line">TARGET YOUR EXAM</span>
-            <span className="sarjom-electric-text">STRUCTURE YOUR PREPARATION</span>
+            <span className="sarjom-electric-text">
+              STRUCTURE YOUR <span className="highlight-accent">PREPARATION</span>
+            </span>
           </h1>
 
           <p className="sarjom-descriptor">
@@ -264,7 +284,7 @@ export default function HomePage() {
               <button
                 type="button"
                 onClick={() => setQuery("")}
-                className="font-mono text-xs text-slate-400 hover:text-white"
+                className="font-mono text-xs text-text-secondary transition hover:text-text-primary"
               >
                 Clear
               </button>
@@ -289,38 +309,42 @@ export default function HomePage() {
           </div>
 
           {loading && (
-            <div className="sarjom-telemetry-loader mt-5">
-              <div className="sarjom-loader-pulse" />
+            <div className="mt-5 flex items-center gap-2 font-mono text-xs text-text-secondary">
+              <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-primary" />
               <span>Searching verified records...</span>
             </div>
           )}
 
           {result && (
-            <div className="sarjom-console-drawer mt-5 w-full max-w-2xl text-left">
-              <div className="sarjom-console-top">
-                <div className="sarjom-console-brand">
-                  <span className="sarjom-console-beacon" />
+            <div className="mt-5 w-full max-w-2xl rounded-2xl border border-border bg-surface p-4 text-left shadow-lg">
+              <div className="flex items-center justify-between border-b border-border pb-2.5">
+                <div className="flex items-center gap-2 font-mono text-xs font-bold text-primary">
+                  <span className="h-2 w-2 rounded-full bg-primary" />
                   <span>SEARCH RESULT</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setResult(null)}
-                  className="sarjom-console-close"
+                  className="font-mono text-xs text-text-secondary hover:text-text-primary"
                 >
                   Close ✕
                 </button>
               </div>
 
               {result.found ? (
-                <div className="sarjom-console-content">
+                <div className="mt-3 text-sm leading-relaxed text-text-primary">
                   <p>{result.answer || result.message}</p>
                 </div>
               ) : (
-                <div className="sarjom-not-found-box">
-                  <div className="sarjom-not-found-icon">ℹ</div>
+                <div className="mt-3 flex items-start gap-3">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/15 font-mono text-xs font-bold text-primary">
+                    i
+                  </span>
                   <div>
-                    <h4>No exact matches found</h4>
-                    <p>{result.message || "Try searching with an official exam name or syllabus topic."}</p>
+                    <h4 className="text-sm font-bold text-text-primary">No exact matches found</h4>
+                    <p className="mt-0.5 text-xs text-text-secondary">
+                      {result.message || "Try searching with an official exam name or syllabus topic."}
+                    </p>
                   </div>
                 </div>
               )}
@@ -335,24 +359,42 @@ export default function HomePage() {
             <h2>Active Workspaces</h2>
           </div>
 
-          <div className="sarjom-bento-trio">
+          <motion.div
+            initial={prefersReducedMotion ? "visible" : "hidden"}
+            animate="visible"
+            variants={{
+              hidden: {},
+              visible: {
+                transition: {
+                  staggerChildren: prefersReducedMotion ? 0 : 0.07,
+                },
+              },
+            }}
+            className="sarjom-bento-trio"
+          >
             {workspaces.map((ws) => (
-              <Link key={ws.idx} href={ws.href} className="sarjom-bento-tile">
-                <div className="sarjom-tile-top">
-                  <div className="sarjom-icon-badge">
-                    {ws.icon}
+              <motion.div
+                key={ws.idx}
+                variants={{
+                  hidden: prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 },
+                  visible: { opacity: 1, y: 0, transition: { duration: prefersReducedMotion ? 0 : 0.25 } },
+                }}
+              >
+                <Link href={ws.href} className="sarjom-bento-tile h-full">
+                  <div className="sarjom-tile-top">
+                    <div className="sarjom-icon-badge">{ws.icon}</div>
+                    <span className="sarjom-tile-num">{ws.idx}</span>
                   </div>
-                  <span className="sarjom-tile-num">{ws.idx}</span>
-                </div>
-                <h3>{ws.title}</h3>
-                <p>{ws.desc}</p>
-                <div className="sarjom-tile-footer">
-                  <span>{ws.action}</span>
-                  <span className="sarjom-arrow">→</span>
-                </div>
-              </Link>
+                  <h3>{ws.title}</h3>
+                  <p>{ws.desc}</p>
+                  <div className="sarjom-tile-footer">
+                    <span>{ws.action}</span>
+                    <span className="sarjom-arrow">→</span>
+                  </div>
+                </Link>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
 
         {/* ROADMAP SECTION */}
@@ -374,15 +416,7 @@ export default function HomePage() {
             ))}
           </div>
         </section>
-
-        {/* FOOTER */}
-        <footer className="sarjom-terminal-footer">
-          <div className="sarjom-foot-cluster">
-            <span>© 2026 SARJOM EXAM. Academic Examination & Practice Portal.</span>
-          </div>
-        </footer>
-      </div>
+      </motion.div>
     </div>
   );
 }
-

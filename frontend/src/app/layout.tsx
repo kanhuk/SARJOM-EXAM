@@ -1,24 +1,41 @@
-import React from 'react';
-import type { Metadata } from 'next';
+﻿import type { Metadata } from "next";
+import { Inter, Roboto_Mono } from "next/font/google";
+import { ThemeProvider } from "next-themes";
+import { LanguageProvider } from "@/components/language/LanguageProvider";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import "./globals.css";
-import ClientLayout from "@/components/ClientLayout";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+const robotoMono = Roboto_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+});
 
 export const metadata: Metadata = {
-  title: "SARJOM EXAM - Target Your Exam",
-  description: "Verified official syllabus blueprints and exam mode PYQs.",
+  title: "SARJOM EXAM",
+  description: "Competitive exam preparation and practice platform",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="en" className="dark">
-      <body className="bg-[#0b0f17] text-slate-100 antialiased min-h-screen">
-        <ClientLayout>
-          {children}
-        </ClientLayout>
+    <html lang="en" className={`${inter.variable} ${robotoMono.variable}`} suppressHydrationWarning>
+      <body className="antialiased">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          <LanguageProvider>
+            <Header />
+            {children}
+            <Footer />
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

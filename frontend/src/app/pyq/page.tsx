@@ -4,6 +4,7 @@ import "@/app/homepage-premium.css";
 import { Suspense, useEffect, useMemo, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { getContent } from "@/lib/api";
+import { supabase } from "@/lib/supabase";
 import { odishaPoliceSi2023Paper1Questions } from "@/data/odishaPoliceSi2023Paper1";
 import { odishaPoliceSi2023Paper2Questions } from "@/data/odishaPoliceSi2023Paper2";
 
@@ -746,7 +747,13 @@ const [questions, setQuestions] = useState<Question[]>([
   const [instructionsAccepted, setInstructionsAccepted] = useState(false);
 
   const [examLanguage, setExamLanguage] = useState<"en" | "or">("en");
+  const [questionLang, setQuestionLang] = useState<Record<string, "en" | "or">>({});
   const [showExplanation, setShowExplanation] = useState<Record<string, boolean>>({});
+  const [submitModalOpen, setSubmitModalOpen] = useState(false);
+  const [mobilePaletteOpen, setMobilePaletteOpen] = useState(false);
+  const [solutionPage, setSolutionPage] = useState(1);
+  const SOLUTIONS_PER_PAGE = 10;
+  const [syncStatus, setSyncStatus] = useState<"idle" | "saving" | "synced">("idle");
 
   const [questionTimes, setQuestionTimes] = useState<Record<string, number>>({});
   const activeQRef = useRef<string>("");
@@ -799,6 +806,7 @@ const [questions, setQuestions] = useState<Question[]>([
   }, [mode]);
 
   useEffect(() => {
+    let active = true;
     try {
       const savedBm = localStorage.getItem("sarjom_my_bookmarks");
       if (savedBm) setBookmarkedIds(JSON.parse(savedBm));
@@ -812,6 +820,32 @@ const [questions, setQuestions] = useState<Question[]>([
       const savedReps = localStorage.getItem("sarjom_admin_reports");
       if (savedReps) setReportsList(JSON.parse(savedReps));
     } catch {}
+
+    void supabase.auth.getUser().then(({ data }) => {
+      if (!active || !data?.user?.user_metadata) return;
+      const meta = data.user.user_metadata as Record<string, any>;
+      if (meta.sarjom_test_state && !localStorage.getItem("sarjom_incomplete_test")) {
+        setPendingTest(meta.sarjom_test_state);
+        try {
+          localStorage.setItem("sarjom_incomplete_test", JSON.stringify(meta.sarjom_test_state));
+        } catch {}
+      }
+      if (Array.isArray(meta.sarjom_mistakes_history) && meta.sarjom_mistakes_history.length > 0) {
+        setMistakesHistory((prev) => {
+          const map = new Map(prev.map((m) => [m.questionId, m]));
+          meta.sarjom_mistakes_history.forEach((m: MistakeRecord) => map.set(m.questionId, m));
+          const merged = Array.from(map.values());
+          try {
+            localStorage.setItem("sarjom_mistakes_history", JSON.stringify(merged));
+          } catch {}
+          return merged;
+        });
+      }
+    });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   function toggleBookmark(questionId: string) {
@@ -893,6 +927,22 @@ const [questions, setQuestions] = useState<Question[]>([
       try {
         localStorage.setItem("sarjom_incomplete_test", JSON.stringify(payload));
       } catch {}
+
+      const syncTimer = window.setTimeout(async () => {
+        try {
+          const { data } = await supabase.auth.getSession();
+          if (!data.session) return;
+          setSyncStatus("saving");
+          await supabase.auth.updateUser({
+            data: { sarjom_test_state: payload }
+          });
+          setSyncStatus("synced");
+        } catch {
+          setSyncStatus("idle");
+        }
+      }, 4000);
+
+      return () => window.clearTimeout(syncTimer);
     }
   }, [answers, seconds, current, review, mode, activePaper, submitted, questionTimes]);
 
@@ -974,21 +1024,60 @@ const [questions, setQuestions] = useState<Question[]>([
     if (q) activeQRef.current = q.id;
   }, [q]);
 
+  const activeQLang: "en" | "or" = q ? (questionLang[q.id] ?? examLanguage) : examLanguage;
+
   const options = useMemo(() => {
     if (!q) return [];
-    if (examLanguage === "or" && q.metadata?.options_or && q.metadata.options_or.length > 0) {
+    if (activeQLang === "or" && q.metadata?.options_or && q.metadata.options_or.length > 0) {
       return q.metadata.options_or;
     }
     return q.metadata?.options || [];
-  }, [q, examLanguage]);
+  }, [q, activeQLang]);
 
   const activeQuestionText = useMemo(() => {
     if (!q) return "";
-    if (examLanguage === "or" && q.metadata?.question_or) {
+    if (activeQLang === "or" && q.metadata?.question_or) {
       return q.metadata.question_or;
     }
     return q.metadata?.question || "";
-  }, [q, examLanguage]);
+  }, [q, activeQLang]);
+
+  const filteredSolutions = useMemo(() => {
+    return activeQuestions
+      .map((item, originalIdx) => ({ item, originalIdx }))
+      .filter(({ item }) => {
+        const userAns = answers[item.id];
+        const isRight = userAns === item.metadata.answerIndex;
+        const isSkipped = userAns === undefined;
+        if (solutionFilter === "correct") return isRight;
+        if (solutionFilter === "incorrect") return !isRight && !isSkipped;
+        if (solutionFilter === "skipped") return isSkipped;
+        return true;
+      });
+  }, [activeQuestions, answers, solutionFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredSolutions.length / SOLUTIONS_PER_PAGE));
+  const safePage = Math.min(solutionPage, totalPages);
+  const pageSlice = useMemo(
+    () => filteredSolutions.slice((safePage - 1) * SOLUTIONS_PER_PAGE, safePage * SOLUTIONS_PER_PAGE),
+    [filteredSolutions, safePage]
+  );
+  const sectionBreakdown = useMemo(() => {
+    const map: Record<string, { subject: string; total: number; correct: number; incorrect: number; skipped: number; timeSec: number }> = {};
+    activeQuestions.forEach((item) => {
+      const sub = item.metadata.subject || "General";
+      if (!map[sub]) {
+        map[sub] = { subject: sub, total: 0, correct: 0, incorrect: 0, skipped: 0, timeSec: 0 };
+      }
+      map[sub].total += 1;
+      map[sub].timeSec += questionTimes[item.id] || 0;
+      const ans = answers[item.id];
+      if (ans === undefined) map[sub].skipped += 1;
+      else if (ans === item.metadata.answerIndex) map[sub].correct += 1;
+      else map[sub].incorrect += 1;
+    });
+    return Object.values(map);
+  }, [activeQuestions, answers, questionTimes]);
 
   const answered = Object.keys(answers).filter((id) => activeQuestions.some((item) => item.id === id)).length;
   const correct = activeQuestions.filter((item) => answers[item.id] === item.metadata.answerIndex).length;
@@ -1099,51 +1188,72 @@ const [questions, setQuestions] = useState<Question[]>([
     setPendingTest(null);
   }
 
-  function submitAttempt(requireConfirmation = true) {
-    if (!requireConfirmation || window.confirm("Do you want to submit your examination and review your evaluation?")) {
-      setSubmitted(true);
-      setMode("result");
+  function finalizeSubmission() {
+    setSubmitModalOpen(false);
+    setMobilePaletteOpen(false);
+    setSolutionPage(1);
+    setSubmitted(true);
+    setMode("result");
 
-      if (activePaper) {
-        const newRecords: MistakeRecord[] = [];
-        activeQuestions.forEach((item) => {
-          const userChoice = answers[item.id];
-          if (userChoice !== undefined && userChoice !== item.metadata.answerIndex) {
-            newRecords.push({
-              questionId: item.id,
-              paperId: activePaper.id,
-              paperTitle: activePaper.title,
-              exam: activePaper.exam,
-              subject: item.metadata.subject || "General",
-              topic: item.metadata.topic || "Core",
-              userAnswer: userChoice,
-              correctAnswer: item.metadata.answerIndex,
-              timestamp: new Date().toISOString().split("T")[0]
-            });
-          }
-        });
+    let updatedMistakesSnapshot: MistakeRecord[] | null = null;
 
-        if (newRecords.length > 0) {
-          setMistakesHistory((prev) => {
-            const existing = new Set(prev.map((m) => m.questionId));
-            const updated = [...prev, ...newRecords.filter((m) => !existing.has(m.questionId))];
-            try {
-              localStorage.setItem("sarjom_mistakes_history", JSON.stringify(updated));
-            } catch {}
-            return updated;
+    if (activePaper) {
+      const newRecords: MistakeRecord[] = [];
+      activeQuestions.forEach((item) => {
+        const userChoice = answers[item.id];
+        if (userChoice !== undefined && userChoice !== item.metadata.answerIndex) {
+          newRecords.push({
+            questionId: item.id,
+            paperId: activePaper.id,
+            paperTitle: activePaper.title,
+            exam: activePaper.exam,
+            subject: item.metadata.subject || "General",
+            topic: item.metadata.topic || "Core",
+            userAnswer: userChoice,
+            correctAnswer: item.metadata.answerIndex,
+            timestamp: new Date().toISOString().split("T")[0]
           });
         }
-      }
+      });
 
-      try {
-        localStorage.removeItem("sarjom_incomplete_test");
-      } catch {}
-      setPendingTest(null);
+      if (newRecords.length > 0) {
+        setMistakesHistory((prev) => {
+          const existing = new Set(prev.map((m) => m.questionId));
+          const updated = [...prev, ...newRecords.filter((m) => !existing.has(m.questionId))];
+          updatedMistakesSnapshot = updated;
+          try {
+            localStorage.setItem("sarjom_mistakes_history", JSON.stringify(updated));
+          } catch {}
+          return updated;
+        });
+      }
     }
+
+    try {
+      localStorage.removeItem("sarjom_incomplete_test");
+    } catch {}
+    setPendingTest(null);
+
+    void supabase.auth.getSession().then(({ data }) => {
+      if (!data.session) return;
+      const updatePayload: Record<string, any> = { sarjom_test_state: null };
+      if (updatedMistakesSnapshot) {
+        updatePayload.sarjom_mistakes_history = updatedMistakesSnapshot.slice(-200);
+      }
+      void supabase.auth.updateUser({ data: updatePayload });
+    });
+  }
+
+  function submitAttempt(requireConfirmation = true) {
+    if (requireConfirmation) {
+      setSubmitModalOpen(true);
+      return;
+    }
+    finalizeSubmission();
   }
 
   return (
-    <div className={mode === "cbt" || mode === "tutor" ? "fixed inset-0 z-[9999] h-screen w-screen overflow-hidden bg-[#07090E] text-slate-100" : "min-h-screen w-full bg-[#07090E] text-slate-100 py-6 px-4 sm:px-6"}>
+    <div className={mode === "cbt" || mode === "tutor" ? "fixed inset-0 z-[9999] h-screen w-screen overflow-hidden bg-[#07090E] text-slate-100" : "min-h-screen w-full bg-background text-text-primary transition-colors py-6 px-4 sm:px-6"}>
       <div className={mode === "cbt" || mode === "tutor" ? "h-full w-full flex flex-col" : "max-w-[1380px] mx-auto"}>
         
         {/* VIEW 1: CATALOGUE */}
@@ -1162,7 +1272,7 @@ const [questions, setQuestions] = useState<Question[]>([
                     <h3 className="text-sm font-bold text-white mt-0.5">
                       {pendingTest.paperTitle}
                     </h3>
-                    <p className="font-mono text-[11px] text-slate-400 mt-0.5">
+                    <p className="font-mono text-[11px] text-text-secondary mt-0.5">
                       {pendingTest.exam} • Attempted {Object.keys(pendingTest.savedAnswers || {}).length} Questions • {pendingTest.dateStr}
                     </p>
                   </div>
@@ -1192,7 +1302,7 @@ const [questions, setQuestions] = useState<Question[]>([
               <button
                 type="button"
                 onClick={() => setActiveToolView("bookmarks-page")}
-                className="group relative rounded-2xl border border-white/10 bg-[#0E1524] p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#131D32] hover:border-[#00DDB0]/60 hover:shadow-[0_8px_24px_rgba(0,221,176,0.12)] flex flex-col justify-between"
+                className="group relative rounded-2xl border border-border bg-surface p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#131D32] hover:border-[#00DDB0]/60 hover:shadow-[0_8px_24px_rgba(0,221,176,0.12)] flex flex-col justify-between"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-xl transition-transform duration-200 group-hover:scale-110">🔖</span>
@@ -1201,15 +1311,15 @@ const [questions, setQuestions] = useState<Question[]>([
                   </span>
                 </div>
                 <div className="mt-3">
-                  <h4 className="text-sm font-bold text-white group-hover:text-[#00DDB0] transition-colors">My Bookmark</h4>
-                  <p className="font-mono text-[11px] text-slate-400 mt-0.5 leading-snug">Your pinned tricky questions</p>
+                  <h4 className="text-sm font-bold text-text-primary group-hover:text-primary transition-colors">My Bookmark</h4>
+                  <p className="font-mono text-[11px] text-text-secondary mt-0.5 leading-snug">Your pinned tricky questions</p>
                 </div>
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveToolView("smart-quiz-hub")}
-                className="group relative rounded-2xl border border-white/10 bg-[#0E1524] p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#131D32] hover:border-amber-400/60 hover:shadow-[0_8px_24px_rgba(251,191,36,0.12)] flex flex-col justify-between"
+                className="group relative rounded-2xl border border-border bg-surface p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#131D32] hover:border-amber-400/60 hover:shadow-[0_8px_24px_rgba(251,191,36,0.12)] flex flex-col justify-between"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-xl transition-transform duration-200 group-hover:scale-110">⚡</span>
@@ -1218,8 +1328,8 @@ const [questions, setQuestions] = useState<Question[]>([
                   </span>
                 </div>
                 <div className="mt-3">
-                  <h4 className="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">Smart Quiz</h4>
-                  <p className="font-mono text-[11px] text-slate-400 mt-0.5 leading-snug">Re-attempt wrong questions by paper</p>
+                  <h4 className="text-sm font-bold text-text-primary group-hover:text-warning transition-colors">Smart Quiz</h4>
+                  <p className="font-mono text-[11px] text-text-secondary mt-0.5 leading-snug">Re-attempt wrong questions by paper</p>
                 </div>
               </button>
 
@@ -1233,7 +1343,7 @@ const [questions, setQuestions] = useState<Question[]>([
                     alert("Take a practice test first to generate your Mistakes Notebook.");
                   }
                 }}
-                className="group relative rounded-2xl border border-white/10 bg-[#0E1524] p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#131D32] hover:border-purple-400/60 hover:shadow-[0_8px_24px_rgba(168,85,247,0.12)] flex flex-col justify-between"
+                className="group relative rounded-2xl border border-border bg-surface p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#131D32] hover:border-purple-400/60 hover:shadow-[0_8px_24px_rgba(168,85,247,0.12)] flex flex-col justify-between"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-xl transition-transform duration-200 group-hover:scale-110">📓</span>
@@ -1242,15 +1352,15 @@ const [questions, setQuestions] = useState<Question[]>([
                   </span>
                 </div>
                 <div className="mt-3">
-                  <h4 className="text-sm font-bold text-white group-hover:text-purple-300 transition-colors">Mistakes Notebook</h4>
-                  <p className="font-mono text-[11px] text-slate-400 mt-0.5 leading-snug">Review wrong & skipped queries</p>
+                  <h4 className="text-sm font-bold text-text-primary group-hover:text-primary transition-colors">Mistakes Notebook</h4>
+                  <p className="font-mono text-[11px] text-text-secondary mt-0.5 leading-snug">Review wrong & skipped queries</p>
                 </div>
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveToolView("heatmap-page")}
-                className="group relative rounded-2xl border border-white/10 bg-[#0E1524] p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#131D32] hover:border-indigo-400/60 hover:shadow-[0_8px_24px_rgba(129,140,248,0.12)] flex flex-col justify-between"
+                className="group relative rounded-2xl border border-border bg-surface p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#131D32] hover:border-indigo-400/60 hover:shadow-[0_8px_24px_rgba(129,140,248,0.12)] flex flex-col justify-between"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-xl transition-transform duration-200 group-hover:scale-110">📊</span>
@@ -1259,14 +1369,14 @@ const [questions, setQuestions] = useState<Question[]>([
                   </span>
                 </div>
                 <div className="mt-3">
-                  <h4 className="text-sm font-bold text-white group-hover:text-indigo-300 transition-colors">Memory Heatmap</h4>
-                  <p className="font-mono text-[11px] text-slate-400 mt-0.5 leading-snug">Strong, average & weak areas</p>
+                  <h4 className="text-sm font-bold text-text-primary group-hover:text-primary transition-colors">Memory Heatmap</h4>
+                  <p className="font-mono text-[11px] text-text-secondary mt-0.5 leading-snug">Strong, average & weak areas</p>
                 </div>
               </button>
             </div>
 
             {/* EXAM SELECTOR BAR */}
-            <div className="mt-5 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-[#0E1524] p-4 text-white shadow-xl relative">
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-surface p-4 text-text-primary shadow-md relative">
               <div className="flex flex-wrap items-center gap-3">
                 <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#00DDB0]">
                   SELECT EXAM:
@@ -1276,10 +1386,10 @@ const [questions, setQuestions] = useState<Question[]>([
                   <button
                     type="button"
                     onClick={() => setExamDropdownOpen(!examDropdownOpen)}
-                    className="flex items-center gap-3 rounded-xl border border-white/20 bg-slate-900 px-3.5 py-1.5 text-xs font-bold text-white transition hover:border-[#00DDB0]"
+                    className="flex items-center gap-3 rounded-xl border border-border bg-background px-3.5 py-1.5 text-xs font-bold text-text-primary transition hover:border-[#00DDB0]"
                   >
                     <span>{selectedExam}</span>
-                    <span className="text-xs text-slate-400">▼</span>
+                    <span className="text-xs text-text-secondary">▼</span>
                   </button>
 
                   {examDropdownOpen && (
@@ -1323,7 +1433,7 @@ const [questions, setQuestions] = useState<Question[]>([
                 >
                   Reports Desk ({reportsList.length})
                 </button>
-                <div className="font-mono text-xs text-slate-400">
+                <div className="font-mono text-xs text-text-secondary">
                   Tests: <span className="font-bold text-[#00DDB0]">{currentExamCatalog.length}</span>
                 </div>
               </div>
@@ -1340,7 +1450,7 @@ const [questions, setQuestions] = useState<Question[]>([
                 className={`rounded-xl px-4 py-2 font-mono text-xs font-bold transition-all ${
                   activeTab === "pyq"
                     ? "bg-[#00DDB0] text-slate-950 shadow-md"
-                    : "bg-[#161F33] text-slate-300 hover:bg-[#1C273E] border border-slate-700/60"
+                    : "bg-surface text-text-secondary hover:text-text-primary border border-border"
                 }`}
               >
                 Previous Year Papers ({counts.pyq})
@@ -1354,7 +1464,7 @@ const [questions, setQuestions] = useState<Question[]>([
                 className={`rounded-xl px-4 py-2 font-mono text-xs font-bold transition-all ${
                   activeTab === "subject"
                     ? "bg-[#00DDB0] text-slate-950 shadow-md"
-                    : "bg-[#161F33] text-slate-300 hover:bg-[#1C273E] border border-slate-700/60"
+                    : "bg-surface text-text-secondary hover:text-text-primary border border-border"
                 }`}
               >
                 Subject-wise Tests ({counts.subject})
@@ -1368,7 +1478,7 @@ const [questions, setQuestions] = useState<Question[]>([
                 className={`rounded-xl px-4 py-2 font-mono text-xs font-bold transition-all ${
                   activeTab === "topic"
                     ? "bg-[#00DDB0] text-slate-950 shadow-md"
-                    : "bg-[#161F33] text-slate-300 hover:bg-[#1C273E] border border-slate-700/60"
+                    : "bg-surface text-text-secondary hover:text-text-primary border border-border"
                 }`}
               >
                 Topic-wise Tests ({counts.topic})
@@ -1387,7 +1497,7 @@ const [questions, setQuestions] = useState<Question[]>([
                     className={`px-3 py-1 rounded-xl uppercase transition ${
                       selectedYear === yr
                         ? "bg-[#00DDB0]/15 border border-[#00DDB0] text-[#00DDB0] font-bold"
-                        : "bg-[#161F33] border border-slate-700/60 text-slate-400 hover:text-white"
+                        : "bg-surface border border-border text-text-secondary hover:text-text-primary"
                     }`}
                   >
                     {yr === "All" ? "All Years" : yr}
@@ -1407,7 +1517,7 @@ const [questions, setQuestions] = useState<Question[]>([
                     className={`px-3.5 py-1.5 rounded-xl transition ${
                       selectedSubjectFilter === sub
                         ? "bg-[#00DDB0] text-slate-950 font-bold shadow"
-                        : "bg-[#161F33] border border-slate-700/60 text-slate-400 hover:text-white"
+                        : "bg-surface border border-border text-text-secondary hover:text-text-primary"
                     }`}
                   >
                     {sub}
@@ -1422,27 +1532,27 @@ const [questions, setQuestions] = useState<Question[]>([
                 {displayCards.map((card) => (
                   <div
                     key={card.id}
-                    className="flex flex-col justify-between rounded-2xl border border-white/10 bg-[#0E1524] p-4.5 text-white transition hover:border-[#00DDB0]/50 shadow-lg"
+                    className="flex flex-col justify-between rounded-2xl border border-border bg-surface p-4.5 text-text-primary transition hover:border-primary shadow-md"
                   >
                     <div>
                       <div className="flex items-start justify-between gap-2">
                         <span className="inline-flex items-center whitespace-nowrap shrink-0 rounded-md border border-[#00DDB0]/25 bg-[#00DDB0]/15 px-2 py-0.5 font-mono text-[10px] font-bold text-[#00DDB0]">
                           {card.paper} • {card.year}
                         </span>
-                        <span className="inline-flex items-center whitespace-nowrap shrink-0 rounded-md bg-white/5 px-2 py-0.5 font-mono text-[10px] text-slate-300">
+                        <span className="inline-flex items-center whitespace-nowrap shrink-0 rounded-md bg-background border border-border px-2 py-0.5 font-mono text-[10px] text-text-secondary">
                           {card.shift}
                         </span>
                       </div>
 
-                      <h3 className="mt-2.5 text-sm font-bold text-white leading-snug line-clamp-2">
+                      <h3 className="mt-2.5 text-sm font-bold text-text-primary leading-snug line-clamp-2 overflow-hidden no-scrollbar">
                         {card.title}
                       </h3>
 
-                      <p className="mt-1 font-mono text-[11px] text-slate-400 truncate">
+                      <p className="mt-1 font-mono text-[11px] text-text-secondary truncate">
                         {card.subject}
                       </p>
 
-                      <div className="mt-3 flex flex-wrap items-center gap-2 font-mono text-[10px] text-slate-400 border-t border-white/5 pt-2.5">
+                      <div className="mt-3 flex flex-wrap items-center gap-2 font-mono text-[10px] text-text-secondary border-t border-white/5 pt-2.5">
                         <span className="inline-flex items-center whitespace-nowrap shrink-0">📝 {card.questionsCount} Qs</span>
                         <span className="inline-flex items-center whitespace-nowrap shrink-0">⏱ {card.durationMinutes} Mins</span>
                         {card.isBilingual && <span className="inline-flex items-center whitespace-nowrap shrink-0 rounded bg-[#00DDB0]/10 px-1.5 py-0.5 text-[#00DDB0] font-bold">🌐 Odia/Eng</span>}
@@ -1460,7 +1570,7 @@ const [questions, setQuestions] = useState<Question[]>([
                       <button
                         type="button"
                         onClick={() => triggerInstructions(card, "tutor")}
-                        className="flex-1 rounded-xl border border-white/20 bg-slate-900 py-2 text-center font-mono text-[11px] font-bold text-white transition hover:border-[#00DDB0] hover:text-[#00DDB0]"
+                        className="flex-1 rounded-xl border border-border bg-background py-2 text-center font-mono text-[11px] font-bold text-text-primary transition hover:border-primary hover:text-primary"
                       >
                         Tutor Mode
                       </button>
@@ -1487,16 +1597,16 @@ const [questions, setQuestions] = useState<Question[]>([
 
             <div>
               <h2 className="text-3xl font-black text-white">Smart Quiz Hub</h2>
-              <p className="font-mono text-xs text-slate-400 mt-1">
+              <p className="font-mono text-xs text-text-secondary mt-1">
                 Reattempt questions you got wrong across previous tests, grouped by examination paper.
               </p>
             </div>
 
             {mistakesGroupedByPaper.length === 0 ? (
-              <div className="rounded-2xl border border-white/10 bg-[#0E1524] p-12 text-center">
+              <div className="rounded-2xl border border-border bg-surface p-12 text-center">
                 <span className="text-4xl">🌟</span>
                 <h3 className="text-base font-bold text-white mt-3">No Mistakes Recorded Yet</h3>
-                <p className="font-mono text-xs text-slate-400 mt-1">
+                <p className="font-mono text-xs text-text-secondary mt-1">
                   Whenever you get a question wrong in any CBT or Tutor practice test, it will automatically appear here.
                 </p>
                 <button
@@ -1512,17 +1622,17 @@ const [questions, setQuestions] = useState<Question[]>([
                 {mistakesGroupedByPaper.map((g) => (
                   <div
                     key={g.paperId}
-                    className="rounded-2xl border border-red-500/30 bg-[#0E1524] p-6 text-white shadow-xl flex flex-col justify-between"
+                    className="rounded-2xl border border-danger/35 bg-surface p-6 text-text-primary shadow-xl flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-center justify-between">
                         <span className="rounded-full bg-red-500/20 border border-red-500/30 px-3 py-0.5 font-mono text-[11px] font-bold text-red-300">
                           {g.count} Mistakes to Fix
                         </span>
-                        <span className="font-mono text-xs text-slate-400">{g.exam}</span>
+                        <span className="font-mono text-xs text-text-secondary">{g.exam}</span>
                       </div>
                       <h3 className="mt-3.5 text-base font-bold text-white leading-snug">{g.paperTitle}</h3>
-                      <p className="mt-1.5 font-mono text-xs text-slate-400">
+                      <p className="mt-1.5 font-mono text-xs text-text-secondary">
                         Targeted drill containing only your previously incorrect attempts.
                       </p>
                     </div>
@@ -1586,20 +1696,20 @@ const [questions, setQuestions] = useState<Question[]>([
 
             <div>
               <h2 className="text-3xl font-black text-white">Memory Heatmap</h2>
-              <p className="font-mono text-xs text-slate-400 mt-1">
+              <p className="font-mono text-xs text-text-secondary mt-1">
                 Based on your latest answer to every question you have attempted.
               </p>
             </div>
 
             <div className="grid gap-4 lg:grid-cols-[340px_1fr]">
-              <div className="rounded-2xl border border-white/10 bg-[#0E1524] p-6 shadow-xl">
+              <div className="rounded-2xl border border-border bg-surface p-6 shadow-xl">
                 <span className="font-mono text-xs font-bold uppercase tracking-wider text-slate-400">
                   OVERALL ACCURACY
                 </span>
                 <div className="mt-2 text-4xl font-black text-white">
                   {heatmapMetrics.overallAcc}%
                 </div>
-                <p className="font-mono text-xs text-slate-400 mt-1">
+                <p className="font-mono text-xs text-text-secondary mt-1">
                   {heatmapMetrics.totalCorrect} of {heatmapMetrics.totalAttempted} questions correct
                 </p>
 
@@ -1628,7 +1738,7 @@ const [questions, setQuestions] = useState<Question[]>([
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-[#0E1524] p-6 shadow-xl flex flex-col justify-between">
+              <div className="rounded-2xl border border-border bg-surface p-6 shadow-xl flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-2 text-amber-400 font-mono text-xs font-bold uppercase tracking-wider">
                     <span>◎</span>
@@ -1637,24 +1747,24 @@ const [questions, setQuestions] = useState<Question[]>([
                   <div className="mt-4 rounded-xl border border-red-500/30 bg-red-950/20 p-4 flex flex-wrap items-center justify-between gap-4">
                     <div className="border-l-4 border-red-500 pl-3">
                       <h4 className="text-base font-bold text-white">{heatmapMetrics.focusTopic.name}</h4>
-                      <p className="font-mono text-xs text-slate-400 mt-0.5">
+                      <p className="font-mono text-xs text-text-secondary mt-0.5">
                         {heatmapMetrics.focusTopic.subject} • {heatmapMetrics.focusTopic.accuracy}% Accuracy
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4 font-mono text-xs text-slate-400">
+                <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4 font-mono text-xs text-text-secondary">
                   <span>Priority algorithm suggests revision for sub 50% accuracy areas.</span>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-[#0E1524] p-6 shadow-xl">
+            <div className="rounded-2xl border border-border bg-surface p-6 shadow-xl">
               <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
                 <div>
                   <h3 className="text-lg font-bold text-white">Topics you have attempted</h3>
-                  <p className="font-mono text-xs text-slate-400 mt-0.5">
+                  <p className="font-mono text-xs text-text-secondary mt-0.5">
                     {heatmapMetrics.topicsData.length} topics across subjects
                   </p>
                 </div>
@@ -1680,7 +1790,7 @@ const [questions, setQuestions] = useState<Question[]>([
                         </div>
                         <div className="mt-4 flex items-end justify-between font-mono">
                           <span className="text-2xl font-black">{item.accuracy}%</span>
-                          <span className="text-xs text-slate-400">{item.questions} Questions</span>
+                          <span className="text-xs text-text-secondary">{item.questions} Questions</span>
                         </div>
                       </div>
                     );
@@ -1706,16 +1816,16 @@ const [questions, setQuestions] = useState<Question[]>([
 
             <div>
               <h2 className="text-3xl font-black text-white">Bookmarks</h2>
-              <p className="font-mono text-xs text-slate-400 mt-1">
+              <p className="font-mono text-xs text-text-secondary mt-1">
                 {bookmarkedIds.length} saved questions across tests
               </p>
             </div>
 
             {bookmarkedIds.length === 0 ? (
-              <div className="rounded-2xl border border-white/10 bg-[#0E1524] p-12 text-center">
+              <div className="rounded-2xl border border-border bg-surface p-12 text-center">
                 <span className="text-4xl">🔖</span>
                 <h3 className="text-base font-bold text-white mt-3">No Bookmarks Saved Yet</h3>
-                <p className="font-mono text-xs text-slate-400 mt-1">
+                <p className="font-mono text-xs text-text-secondary mt-1">
                   Click the Bookmark button while attempting any examination to pin questions for quick revision here.
                 </p>
                 <button
@@ -1731,7 +1841,7 @@ const [questions, setQuestions] = useState<Question[]>([
                 {questions
                   .filter((q) => bookmarkedIds.includes(q.id))
                   .map((item, i) => (
-                    <div key={item.id} className="rounded-2xl border border-white/10 bg-[#0E1524] p-6 shadow-xl">
+                    <div key={item.id} className="rounded-2xl border border-border bg-surface p-6 shadow-xl">
                       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/5 pb-3 font-mono text-xs">
                         <div className="flex items-center gap-2">
                           <span className="rounded bg-slate-800 px-2 py-0.5 text-slate-300 font-bold">Q{i + 1}</span>
@@ -1795,23 +1905,23 @@ const [questions, setQuestions] = useState<Question[]>([
 
             <div>
               <h2 className="text-3xl font-black text-white">Question Reports Desk</h2>
-              <p className="font-mono text-xs text-slate-400 mt-1">
+              <p className="font-mono text-xs text-text-secondary mt-1">
                 Issues flagged by candidates during tests organized by exam, paper, subject and topic.
               </p>
             </div>
 
             {reportsList.length === 0 ? (
-              <div className="rounded-2xl border border-white/10 bg-[#0E1524] p-12 text-center">
+              <div className="rounded-2xl border border-border bg-surface p-12 text-center">
                 <span className="text-4xl">🚩</span>
                 <h3 className="text-base font-bold text-white mt-3">No Issues Reported</h3>
-                <p className="font-mono text-xs text-slate-400 mt-1">
+                <p className="font-mono text-xs text-text-secondary mt-1">
                   Candidate reports submitted during live tests will show up here for fast error correction.
                 </p>
               </div>
             ) : (
               <div className="space-y-4">
                 {reportsList.map((rep) => (
-                  <div key={rep.id} className="rounded-2xl border border-amber-400/30 bg-[#0E1524] p-5 shadow-xl">
+                  <div key={rep.id} className="rounded-2xl border border-warning/35 bg-surface p-5 shadow-xl">
                     <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3 font-mono text-xs">
                       <div className="flex items-center gap-2">
                         <span className="rounded bg-red-500/20 px-2 py-0.5 font-bold text-red-300">
@@ -1825,7 +1935,7 @@ const [questions, setQuestions] = useState<Question[]>([
                     </div>
 
                     <div className="mt-3">
-                      <p className="font-mono text-xs text-slate-400">Reported Question:</p>
+                      <p className="font-mono text-xs text-text-secondary">Reported Question:</p>
                       <p className="mt-1 text-sm font-semibold text-white">{rep.questionText}</p>
                     </div>
 
@@ -1843,13 +1953,13 @@ const [questions, setQuestions] = useState<Question[]>([
 
         {/* VIEW 2: CANDIDATE INSTRUCTIONS SCREEN */}
         {mode === "instructions" && activePaper && (
-          <div className="mx-auto max-w-4xl rounded-2xl border border-white/10 bg-[#0E1524] p-6 sm:p-10 text-white shadow-2xl space-y-6">
+          <div className="mx-auto max-w-4xl rounded-2xl border border-border bg-surface p-6 sm:p-10 text-white shadow-2xl space-y-6">
             <div className="border-b border-white/10 pb-4">
               <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#00DDB0]">
                 Examination Instructions
               </span>
               <h2 className="text-2xl font-black text-white mt-1">{activePaper.title}</h2>
-              <p className="font-mono text-xs text-slate-400 mt-0.5">
+              <p className="font-mono text-xs text-text-secondary mt-0.5">
                 {activePaper.exam} • {activePaper.paper} • {activePaper.shift}
               </p>
             </div>
@@ -1977,6 +2087,11 @@ const [questions, setQuestions] = useState<Question[]>([
                   </div>
                 )}
 
+                {syncStatus === "synced" && (
+                  <span className="hidden md:inline-flex items-center gap-1 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] text-emerald-300">
+                    ✓ Saved
+                  </span>
+                )}
                 <div className="flex items-center gap-1.5 rounded-lg bg-white/5 border border-white/10 px-3 py-1 font-mono text-xs font-bold text-[#00DDB0]">
                   <span>⏱</span>
                   <span>{fmt(seconds)}</span>
@@ -2004,15 +2119,33 @@ const [questions, setQuestions] = useState<Question[]>([
                           <span className="rounded bg-indigo-500/20 px-2.5 py-0.5 font-mono text-[11px] font-semibold text-indigo-300">
                             {q.metadata?.subject}
                           </span>
-                          <span className="font-mono text-[11px] text-slate-400">
+                          <span className="font-mono text-[11px] text-text-secondary">
                             +{marksPerQ} / -{negPerQ}
                           </span>
-                          <span className="font-mono text-[11px] text-slate-400 bg-white/5 px-2 py-0.5 rounded">
+                          <span className="font-mono text-[11px] text-text-secondary bg-white/5 px-2 py-0.5 rounded">
                             Time: {questionTimes[q.id] || 0}s
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                          {(q.metadata?.question_or || (q.metadata?.options_or && q.metadata.options_or.length > 0)) && (
+                            <div className="flex items-center rounded-lg border border-white/15 bg-slate-900 p-0.5 font-mono text-[11px] font-bold">
+                              <button
+                                type="button"
+                                onClick={() => setQuestionLang((prev) => ({ ...prev, [q.id]: "en" }))}
+                                className={`px-2 py-0.5 rounded transition ${activeQLang === "en" ? "bg-[#00DDB0] text-slate-950" : "text-slate-400 hover:text-white"}`}
+                              >
+                                EN
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setQuestionLang((prev) => ({ ...prev, [q.id]: "or" }))}
+                                className={`px-2 py-0.5 rounded transition ${activeQLang === "or" ? "bg-[#00DDB0] text-slate-950" : "text-slate-400 hover:text-white"}`}
+                              >
+                                ଓଡ଼ିଆ
+                              </button>
+                            </div>
+                          )}
                           <button
                             type="button"
                             onClick={() => toggleBookmark(q.id)}
@@ -2037,13 +2170,13 @@ const [questions, setQuestions] = useState<Question[]>([
                         </div>
                       </div>
 
-                      {(examLanguage === "or" ? q.metadata?.passage_or || q.metadata?.passage : q.metadata?.passage) && (
+                      {(activeQLang === "or" ? q.metadata?.passage_or || q.metadata?.passage : q.metadata?.passage) && (
                         <div className="mt-4 rounded-xl border border-indigo-500/30 bg-[#0B1322] p-4 sm:p-5">
                           <div className="mb-2 flex items-center justify-between gap-2">
                             <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-indigo-300">
                               {q.metadata?.topic || "Reading Comprehension"} Passage
                             </span>
-                            <span className="font-mono text-[10px] text-slate-400">
+                            <span className="font-mono text-[10px] text-text-secondary">
                               Read carefully before answering
                             </span>
                           </div>
@@ -2138,8 +2271,15 @@ const [questions, setQuestions] = useState<Question[]>([
                       )}
                     </div>
 
-                    <div className="sticky bottom-0 z-20 mt-8 -mx-5 sm:-mx-8 px-5 sm:px-8 py-3.5 border-t border-white/10 bg-[#0B0F19]/95 backdrop-blur flex flex-wrap items-center justify-between gap-3">
-                      <div className="flex items-center gap-2">
+                    <div className="sticky bottom-0 z-20 mt-8 -mx-5 sm:-mx-8 px-4 sm:px-8 py-3 border-t border-white/10 bg-[#0B0F19]/95 backdrop-blur flex flex-wrap items-center justify-between gap-2.5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setMobilePaletteOpen(true)}
+                          className="lg:hidden rounded-xl border border-[#00DDB0]/40 bg-[#00DDB0]/15 px-3 py-2 font-mono text-xs font-bold text-[#00DDB0]"
+                        >
+                          Palette ({answered}/{activeQuestions.length})
+                        </button>
                         <button
                           type="button"
                           disabled={current === 0}
@@ -2214,7 +2354,7 @@ const [questions, setQuestions] = useState<Question[]>([
                 )}
               </div>
 
-              <aside className="w-72 lg:w-80 flex-shrink-0 border-l border-white/10 bg-[#090D16] flex flex-col justify-between p-4 overflow-hidden">
+              <aside className="hidden lg:flex w-80 flex-shrink-0 border-l border-white/10 bg-[#090D16] flex-col justify-between p-4 overflow-hidden">
                 <div className="flex flex-col h-full overflow-hidden">
                   <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-slate-300 mb-3 flex-shrink-0">
                     Question Palette
@@ -2284,6 +2424,138 @@ const [questions, setQuestions] = useState<Question[]>([
               </aside>
             </div>
 
+            {/* MOBILE BOTTOM-SHEET QUESTION PALETTE */}
+            {mobilePaletteOpen && (
+              <div className="fixed inset-0 z-[10000] flex flex-col justify-end bg-black/75 backdrop-blur-sm lg:hidden">
+                <div className="max-h-[78vh] w-full rounded-t-3xl border-t border-white/15 bg-[#090D16] p-5 text-white shadow-2xl flex flex-col">
+                  <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-slate-700" />
+                  <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                    <div>
+                      <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-white">
+                        Question Palette
+                      </h4>
+                      <p className="font-mono text-[11px] text-slate-400">
+                        Answered {answered} • Unanswered {unanswered} • Review {review.length}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setMobilePaletteOpen(false)}
+                      className="rounded-lg border border-white/10 bg-slate-900 px-3 py-1 font-mono text-xs text-slate-300"
+                    >
+                      Close ✕
+                    </button>
+                  </div>
+
+                  <div className="mt-4 flex-1 overflow-y-auto pr-1">
+                    <div className="grid grid-cols-6 sm:grid-cols-8 gap-2">
+                      {activeQuestions.map((item, i) => {
+                        const isCurrent = current === i;
+                        const isAns = answers[item.id] !== undefined;
+                        const isRev = review.includes(item.id);
+
+                        let bg = "bg-slate-800 text-slate-400";
+                        if (isAns && isRev) bg = "bg-purple-600 text-white font-bold ring-2 ring-emerald-400";
+                        else if (isRev) bg = "bg-purple-600 text-white font-bold";
+                        else if (isAns) bg = "bg-emerald-600 text-white font-bold";
+                        else if (isCurrent) bg = "bg-red-500 text-white font-bold";
+
+                        return (
+                          <button
+                            key={`mob-pal-${item.id}`}
+                            type="button"
+                            onClick={() => {
+                              setCurrent(i);
+                              setMobilePaletteOpen(false);
+                            }}
+                            className={`h-10 rounded-lg font-mono text-xs flex items-center justify-center relative ${bg} ${
+                              isCurrent ? "ring-2 ring-white" : ""
+                            }`}
+                          >
+                            {i + 1}
+                            {bookmarkedIds.includes(item.id) && (
+                              <span className="absolute -top-1 -right-1 text-[10px] text-amber-300">★</span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 border-t border-white/10 pt-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMobilePaletteOpen(false);
+                        submitAttempt(true);
+                      }}
+                      className="w-full rounded-xl bg-gradient-to-r from-red-600 to-rose-600 py-3 font-mono text-xs font-bold text-white"
+                    >
+                      Finish &amp; Submit Test
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SUBMIT CONFIRMATION MODAL */}
+            {submitModalOpen && (
+              <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+                <div className="w-full max-w-md rounded-2xl border border-white/15 bg-[#0D1322] p-6 text-white shadow-2xl">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                    <h3 className="text-base font-extrabold text-white">Submit Examination?</h3>
+                    <button
+                      type="button"
+                      onClick={() => setSubmitModalOpen(false)}
+                      className="rounded-lg px-2 py-1 font-mono text-xs text-slate-400 hover:bg-white/10 hover:text-white"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  <p className="mt-3 text-xs leading-relaxed text-slate-300">
+                    Review your attempt summary before final submission. Wrong answers will automatically be saved to your Mistakes Notebook and Smart Quiz.
+                  </p>
+
+                  <div className="mt-4 grid grid-cols-2 gap-2.5 font-mono text-xs">
+                    <div className="rounded-xl border border-emerald-500/30 bg-emerald-950/30 p-3">
+                      <span className="text-emerald-400 block text-[11px]">Answered</span>
+                      <span className="text-xl font-black text-white mt-0.5 block">{answered}</span>
+                    </div>
+                    <div className="rounded-xl border border-red-500/30 bg-red-950/30 p-3">
+                      <span className="text-red-400 block text-[11px]">Not Answered</span>
+                      <span className="text-xl font-black text-white mt-0.5 block">{unanswered}</span>
+                    </div>
+                    <div className="rounded-xl border border-purple-500/30 bg-purple-950/30 p-3">
+                      <span className="text-purple-300 block text-[11px]">Marked for Review</span>
+                      <span className="text-xl font-black text-white mt-0.5 block">{review.length}</span>
+                    </div>
+                    <div className="rounded-xl border border-white/10 bg-slate-900/70 p-3">
+                      <span className="text-slate-400 block text-[11px]">Time Remaining</span>
+                      <span className="text-xl font-black text-[#00DDB0] mt-0.5 block">{fmt(seconds)}</span>
+                    </div>
+                  </div>
+
+                  <div className="mt-5 flex items-center justify-end gap-2.5 border-t border-white/10 pt-4">
+                    <button
+                      type="button"
+                      onClick={() => setSubmitModalOpen(false)}
+                      className="rounded-xl border border-white/15 bg-slate-900 px-4 py-2 font-mono text-xs font-semibold text-slate-300 hover:text-white"
+                    >
+                      Continue Test
+                    </button>
+                    <button
+                      type="button"
+                      onClick={finalizeSubmission}
+                      className="rounded-xl bg-[#00DDB0] px-5 py-2 font-mono text-xs font-black text-slate-950 transition hover:bg-[#00f2c3]"
+                    >
+                      Confirm &amp; Submit
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {reportModalOpen && q && (
               <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/75 p-3 backdrop-blur-sm">
                 <div className="w-full max-w-[420px] rounded-2xl border border-white/15 bg-[#0D1322] p-5 text-white shadow-2xl">
@@ -2295,13 +2567,13 @@ const [questions, setQuestions] = useState<Question[]>([
                     <button
                       type="button"
                       onClick={() => setReportModalOpen(false)}
-                      className="h-6 w-6 rounded-lg font-mono text-xs text-slate-400 hover:bg-white/10 hover:text-white flex items-center justify-center transition"
+                      className="h-6 w-6 rounded-lg font-mono text-xs text-text-secondary hover:bg-white/10 hover:text-white flex items-center justify-center transition"
                     >
                       ✕
                     </button>
                   </div>
 
-                  <p className="mt-2 font-mono text-[11px] text-slate-400 leading-snug">
+                  <p className="mt-2 font-mono text-[11px] text-text-secondary leading-snug">
                     Issues go directly to our admin review desk. Your test progress is safe.
                   </p>
 
@@ -2337,7 +2609,7 @@ const [questions, setQuestions] = useState<Question[]>([
                           />
                           <div className="min-w-0">
                             <p className="text-xs font-semibold text-white leading-tight">{issue.title}</p>
-                            <p className="font-mono text-[10px] text-slate-400 mt-0.5 truncate">{issue.desc}</p>
+                            <p className="font-mono text-[10px] text-text-secondary mt-0.5 truncate">{issue.desc}</p>
                           </div>
                         </label>
                       ))}
@@ -2411,16 +2683,16 @@ const [questions, setQuestions] = useState<Question[]>([
                 </span>
               </div>
               <h1 className="text-3xl font-black text-white mt-1">Session summary</h1>
-              <p className="font-mono text-xs text-slate-400 mt-0.5">
+              <p className="font-mono text-xs text-text-secondary mt-0.5">
                 {activePaper?.title} • {activePaper?.shift || "Official Mode"}
               </p>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-[#0E1524] p-6 shadow-xl space-y-5">
+            <div className="rounded-2xl border border-border bg-surface p-6 shadow-xl space-y-5">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
                 <div>
                   <h3 className="text-base font-bold text-white">Cut off and Comparative Standing</h3>
-                  <p className="font-mono text-xs text-slate-400 mt-0.5">
+                  <p className="font-mono text-xs text-text-secondary mt-0.5">
                     Estimated based on official benchmark scores and peer performance.
                   </p>
                 </div>
@@ -2480,29 +2752,29 @@ const [questions, setQuestions] = useState<Question[]>([
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-[#0E1524] p-4">
-                <p className="font-mono text-[11px] text-slate-400">Skipped</p>
+              <div className="rounded-2xl border border-border bg-surface p-4">
+                <p className="font-mono text-[11px] text-text-secondary">Skipped</p>
                 <p className="font-mono text-2xl font-black text-slate-300 mt-1">
                   {unanswered} <span className="text-xs text-slate-500 font-normal">/ {activeQuestions.length}</span>
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-[#0E1524] p-4">
-                <p className="font-mono text-[11px] text-slate-400">Accuracy</p>
+              <div className="rounded-2xl border border-border bg-surface p-4">
+                <p className="font-mono text-[11px] text-text-secondary">Accuracy</p>
                 <p className="font-mono text-2xl font-black text-white mt-1">
                   {answered ? Math.round((correct / answered) * 100) : 0}%
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-[#0E1524] p-4">
-                <p className="font-mono text-[11px] text-slate-400">Score</p>
+              <div className="rounded-2xl border border-border bg-surface p-4">
+                <p className="font-mono text-[11px] text-text-secondary">Score</p>
                 <p className="font-mono text-2xl font-black text-white mt-1">
                   {netScore.toFixed(2)} <span className="text-xs text-slate-500 font-normal">/ {totalMaxMarks}</span>
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-[#0E1524] p-4">
-                <p className="font-mono text-[11px] text-slate-400">Time spent</p>
+              <div className="rounded-2xl border border-border bg-surface p-4">
+                <p className="font-mono text-[11px] text-text-secondary">Time spent</p>
                 <p className="font-mono text-2xl font-black text-[#00DDB0] mt-1">
                   {fmt((activePaper?.durationMinutes || 90) * 60 - seconds)}
                 </p>
@@ -2510,11 +2782,11 @@ const [questions, setQuestions] = useState<Question[]>([
             </div>
 
             {/* FULL SOLUTIONS */}
-            <div className="rounded-2xl border border-white/10 bg-[#0E1524] p-6 space-y-6">
+            <div className="rounded-2xl border border-border bg-surface p-6 space-y-6">
               <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
                 <div>
                   <h3 className="text-xl font-bold text-white">Solutions and Explanations</h3>
-                  <p className="font-mono text-xs text-slate-400 mt-0.5">
+                  <p className="font-mono text-xs text-text-secondary mt-0.5">
                     Review each question with verified official answer key and logic.
                   </p>
                 </div>
@@ -2633,14 +2905,48 @@ const [questions, setQuestions] = useState<Question[]>([
                   );
                 })}
               </div>
+
+              {totalPages > 1 && (
+                <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4 font-mono text-xs">
+                  <button
+                    type="button"
+                    disabled={safePage <= 1}
+                    onClick={() => setSolutionPage((p) => Math.max(1, p - 1))}
+                    className="rounded-xl border border-white/10 bg-slate-900 px-4 py-2 font-bold text-slate-300 hover:text-white disabled:opacity-40"
+                  >
+                    ← Previous 10
+                  </button>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                      <button
+                        key={`sol-page-${pageNum}`}
+                        type="button"
+                        onClick={() => setSolutionPage(pageNum)}
+                        className={`h-8 w-8 rounded-lg font-bold transition ${
+                          pageNum === safePage
+                            ? "bg-[#00DDB0] text-slate-950"
+                            : "bg-slate-900 text-slate-400 hover:text-white"
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    disabled={safePage >= totalPages}
+                    onClick={() => setSolutionPage((p) => Math.min(totalPages, p + 1))}
+                    className="rounded-xl border border-white/10 bg-slate-900 px-4 py-2 font-bold text-slate-300 hover:text-white disabled:opacity-40"
+                  >
+                    Next 10 →
+                  </button>
+                </div>
+              )}
             </div>
+              );
           </div>
         )}
       </div>
     </div>
   );
 }
-
-
-
-

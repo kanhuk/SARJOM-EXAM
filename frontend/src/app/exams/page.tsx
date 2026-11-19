@@ -1,8 +1,9 @@
-"use client";
+﻿"use client";
 
-import "@/app/homepage-premium.css";
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
+import { Search, ArrowLeft, ArrowRight, Sparkles, X, CheckCircle2 } from "lucide-react";
 
 type ExamBlueprint = {
   id: string;
@@ -220,7 +221,7 @@ const examDirectory: ExamBlueprint[] = [
     totalMarks: 300,
     status: "Notification Out",
     stages: ["CBT Exam", "PST & PET"],
-    hasPyq: false
+    hasPyq: true
   },
   {
     id: "opsc-ocs",
@@ -309,9 +310,10 @@ const examDirectory: ExamBlueprint[] = [
 ];
 
 export default function ExamsPage() {
+  const prefersReducedMotion = useReducedMotion();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
-  
+
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedExamTitle, setSelectedExamTitle] = useState("");
   const [requestSubmitted, setRequestSubmitted] = useState(false);
@@ -334,14 +336,16 @@ export default function ExamsPage() {
   const filteredExams = useMemo(() => {
     return examDirectory.filter((exam) => {
       const matchesCategory = selectedCategory === "All" || exam.category === selectedCategory;
-      const matchesSearch = exam.title.toLowerCase().includes(searchQuery.toLowerCase()) || exam.conductingBody.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch =
+        exam.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        exam.conductingBody.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
   }, [selectedCategory, searchQuery]);
 
   const handlePyqClick = (exam: ExamBlueprint) => {
     if (exam.hasPyq) {
-      window.location.href = `/pyq?exam=${exam.id}`;
+      window.location.href = `/pyq?exam=${encodeURIComponent(exam.title)}`;
     } else {
       setSelectedExamTitle(exam.title);
       setRequestSubmitted(false);
@@ -357,51 +361,64 @@ export default function ExamsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 pb-24 selection:bg-emerald-500 selection:text-slate-950">
-      <div className="relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-800/80 to-slate-900 py-20 px-4 border-b border-emerald-500/20 shadow-2xl">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.15),transparent_60%)]"></div>
-        <div className="max-w-7xl mx-auto text-center relative z-10">
-          <Link href="/" className="inline-flex items-center gap-2 text-xs font-bold tracking-wider text-emerald-400 bg-emerald-950/90 px-4 py-2 rounded-full border border-emerald-500/30 mb-6 hover:bg-emerald-900 transition-all duration-300 shadow-lg">
-            <span>←</span> BACK TO HOME DASHBOARD
+    <div className="min-h-screen bg-background pb-24 text-text-primary transition-colors">
+      <div className="relative overflow-hidden border-b border-border bg-surface/80 px-4 py-14 shadow-sm sm:py-16">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,217,165,0.12),transparent_60%)]" />
+        <div className="relative z-10 mx-auto max-w-7xl text-center">
+          <Link
+            href="/"
+            className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 font-mono text-xs font-bold tracking-wider text-primary transition hover:bg-primary/20"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            <span>BACK TO HOME DASHBOARD</span>
           </Link>
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-white via-slate-100 to-emerald-400 bg-clip-text text-transparent">
-            Examination Blueprints & Master Directory
+
+          <h1 className="text-3xl font-extrabold tracking-tight text-text-primary sm:text-5xl">
+            Examination Blueprints &amp; Master Directory
           </h1>
-          <p className="text-slate-300 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-text-secondary sm:text-base">
             Explore meticulously verified exam patterns, marking schemes, historic cutoffs, and selection stages for Odisha State, Central, and National recruitment.
           </p>
 
-          <div className="flex flex-wrap justify-center gap-4 mt-8">
-            <div className="bg-slate-800/90 border border-slate-700 px-5 py-2.5 rounded-2xl shadow-md flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span className="text-xs text-slate-200 font-semibold">24 Master Exams Tracked</span>
+          <div className="mt-7 flex flex-wrap justify-center gap-3">
+            <div className="flex items-center gap-2 rounded-2xl border border-border bg-background px-4 py-2 shadow-sm">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />
+              <span className="text-xs font-semibold text-text-primary">
+                {examDirectory.length} Master Exams Tracked
+              </span>
             </div>
-            <div className="bg-slate-800/90 border border-slate-700 px-5 py-2.5 rounded-2xl shadow-md">
-              <span className="text-xs text-slate-200 font-semibold">⚡ Verified CBT Patterns & PYQs</span>
+            <div className="flex items-center gap-2 rounded-2xl border border-border bg-background px-4 py-2 shadow-sm">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <span className="text-xs font-semibold text-text-primary">
+                Verified CBT Patterns &amp; PYQs
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 mt-10">
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-slate-800/90 backdrop-blur-xl p-4 rounded-2xl shadow-2xl border border-slate-700/80">
+      <div className="mx-auto mt-8 max-w-7xl px-4">
+        <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-border bg-surface p-4 shadow-md md:flex-row">
           <div className="relative w-full md:w-[420px]">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-text-secondary" />
             <input
               type="text"
-              placeholder="🔍 Search exams, boards, or bodies..."
+              placeholder="Search exams, boards, or bodies..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-3.5 rounded-xl bg-slate-900 border border-slate-700 focus:outline-none focus:border-emerald-500 text-sm text-white placeholder-slate-400 transition-all shadow-inner"
+              className="w-full rounded-xl border border-border bg-background py-3 pl-10 pr-4 text-sm text-text-primary outline-none transition placeholder:text-text-secondary focus:border-primary focus:ring-2 focus:ring-primary/20"
             />
           </div>
-          <div className="flex items-center gap-2 w-full md:w-auto">
+
+          <div className="flex w-full items-center gap-2 md:w-auto">
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full md:w-auto px-4 py-3.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-slate-200 focus:outline-none focus:border-emerald-500 transition-all cursor-pointer shadow-inner"
+              aria-label="Filter by exam category"
+              className="w-full cursor-pointer rounded-xl border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 md:w-auto"
             >
               {categories.map((cat) => (
-                <option key={cat} value={cat} className="bg-slate-900 text-slate-200">
+                <option key={cat} value={cat}>
                   {cat}
                 </option>
               ))}
@@ -409,98 +426,123 @@ export default function ExamsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+        <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredExams.length === 0 ? (
-            <div className="col-span-full text-center py-20 bg-slate-800/50 rounded-2xl border border-slate-700">
-              <p className="text-slate-300 font-medium">No matching examinations found in this category.</p>
+            <div className="col-span-full rounded-2xl border border-border bg-surface py-20 text-center">
+              <p className="font-medium text-text-secondary">
+                No matching examinations found in this category.
+              </p>
             </div>
           ) : (
             filteredExams.map((exam) => (
-              <div 
-                key={exam.id} 
-                className="group bg-slate-800/85 backdrop-blur-md rounded-2xl p-6 border border-slate-700/80 hover:border-emerald-500 hover:-translate-y-1.5 transition-all duration-300 hover:shadow-[0_15px_40px_rgb(16,185,129,0.18)] flex flex-col justify-between relative overflow-hidden"
+              <motion.div
+                key={exam.id}
+                initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
+                className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-surface p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-lg"
               >
-                <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute left-0 top-0 h-full w-1 bg-primary opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
                 <div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold tracking-wider uppercase px-3 py-1 bg-emerald-950 text-emerald-400 rounded-full border border-emerald-500/30">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-primary">
                       {exam.category}
                     </span>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold px-2.5 py-1 bg-slate-900 text-emerald-300 rounded-lg border border-emerald-500/20">
+                      <span className="rounded-lg border border-border bg-background px-2.5 py-1 text-[10px] font-bold text-primary">
                         {exam.status}
                       </span>
-                      <span className="text-xs text-slate-400 font-semibold">Marks: {exam.totalMarks}</span>
+                      <span className="text-xs font-semibold text-text-secondary">
+                        Marks: {exam.totalMarks}
+                      </span>
                     </div>
                   </div>
 
-                  <h3 className="text-lg font-bold text-white mt-4 group-hover:text-emerald-300 transition-colors">
+                  <h3 className="mt-4 text-lg font-bold text-text-primary transition-colors group-hover:text-primary">
                     {exam.title}
                   </h3>
-                  <p className="text-xs text-emerald-400 font-medium mt-1">{exam.conductingBody}</p>
-                  
-                  <div className="mt-4 space-y-2 text-xs text-slate-200 bg-slate-900/90 p-4 rounded-xl border border-slate-700/70">
-                    <p className="flex items-center justify-between">
-                      <span className="text-slate-400">Eligibility:</span>
-                      <span className="font-medium text-slate-100 text-right">{exam.qualification}</span>
+                  <p className="mt-1 text-xs font-semibold text-primary">
+                    {exam.conductingBody}
+                  </p>
+
+                  <div className="mt-4 space-y-2 rounded-xl border border-border bg-background/80 p-4 text-xs">
+                    <p className="flex items-center justify-between gap-2">
+                      <span className="text-text-secondary">Eligibility:</span>
+                      <span className="text-right font-semibold text-text-primary">
+                        {exam.qualification}
+                      </span>
                     </p>
-                    <p className="flex items-center justify-between">
-                      <span className="text-slate-400">Selection Stages:</span>
-                      <span className="font-medium text-emerald-400 text-right truncate max-w-[180px]" title={exam.stages.join(" → ")}>
+                    <p className="flex items-center justify-between gap-2">
+                      <span className="text-text-secondary">Selection Stages:</span>
+                      <span
+                        className="max-w-[180px] truncate text-right font-semibold text-primary"
+                        title={exam.stages.join(" → ")}
+                      >
                         {exam.stages.join(" → ")}
                       </span>
                     </p>
                   </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-700/80 grid grid-cols-2 gap-3">
-                  <Link 
-                    href={`/exams/details?id=${exam.id}`} 
-                    className="py-2.5 px-3 bg-slate-900 hover:bg-slate-950 text-emerald-400 font-bold rounded-xl text-xs transition-all text-center border border-emerald-500/30 flex items-center justify-center gap-1 active:scale-95 shadow-inner"
+                <div className="mt-6 grid grid-cols-2 gap-3 border-t border-border pt-4">
+                  <Link
+                    href={`/exams/details?id=${exam.id}`}
+                    className="flex items-center justify-center rounded-xl border border-border bg-background px-3 py-2.5 text-center text-xs font-bold text-text-primary transition hover:border-primary hover:text-primary"
                   >
-                    <span>Exam Details</span>
+                    Exam Details
                   </Link>
-                  <button 
+                  <button
+                    type="button"
                     onClick={() => handlePyqClick(exam)}
-                    className="py-2.5 px-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold rounded-xl text-xs transition-all text-center shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-1 active:scale-95"
+                    className="flex items-center justify-center gap-1 rounded-xl bg-primary px-3 py-2.5 text-center text-xs font-extrabold text-slate-950 shadow-sm transition hover:opacity-90"
                   >
                     <span>Practice PYQs</span>
-                    <span>→</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
                   </button>
                 </div>
-              </div>
+              </motion.div>
             ))
           )}
         </div>
       </div>
 
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-emerald-500/40 w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
-            <button 
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 p-4 backdrop-blur-sm">
+          <div className="relative w-full max-w-md rounded-2xl border border-border bg-surface p-6 text-text-primary shadow-2xl">
+            <button
+              type="button"
               onClick={() => setModalOpen(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white text-lg font-bold"
+              aria-label="Close modal"
+              className="absolute right-4 top-4 rounded-lg p-1 text-text-secondary transition hover:bg-background hover:text-text-primary"
             >
-              ✕
+              <X className="h-4 w-4" />
             </button>
 
-            <div className="text-center mb-6">
-              <span className="text-xs uppercase px-3 py-1 bg-amber-950 text-amber-400 rounded-full font-bold border border-amber-500/30">
+            <div className="mb-6 text-center">
+              <span className="rounded-full border border-warning/30 bg-warning/15 px-3 py-1 text-xs font-bold uppercase text-warning">
                 Service Notice
               </span>
-              <h3 className="text-xl font-extrabold text-white mt-3">PYQ Practice Not Available</h3>
-              <p className="text-xs text-slate-300 mt-1">
-                Verified PYQ sets for <strong className="text-emerald-400">{selectedExamTitle}</strong> are currently under preparation by our academic team.
+              <h3 className="mt-3 text-xl font-extrabold text-text-primary">
+                PYQ Practice Not Available
+              </h3>
+              <p className="mt-1 text-xs text-text-secondary">
+                Verified PYQ sets for <strong className="text-primary">{selectedExamTitle}</strong> are currently under preparation by our academic team.
               </p>
             </div>
 
             {requestSubmitted ? (
-              <div className="bg-emerald-950/80 border border-emerald-500/40 p-4 rounded-xl text-center space-y-2">
-                <p className="text-sm font-bold text-emerald-300">✅ Request Received Successfully!</p>
-                <p className="text-xs text-slate-300">We will notify you at <strong className="text-white">{userEmail}</strong> as soon as the test papers are published.</p>
-                <button 
+              <div className="space-y-2 rounded-xl border border-primary/30 bg-primary/10 p-4 text-center">
+                <p className="flex items-center justify-center gap-1.5 text-sm font-bold text-primary">
+                  <CheckCircle2 className="h-4 w-4" />
+                  <span>Request Received Successfully</span>
+                </p>
+                <p className="text-xs text-text-secondary">
+                  We will notify you at <strong className="text-text-primary">{userEmail}</strong> as soon as the test papers are published.
+                </p>
+                <button
+                  type="button"
                   onClick={() => setModalOpen(false)}
-                  className="mt-3 px-4 py-2 bg-emerald-500 text-slate-950 font-bold rounded-lg text-xs"
+                  className="mt-3 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-slate-950"
                 >
                   Close Window
                 </button>
@@ -508,31 +550,36 @@ export default function ExamsPage() {
             ) : (
               <form onSubmit={handleFormSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Your Email Address</label>
-                  <input 
-                    type="email" 
+                  <label className="mb-1 block text-xs font-semibold text-text-secondary">
+                    Your Email Address
+                  </label>
+                  <input
+                    type="email"
                     required
                     placeholder="aspirant@exam.com"
                     value={userEmail}
                     onChange={(e) => setUserEmail(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm text-text-primary outline-none focus:border-primary"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Drop a Request / Specific Paper Needed</label>
-                  <textarea 
+                  <label className="mb-1 block text-xs font-semibold text-text-secondary">
+                    Drop a Request / Specific Paper Needed
+                  </label>
+                  <textarea
                     rows={3}
                     placeholder="E.g., Please add 2023 and 2024 question sets..."
                     value={userMsg}
                     onChange={(e) => setUserMsg(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:outline-none focus:border-emerald-500 resize-none"
-                  ></textarea>
+                    className="w-full resize-none rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm text-text-primary outline-none focus:border-primary"
+                  />
                 </div>
-                <button 
+                <button
                   type="submit"
-                  className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs shadow-lg shadow-emerald-500/20 transition-all"
+                  className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-primary py-3 text-xs font-bold text-slate-950 shadow-sm transition hover:opacity-90"
                 >
-                  Submit Priority Request →
+                  <span>Submit Priority Request</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </button>
               </form>
             )}

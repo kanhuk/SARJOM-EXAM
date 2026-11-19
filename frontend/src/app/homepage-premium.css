@@ -1,39 +1,63 @@
-/* SARJOM EXAM - REFINED ACADEMIC DESIGN SYSTEM */
+﻿/* SARJOM EXAM - DARK & LIGHT DESIGN SYSTEM FOR HOMEPAGE */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
-
-nextjs-portal, 
+nextjs-portal,
 [data-nextjs-toast-wrapper],
 div[class*="nextjs-toast"] {
   display: none !important;
 }
 
-:root {
-  --bg-mist: #D8E3F0;
-  --bg-mist-gradient: radial-gradient(circle at 50% -10%, rgba(220, 230, 245, 0.45) 0%, transparent 55%),
-                      radial-gradient(circle at 10% 25%, rgba(200, 218, 240, 0.5) 0%, transparent 50%),
-                      linear-gradient(180deg, #d8e3f0 0%, #cfdceb 50%, #c6d5e6 100%);
-  --header-black: #080A0F;
-  --card-navy: #10192D;
-  --card-navy-hover: #15213b;
-  --accent-mint: #00DDB0;
-  --accent-mint-dim: rgba(0, 221, 176, 0.12);
-  --accent-mint-border: rgba(0, 221, 176, 0.35);
-  --text-dark: #090e17;
-  --text-slate: #475569;
-  --font-sans: 'Plus Jakarta Sans', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-}
-
 .sarjom-viewport {
-  background: var(--bg-mist-gradient);
-  background-color: var(--bg-mist);
-  background-attachment: fixed;
-  color: var(--text-dark);
+  --hp-bg: #ffffff;
+  --hp-bg-gradient: radial-gradient(circle at 50% -10%, rgba(0, 217, 165, 0.08) 0%, transparent 55%),
+                    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  --hp-surface: #f8fafc;
+  --hp-hero-bg: rgba(255, 255, 255, 0.9);
+  --hp-hero-border: #e2e8f0;
+  --hp-card-bg: #0f172a;
+  --hp-card-hover: #1e293b;
+  --hp-card-border: #334155;
+  --hp-text: #020617;
+  --hp-text-muted: #475569;
+  --hp-kicker: #047857;
+  --hp-pill-bg: #f1f5f9;
+  --hp-pill-text: #0f172a;
+  --hp-pill-border: #cbd5e1;
+  --hp-roadmap-bg: #ffffff;
+  --hp-roadmap-border: #cbd5e1;
+  --hp-primary: #00d9a5;
+  --hp-accent: #65a30d;
+
+  background: var(--hp-bg-gradient);
+  background-color: var(--hp-bg);
+  color: var(--hp-text);
   font-family: var(--font-sans);
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.dark .sarjom-viewport {
+  --hp-bg: #020617;
+  --hp-bg-gradient: radial-gradient(circle at 50% -12%, rgba(0, 217, 165, 0.12) 0%, transparent 55%),
+                    radial-gradient(circle at 85% 20%, rgba(184, 230, 46, 0.06) 0%, transparent 45%),
+                    linear-gradient(180deg, #020617 0%, #070d19 100%);
+  --hp-surface: #0f172a;
+  --hp-hero-bg: rgba(15, 23, 42, 0.85);
+  --hp-hero-border: #334155;
+  --hp-card-bg: #0f172a;
+  --hp-card-hover: #162033;
+  --hp-card-border: #334155;
+  --hp-text: #f8fafc;
+  --hp-text-muted: #94a3b8;
+  --hp-kicker: #00d9a5;
+  --hp-pill-bg: #0f172a;
+  --hp-pill-text: #e2e8f0;
+  --hp-pill-border: #334155;
+  --hp-roadmap-bg: rgba(15, 23, 42, 0.72);
+  --hp-roadmap-border: #334155;
+  --hp-primary: #00d9a5;
+  --hp-accent: #b8e62e;
 }
 
 .sarjom-canvas {
@@ -51,119 +75,110 @@ div[class*="nextjs-toast"] {
   }
 }
 
-/* 02: READABLE LIVE NOTICES TICKER */
-.sarjom-ticker-strip {
-  display: flex;
-  align-items: center;
-  gap: 1.15rem;
-  background: var(--header-black);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 0.55rem 1rem;
-  margin-bottom: 1.25rem;
-  box-shadow: 0 4px 18px rgba(8, 10, 15, 0.18);
-  overflow: hidden;
+/* LIVE NOTICE RAIL */
+.sarjom-live-rail {
   position: relative;
+  display: flex;
+  align-items: stretch;
   width: 100%;
+  min-height: 52px;
+  overflow: hidden;
+  border: 1px solid var(--hp-hero-border);
+  border-radius: 14px;
+  background: #0f172a;
+  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.14);
 }
 
-.sarjom-ticker-badge {
+.sarjom-live-label {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  color: #020617;
+  background: var(--hp-primary);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 10px;
   font-weight: 800;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+.sarjom-live-pulse {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 9999px;
+  background: #020617;
+  animation: sarjomLivePulse 1.8s ease-in-out infinite;
+}
+
+.sarjom-live-word {
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.sarjom-live-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(2, 6, 23, 0.25);
+}
+
+.sarjom-live-label-detail {
+  font-size: 9px;
   letter-spacing: 0.08em;
   color: #020617;
-  background: var(--accent-mint);
-  padding: 0.26rem 0.65rem;
-  border-radius: 6px;
-  white-space: nowrap;
-  flex-shrink: 0;
-  z-index: 10;
 }
 
-.sarjom-ticker-track-wrapper {
-  flex: 1;
-  overflow: hidden;
+.sarjom-live-window {
   position: relative;
   display: flex;
-  width: 100%;
-  mask-image: linear-gradient(90deg, transparent 0%, black 3%, black 97%, transparent 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 3%, black 97%, transparent 100%);
-}
-
-.sarjom-ticker-track {
-  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
   align-items: center;
-  white-space: nowrap;
-  gap: 2.75rem;
-  animation: tickerSlide 38s linear infinite;
+  overflow: hidden;
+  padding: 12px 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 20px, #000 calc(100% - 20px), transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 20px, #000 calc(100% - 20px), transparent 100%);
 }
 
-.sarjom-ticker-track:hover,
-.sarjom-ticker-track:focus-within {
-  animation-play-state: paused;
+@keyframes sarjomMarquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
 }
 
-@keyframes tickerSlide {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
+.sarjom-marquee-active {
+  display: flex !important;
+  width: max-content !important;
+  gap: 28px;
+  padding: 0 20px;
+  animation: sarjomMarquee 32s linear infinite !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .sarjom-ticker-track {
-    animation: none;
-    overflow-x: auto;
-  }
+.sarjom-marquee-active:hover {
+  animation-play-state: paused !important;
 }
 
-.sarjom-ticker-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.65rem;
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: #e2e8f0;
-  text-decoration: none;
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: color 0.15s ease;
+@keyframes sarjomLivePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(0.82); }
 }
 
-.sarjom-ticker-item:hover {
-  color: var(--accent-mint);
-}
-
-.sarjom-ticker-tag {
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  font-weight: 800;
-  padding: 0.16rem 0.5rem;
-  border-radius: 5px;
-  letter-spacing: 0.04em;
-}
-
-.tag-notice { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
-.tag-admit { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
-.tag-key { background: rgba(192, 132, 252, 0.15); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.3); }
-.tag-result { background: var(--accent-mint-dim); color: var(--accent-mint); border: 1px solid var(--accent-mint-border); }
-.tag-lastdate { background: rgba(248, 113, 113, 0.15); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
-
-/* 01 & 05: COMPACT HERO SECTION */
+/* HERO SECTION */
 .sarjom-hero-matrix {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   position: relative;
-  background: rgba(255, 255, 255, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: var(--hp-hero-bg);
+  border: 1px solid var(--hp-hero-border);
   border-radius: 20px;
-  padding: 2.25rem 2rem 2.25rem;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: 
-    0 14px 34px -12px rgba(8, 10, 15, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  padding: 2.25rem 2rem;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 14px 34px -14px rgba(2, 6, 23, 0.14);
   margin-bottom: 2rem;
 }
 
@@ -175,10 +190,10 @@ div[class*="nextjs-toast"] {
 
 .sarjom-kicker-sm {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: #0369a1;
+  color: var(--hp-kicker);
   text-transform: uppercase;
 }
 
@@ -187,45 +202,40 @@ div[class*="nextjs-toast"] {
   font-size: 2.35rem;
   font-weight: 800;
   line-height: 1.15;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.03em;
   text-transform: uppercase;
-  color: var(--text-dark);
+  color: var(--hp-text);
   max-width: 920px;
-  margin-top: 0.35rem;
+  margin-top: 0.4rem;
 }
 
 @media (max-width: 768px) {
   .sarjom-core-heading {
-    font-size: 1.65rem;
+    font-size: 1.6rem;
     line-height: 1.2;
   }
 }
 
 .sarjom-muted-line {
   display: block;
-  color: #334155;
+  color: var(--hp-text-muted);
 }
 
 .sarjom-electric-text {
   display: block;
-  background: linear-gradient(90deg, #080A0F 0%, #15213b 45%, #059669 85%, #0284c7 100%);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: textFlow 7s ease-in-out infinite alternate;
+  color: var(--hp-text);
   margin-top: 0.15rem;
 }
 
-@keyframes textFlow {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
+.sarjom-electric-text span.highlight-accent {
+  color: var(--hp-primary);
 }
 
 .sarjom-descriptor {
   margin-top: 0.75rem;
   font-size: 0.98rem;
   line-height: 1.55;
-  color: var(--text-slate);
+  color: var(--hp-text-muted);
   max-width: 660px;
   font-weight: 500;
 }
@@ -236,31 +246,30 @@ div[class*="nextjs-toast"] {
   }
 }
 
-/* SEARCH BAR AS HERO'S PRIMARY ACTION */
+/* SEARCH BAR */
 .sarjom-omni-bar {
   display: flex;
   align-items: center;
   margin-top: 1.5rem;
-  background: var(--header-black);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--hp-surface);
+  border: 1px solid var(--hp-hero-border);
   border-radius: 14px;
   padding: 0.35rem 0.45rem 0.35rem 1rem;
   gap: 0.75rem;
   width: 100%;
   max-width: 740px;
-  box-shadow: 0 10px 28px -6px rgba(8, 10, 15, 0.25);
-  transition: all 0.2s ease;
+  box-shadow: 0 10px 26px -8px rgba(2, 6, 23, 0.14);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .sarjom-omni-bar:focus-within {
-  border-color: var(--accent-mint);
-  box-shadow: 0 0 0 3px var(--accent-mint-dim), 0 12px 32px -6px rgba(8, 10, 15, 0.35);
-  transform: translateY(-1px);
+  border-color: var(--hp-primary);
+  box-shadow: 0 0 0 3px rgba(0, 217, 165, 0.18);
 }
 
 .sarjom-search-icon {
   font-size: 1.15rem;
-  color: var(--accent-mint);
+  color: var(--hp-primary);
 }
 
 .sarjom-omni-field {
@@ -268,40 +277,40 @@ div[class*="nextjs-toast"] {
   background: transparent;
   border: none;
   outline: none;
-  color: #ffffff;
+  color: var(--hp-text);
   font-size: 0.92rem;
   min-width: 0;
 }
 
 .sarjom-omni-field::placeholder {
-  color: #64748b;
+  color: var(--hp-text-muted);
 }
 
 .sarjom-btn-single-search {
-  background: var(--accent-mint);
+  background: var(--hp-primary);
   color: #020617;
   font-size: 0.86rem;
   font-weight: 800;
-  padding: 0.65rem 1.45rem;
+  padding: 0.65rem 1.4rem;
   border-radius: 10px;
   border: none;
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 .sarjom-btn-single-search:hover {
-  background: #00f2c3;
+  opacity: 0.92;
   transform: translateY(-1px);
 }
 
-/* 4 TO 5 POPULAR CORE EXAM CHIPS */
+/* POPULAR CHIPS */
 .sarjom-quick-strip {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 0.45rem;
+  gap: 0.5rem;
   margin-top: 1.1rem;
 }
 
@@ -309,26 +318,25 @@ div[class*="nextjs-toast"] {
   font-family: var(--font-mono);
   font-size: 0.7rem;
   font-weight: 700;
-  color: #64748b;
+  color: var(--hp-text-muted);
   margin-right: 0.2rem;
 }
 
 .sarjom-speed-pill {
   font-size: 0.76rem;
   font-weight: 600;
-  color: #1e293b;
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  padding: 0.26rem 0.68rem;
-  border-radius: 7px;
+  color: var(--hp-pill-text);
+  background: var(--hp-pill-bg);
+  border: 1px solid var(--hp-pill-border);
+  padding: 0.3rem 0.72rem;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .sarjom-speed-pill:hover {
-  background: var(--card-navy);
-  color: var(--accent-mint);
-  border-color: var(--card-navy);
+  border-color: var(--hp-primary);
+  color: var(--hp-primary);
   transform: translateY(-1px);
 }
 
@@ -341,13 +349,13 @@ div[class*="nextjs-toast"] {
   font-family: var(--font-sans);
   font-size: 1.4rem;
   font-weight: 800;
-  color: var(--text-dark);
+  color: var(--hp-text);
   margin-top: 0.2rem;
   letter-spacing: -0.02em;
   text-transform: uppercase;
 }
 
-/* 03: ACTIVE WORKSPACES WITH DISTINCT SIMPLE ICONS */
+/* WORKSPACE CARDS */
 .sarjom-bento-trio {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -363,21 +371,21 @@ div[class*="nextjs-toast"] {
 
 .sarjom-bento-tile {
   position: relative;
-  background: var(--card-navy);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--hp-card-bg);
+  border: 1px solid var(--hp-card-border);
   border-radius: 18px;
   padding: 1.65rem 1.55rem;
   text-decoration: none;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 24px -10px rgba(8, 10, 15, 0.22);
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 10px 24px -10px rgba(2, 6, 23, 0.22);
+  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .sarjom-bento-tile:hover {
-  transform: translateY(-2px);
-  border-color: var(--accent-mint-border);
-  background: var(--card-navy-hover);
+  transform: translateY(-3px);
+  border-color: var(--hp-primary);
+  background: var(--hp-card-hover);
 }
 
 .sarjom-tile-top {
@@ -394,29 +402,29 @@ div[class*="nextjs-toast"] {
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  background: var(--accent-mint-dim);
-  border: 1px solid var(--accent-mint-border);
-  color: var(--accent-mint);
+  background: rgba(0, 217, 165, 0.14);
+  border: 1px solid rgba(0, 217, 165, 0.35);
+  color: var(--hp-primary);
 }
 
 .sarjom-tile-num {
   font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 800;
-  color: #64748b;
+  color: #94a3b8;
 }
 
 .sarjom-bento-tile h3 {
   font-size: 1.25rem;
   font-weight: 800;
-  color: #ffffff;
+  color: #f8fafc;
   letter-spacing: -0.015em;
 }
 
 .sarjom-bento-tile p {
   font-size: 0.88rem;
   line-height: 1.55;
-  color: #94a3b8;
+  color: #cbd5e1;
   margin-top: 0.45rem;
   flex: 1;
 }
@@ -428,8 +436,8 @@ div[class*="nextjs-toast"] {
   margin-top: 1.5rem;
   font-size: 0.82rem;
   font-weight: 700;
-  color: var(--accent-mint);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--hp-primary);
+  border-top: 1px solid rgba(148, 163, 184, 0.16);
   padding-top: 0.85rem;
 }
 
@@ -441,7 +449,7 @@ div[class*="nextjs-toast"] {
   transform: translateX(4px);
 }
 
-/* 04: SECONDARY & COMPACT PLANNED WORKSPACES */
+/* UPCOMING ROADMAP */
 .sarjom-roadmap-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -455,52 +463,63 @@ div[class*="nextjs-toast"] {
 }
 
 .sarjom-roadmap-card {
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px dashed rgba(15, 23, 42, 0.22);
+  background: var(--hp-roadmap-bg);
+  border: 1px dashed var(--hp-roadmap-border);
   border-radius: 14px;
   padding: 1.15rem 1.25rem;
-  backdrop-filter: blur(8px);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.sarjom-roadmap-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--hp-primary);
 }
 
 .sarjom-status-pill {
   font-family: var(--font-mono);
   font-size: 0.64rem;
   font-weight: 800;
-  padding: 0.16rem 0.5rem;
-  border-radius: 4px;
+  padding: 0.18rem 0.52rem;
+  border-radius: 5px;
   letter-spacing: 0.04em;
   display: inline-block;
   margin-bottom: 0.5rem;
 }
 
 .status-planned {
-  background: rgba(100, 116, 139, 0.12);
-  color: #475569;
-  border: 1px solid rgba(100, 116, 139, 0.25);
+  background: rgba(100, 116, 139, 0.14);
+  color: var(--hp-text-muted);
+  border: 1px solid rgba(100, 116, 139, 0.28);
 }
 
 .status-dev {
-  background: rgba(2, 132, 199, 0.1);
-  color: #0284c7;
-  border: 1px solid rgba(2, 132, 199, 0.25);
+  background: rgba(0, 217, 165, 0.12);
+  color: var(--hp-kicker);
+  border: 1px solid rgba(0, 217, 165, 0.3);
+}
+
+.dark .status-dev {
+  color: var(--hp-accent);
+  background: rgba(184, 230, 46, 0.12);
+  border-color: rgba(184, 230, 46, 0.3);
 }
 
 .sarjom-roadmap-card h3 {
   font-size: 0.98rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--hp-text);
 }
 
 .sarjom-roadmap-card p {
   font-size: 0.82rem;
-  color: #64748b;
+  color: var(--hp-text-muted);
   margin-top: 0.3rem;
   line-height: 1.45;
 }
 
 /* FOOTER */
 .sarjom-terminal-footer {
-  border-top: 1px solid rgba(15, 23, 42, 0.1);
+  border-top: 1px solid var(--hp-hero-border);
   padding: 1.65rem 0 1.25rem;
   margin-top: 2.5rem;
 }
@@ -511,7 +530,7 @@ div[class*="nextjs-toast"] {
   justify-content: space-between;
   font-family: var(--font-mono);
   font-size: 0.74rem;
-  color: #64748b;
+  color: var(--hp-text-muted);
   font-weight: 600;
 }
 
@@ -523,275 +542,15 @@ div[class*="nextjs-toast"] {
   }
 }
 
-/* TICKER SCROLLBAR HIDE & MASK FIX */
-.sarjom-ticker-strip {
-  display: flex !important;
-  align-items: center !important;
-  gap: 1.25rem !important;
-  background: var(--header-black) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 12px !important;
-  padding: 0.55rem 1rem !important;
-  margin-bottom: 1.25rem !important;
-  overflow: hidden !important;
-  position: relative !important;
-  width: 100% !important;
-  scrollbar-width: none !important;
-  -ms-overflow-style: none !important;
-}
-
-.sarjom-ticker-strip::-webkit-scrollbar {
-  display: none !important;
-}
-
-.sarjom-ticker-track-wrapper {
-  flex: 1 !important;
-  overflow: hidden !important;
-  position: relative !important;
-  display: flex !important;
-  width: 100% !important;
-  padding-left: 0.75rem !important;
-  mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%) !important;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%) !important;
-  scrollbar-width: none !important;
-}
-
-.sarjom-ticker-track-wrapper::-webkit-scrollbar,
-.sarjom-ticker-track::-webkit-scrollbar {
-  display: none !important;
-}
-
-/* TICKER SCROLLBAR HIDE & MASK FIX */
-.sarjom-ticker-strip {
-  display: flex !important;
-  align-items: center !important;
-  gap: 1.25rem !important;
-  background: var(--header-black) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 12px !important;
-  padding: 0.55rem 1rem !important;
-  margin-bottom: 1.25rem !important;
-  overflow: hidden !important;
-  position: relative !important;
-  width: 100% !important;
-  scrollbar-width: none !important;
-  -ms-overflow-style: none !important;
-}
-
-.sarjom-ticker-strip::-webkit-scrollbar {
-  display: none !important;
-}
-
-.sarjom-ticker-track-wrapper {
-  flex: 1 !important;
-  overflow: hidden !important;
-  position: relative !important;
-  display: flex !important;
-  width: 100% !important;
-  padding-left: 0.75rem !important;
-  mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%) !important;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%) !important;
-  scrollbar-width: none !important;
-}
-
-.sarjom-ticker-track-wrapper::-webkit-scrollbar,
-.sarjom-ticker-track::-webkit-scrollbar {
-  display: none !important;
-}
-
-/* HEADER WIDTH BALANCE & COMPACT FIX */
-header,
-nav,
-.sarjom-header,
-header > div,
-nav > div {
-  max-width: 1280px !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  padding-left: 1.5rem !important;
-  padding-right: 1.5rem !important;
-}
-
-@media (max-width: 768px) {
-  header,
-  nav,
-  .sarjom-header,
-  header > div,
-  nav > div {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
-}
-
-/* TICKER PYQ RELEASE BADGE */
-.tag-pyq {
-  background: rgba(0, 221, 176, 0.15) !important;
-  color: #00DDB0 !important;
-  border: 1px solid rgba(0, 221, 176, 0.35) !important;
-}
-
-@keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
-
-
-@keyframes sarjomMarquee {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.sarjom-marquee-active {
-  display: flex !important;
-  width: max-content !important;
-  animation: sarjomMarquee 30s linear infinite !important;
-}
-
-.sarjom-marquee-active:hover {
-  animation-play-state: paused !important;
-}
-
-/* ============================================================
-   SARJOM PREMIUM LIVE NOTICE RAIL
-   Existing notice data and marquee animation are preserved.
-   ============================================================ */
-
-.sarjom-live-rail {
-  position: relative;
-  display: flex;
-  align-items: stretch;
-  width: 100%;
-  min-height: 54px;
-  overflow: hidden;
-  border: 1px solid rgba(0, 221, 176, 0.22);
-  border-radius: 15px;
-  background: linear-gradient(110deg, #0b1420 0%, #080e18 55%, #0b1420 100%);
-  box-shadow:
-    0 8px 24px rgba(4, 12, 24, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.035);
-}
-
-.sarjom-live-label {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-  gap: 9px;
-  padding: 0 17px;
-  color: #061b19;
-  background: linear-gradient(135deg, #00e0b5, #00c9a5);
-  font-family: var(--font-mono, monospace);
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: 0.11em;
-  white-space: nowrap;
-}
-
-.sarjom-live-pulse {
-  width: 8px;
-  height: 8px;
-  flex: 0 0 8px;
-  border-radius: 50%;
-  background: #063b32;
-  box-shadow: 0 0 0 4px rgba(6, 59, 50, 0.12);
-  animation: sarjomLivePulse 1.8s ease-in-out infinite;
-}
-
-.sarjom-live-word {
-  font-size: 11px;
-}
-
-.sarjom-live-divider {
-  width: 1px;
-  height: 18px;
-  background: rgba(6, 59, 50, 0.28);
-}
-
-.sarjom-live-label-detail {
-  font-size: 9px;
-  letter-spacing: 0.09em;
-}
-
-.sarjom-live-window {
-  position: relative;
-  display: flex;
-  flex: 1 1 auto;
-  min-width: 0;
-  align-items: center;
-  overflow: hidden;
-  padding: 13px 0;
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    transparent 0,
-    #000 22px,
-    #000 calc(100% - 22px),
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    90deg,
-    transparent 0,
-    #000 22px,
-    #000 calc(100% - 22px),
-    transparent 100%
-  );
-}
-
-.sarjom-live-track {
-  align-items: center;
-  gap: 32px;
-  padding: 0 22px;
-}
-
-.sarjom-live-track > a {
-  text-decoration: none;
-  outline-offset: 5px;
-}
-
-.sarjom-live-track > a:focus-visible {
-  outline: 2px solid #00ddb0;
-  border-radius: 4px;
-}
-
-@keyframes sarjomLivePulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.55;
-    transform: scale(0.82);
-  }
-}
-
-@media (max-width: 600px) {
-  .sarjom-live-rail {
-    min-height: 48px;
-    border-radius: 12px;
-  }
-
-  .sarjom-live-label {
-    gap: 7px;
-    padding: 0 11px;
-  }
-
-  .sarjom-live-label-detail {
-    display: none;
-  }
-
-  .sarjom-live-window {
-    padding: 11px 0;
-  }
-
-  .sarjom-live-track {
-    gap: 24px;
-    padding: 0 16px;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
+  .sarjom-marquee-active,
   .sarjom-live-pulse {
-    animation: none;
+    animation: none !important;
+  }
+  .sarjom-bento-tile,
+  .sarjom-roadmap-card,
+  .sarjom-btn-single-search,
+  .sarjom-speed-pill {
+    transition: none !important;
   }
 }
