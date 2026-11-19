@@ -1,4 +1,5 @@
-﻿import Link from "next/link";
+﻿import type { Metadata } from "next";
+import Link from "next/link";
 
 const tools = [
   { title: "Page Design", description: "Plan the supported page layout and visual hierarchy.", href: "/site-editing" },
@@ -36,4 +37,16 @@ export default function SiteEditingPage() {
       </section>
     </div>
   );
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Site Editing",
+    description: "Site Editing on SARJOM EXAM.",
+    openGraph: {
+      title: "Site Editing | SARJOM EXAM",
+      description: "Site Editing on SARJOM EXAM.",
+      url: "https://www.sarjomexam.in/site-editing",
+    },
+  };
 }

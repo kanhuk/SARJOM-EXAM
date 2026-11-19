@@ -17,8 +17,19 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SARJOM EXAM",
-  description: "Competitive exam preparation and practice platform",
+  metadataBase: new URL("https://www.sarjomexam.in"),
+  title: {
+    default: "SARJOM EXAM | PYQ Practice, Syllabus & Mock Tests",
+    template: "%s | SARJOM EXAM",
+  },
+  description: "Competitive exam preparation, previous year questions, and syllabus practice platform.",
+  openGraph: {
+    type: "website",
+    url: "https://www.sarjomexam.in",
+    siteName: "SARJOM EXAM",
+    title: "SARJOM EXAM | PYQ Practice, Syllabus & Mock Tests",
+    description: "Competitive exam preparation, previous year questions, and syllabus practice platform.",
+  },
 };
 
 export default function RootLayout({

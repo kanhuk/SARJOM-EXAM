@@ -1,4 +1,5 @@
-﻿import Link from "next/link";
+﻿import type { Metadata } from "next";
+import Link from "next/link";
 
 const groups = [
   { title: "Home Page Management", description: "Review homepage content and presentation settings.", href: "/admin/home-page", icon: "⌂" },
@@ -43,3 +44,15 @@ export default function AdminPage() {
   );
 }
 
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Admin",
+    description: "Admin on SARJOM EXAM.",
+    openGraph: {
+      title: "Admin | SARJOM EXAM",
+      description: "Admin on SARJOM EXAM.",
+      url: "https://www.sarjomexam.in/admin",
+    },
+  };
+}

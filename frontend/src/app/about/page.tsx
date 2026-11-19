@@ -1,4 +1,5 @@
-﻿export default function Page() {
+﻿import type { Metadata } from "next";
+export default function Page() {
   return (
     <main className="min-h-[calc(100vh-8rem)] bg-background px-4 py-12 text-text-primary transition-colors">
       <article className="mx-auto max-w-3xl rounded-2xl border border-border bg-surface p-7 shadow-sm sm:p-10">
@@ -15,4 +16,15 @@
       </article>
     </main>
   );
+}
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "About",
+    description: "About on SARJOM EXAM.",
+    openGraph: {
+      title: "About | SARJOM EXAM",
+      description: "About on SARJOM EXAM.",
+      url: "https://www.sarjomexam.in/about",
+    },
+  };
 }
