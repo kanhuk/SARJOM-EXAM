@@ -370,8 +370,6 @@ export default function ExamsPage() {
           <p className="text-slate-300 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
             Explore meticulously verified exam patterns, marking schemes, historic cutoffs, and selection stages for Odisha State, Central, and National recruitment.
           </p>
-        </div>
-      </div>
 
           <div className="flex flex-wrap justify-center gap-4 mt-8">
             <div className="bg-slate-800/90 border border-slate-700 px-5 py-2.5 rounded-2xl shadow-md flex items-center gap-2">
