@@ -1,6 +1,6 @@
 ﻿import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { LanguageProvider } from "@/components/language/LanguageProvider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
