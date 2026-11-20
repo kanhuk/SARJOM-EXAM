@@ -1,7 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { findSyllabusByParam } from "@/lib/syllabusSeo";
 import { Suspense } from "react";
 
 const examDetailsData: Record<string, {
@@ -17,6 +18,23 @@ const examDetailsData: Record<string, {
   pattern: { paper: string; subject: string; questions: number; marks: number; duration: string; negative: string; }[];
   cutoffs: { year: string; ur: string; sebc: string; sc: string; st: string; }[];
 }> = {
+  "ossc-cgl-specialist": {
+    title: "OSSC CGL Specialist 2025 (CGLRE Specialist)",
+    category: "Odisha State Competitive Exams",
+    conductingBody: "Odisha Staff Selection Commission (OSSC)",
+    officialPortal: "https://ossc.gov.in/Public/Pages/Login.aspx",
+    qualification: "Graduation / Specialist Qualification (Advt No. 5919/OSSC)",
+    totalMarks: 150,
+    status: "Admit Card Out • Exam Date: 30/11/2026",
+    stages: ["Preliminary Examination (30/11/2026)", "Main Examination", "Verification"],
+    description: "OSSC CGL Specialist 2025 Preliminary Examination Admit Card is out. Examination is scheduled on 30/11/2026.",
+    pattern: [
+      { paper: "Prelims", subject: "General Studies, Reasoning, Aptitude & Specialist Subject", questions: 150, marks: 150, duration: "150 Mins", negative: "0.25" }
+    ],
+    cutoffs: [
+      { year: "2025", ur: "—", sebc: "—", sc: "—", st: "—" }
+    ]
+  },
   "nda-na": {
     title: "NDA & NA (National Defence Academy)",
     category: "Defence & Uniformed Services",
@@ -529,6 +547,7 @@ function ExamDetailContent() {
   const searchParams = useSearchParams();
   const examId = searchParams.get("id") || "upsc-cse";
   const exam = examDetailsData[examId];
+  const syllabusRef = findSyllabusByParam(examId);
 
   if (!exam) {
     return (
@@ -659,17 +678,39 @@ function ExamDetailContent() {
                   Test your mastery for <strong className="text-white">{exam.title}</strong> using real-time simulated CBT test papers.
                 </p>
 
+                                <div className="mt-4 rounded-xl border border-slate-700/90 bg-slate-900/80 p-3.5">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
+                    What to Focus On First
+                  </div>
+                  <ul className="mt-2 space-y-1 text-xs text-slate-300">
+                    {(syllabusRef?.highYieldFocus ?? [
+                      "Core Syllabus Fundamentals & Weightage Topics",
+                      "Previous Year Question Patterns & Time Management",
+                      "High-Accuracy Revision & Mistake Log",
+                    ]).map((focusItem, fIdx) => (
+                      <li key={fIdx}>• {focusItem}</li>
+                    ))}
+                  </ul>
+                </div>
+
                 <div className="mt-6 space-y-3">
-                  <Link 
-                    href="/pyq" 
+                  <Link
+                    href={syllabusRef?.pyqTopicHint ? `/pyq?q=${encodeURIComponent(syllabusRef.pyqTopicHint)}` : "/pyq"}
                     className="w-full py-3.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold rounded-xl text-xs transition-all duration-300 shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
                   >
                     <span>Start PYQ Simulator</span>
                     <span>→</span>
                   </Link>
 
-                  <Link 
-                    href="/exams" 
+                  <Link
+                    href={`/syllabus/${encodeURIComponent(syllabusRef?.slug || syllabusRef?.id || examId)}`}
+                    className="w-full py-3 px-4 bg-slate-900 hover:bg-slate-950 text-emerald-300 font-bold rounded-xl text-xs transition-all duration-300 border border-emerald-500/40 flex items-center justify-center gap-2"
+                  >
+                    <span>View Complete Syllabus</span>
+                  </Link>
+
+                  <Link
+                    href="/exams"
                     className="w-full py-3 px-4 bg-slate-900 hover:bg-slate-950 text-slate-300 font-bold rounded-xl text-xs transition-all duration-300 border border-slate-700 flex items-center justify-center gap-2"
                   >
                     <span>Explore Other Blueprints</span>

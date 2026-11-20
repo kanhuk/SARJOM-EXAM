@@ -63,6 +63,40 @@ type ExamSeed = {
 
 const EXAM_SEEDS: ExamSeed[] = [
   {
+    id: "ossc-cgl-specialist",
+    title: "OSSC CGL Specialist 2025 (CGLRE Specialist)",
+    category: "Odisha State Exams",
+    stateCode: "ODISHA",
+    conductingBody: "Odisha Staff Selection Commission (OSSC)",
+    description: "Preliminary Examination Admit Card out (Exam Date: 30/11/2026) for OSSC CGLRE Specialist 2025 (Advt No. 5919/OSSC).",
+    qualification: "Graduation / Specialist Degree as per OSSC CGLRE notification",
+    officialUrl: "https://ossc.gov.in/Public/Pages/Login.aspx",
+    stages: ["Preliminary Examination", "Main Written Examination", "Certificate Verification"],
+    pyqTopicHint: "OSSC CGL Specialist General Studies Arithmetic Reasoning Specialist Subject",
+    highYieldFocus: ["General Studies & Odisha GK", "Arithmetic, Data Interpretation & Reasoning", "Specialist Domain Paper"],
+    pattern: [
+      { paper: "Preliminary Exam", subject: "General Studies, Arithmetic, Reasoning & Specialist Core", questions: 150, marks: 150, duration: "150 Mins", negative: "0.25" }
+    ],
+    papers: [
+      {
+        name: "Preliminary Examination Syllabus",
+        description: "Core objective screening syllabus for OSSC CGL Specialist 2025.",
+        units: [
+          {
+            title: "General Awareness, Odisha GK & Current Affairs",
+            weightage: "High",
+            topics: ["Indian & Odisha History, Polity, Geography and Economy", "General Science and Current Events"]
+          },
+          {
+            title: "Quantitative Aptitude, Reasoning & Specialist Subject",
+            weightage: "High",
+            topics: ["Arithmetic, Percentage, Ratio, Data Interpretation and Logical Reasoning", "Post-Specific Specialist Technical Concepts"]
+          }
+        ]
+      }
+    ]
+  },
+  {
     id: "upsc-cse",
     title: "UPSC Civil Services Examination (IAS / IPS)",
     category: "National Civil Services",

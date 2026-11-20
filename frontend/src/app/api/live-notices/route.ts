@@ -112,10 +112,25 @@ export async function GET() {
     }
   }
 
+    const pinnedNotices: Array<{ title: string; link: string; source: string; publishedAt?: string }> = [
+    {
+      title: "2026-11-20 OSSC CGL Specialist 2025 Preliminary Examination Admit Card Out (Exam Date: 30/11/2026)",
+      link: "https://ossc.gov.in/Public/Pages/Login.aspx",
+      source: "OSSC",
+      publishedAt: "2026-11-20",
+    },
+  ];
   const rules = getWhitelistedExamRules(dynamicExams);
   const candidates: FilteredLiveNotice[] = [];
   const seenTitles = new Set<string>();
 
+  for (const item of pinnedNotices) {
+    const filtered = matchAndFilterExamNotice(item.title, item.link, item.source, rules, item.publishedAt);
+    if (filtered && !seenTitles.has(filtered.title.toLowerCase())) {
+      seenTitles.add(filtered.title.toLowerCase());
+      candidates.push({ ...filtered, priorityScore: (filtered.priorityScore ?? 0) + 100 });
+    }
+  }
   for (const item of storedRawNotices) {
     const filtered = matchAndFilterExamNotice(item.title, item.link, item.source, rules, item.publishedAt);
     if (filtered && !seenTitles.has(filtered.title.toLowerCase())) {

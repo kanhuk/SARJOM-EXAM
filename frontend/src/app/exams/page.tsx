@@ -20,6 +20,18 @@ type ExamBlueprint = {
 
 const examDirectory: ExamBlueprint[] = [
   {
+    id: "ossc-cgl-specialist",
+    title: "OSSC CGL Specialist 2025 (Exam: 30/11/2026)",
+    category: "Odisha State Competitive Exams",
+    conductingBody: "Odisha Staff Selection Commission (OSSC)",
+    officialPortal: "https://ossc.gov.in/Public/Pages/Login.aspx",
+    qualification: "Graduation / Specialist Qualification",
+    totalMarks: 150,
+    status: "Admit Card Out • Exam 30/11/2026",
+    stages: ["Preliminary Exam (30/11/2026)", "Main Examination", "Document Verification"],
+    hasPyq: true
+  },
+  {
     id: "nda-na",
     title: "NDA & NA (National Defence Academy)",
     category: "Defence & Uniformed Services",

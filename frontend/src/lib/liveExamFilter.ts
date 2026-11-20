@@ -151,6 +151,7 @@ function buildExamKeywords(id: string, title: string): string[] {
     "odisha-police-si": ["police sub inspector", "police si", "cpse", "ousssc", "oprb"],
     "ossc-combined-police-si": ["police sub inspector", "police si", "cpse"],
     "ossc-cgl": ["ossc cgl", "combined graduate level"],
+    "ossc-cgl-specialist": ["cglre specialist", "cgl specialist", "ossc cgl specialist", "5919/ossc"],
     "ossc-je": ["ossc junior engineer", "combined technical"],
     "osssc-ri-ari-amin": ["revenue inspector", "assistant revenue inspector", "ari", "amin", "icds supervisor"],
     "osssc-forest-guard-forester": ["forest guard", "forester", "livestock inspector"],
@@ -285,8 +286,11 @@ export function matchAndFilterExamNotice(
 ): FilteredLiveNotice | null {
   const cleanTitle = rawTitle.replace(/^[»•\-–]+\s*/, "").replace(/\s+/g, " ").trim();
   if (cleanTitle.length < 10 || cleanTitle.length > 260) return null;
-
   const lower = cleanTitle.toLowerCase();
+
+  if (/\b(2023|2024)\b/.test(lower) && !/\b2026\b/.test(lower)) {
+    return null;
+  }
 
   if (BLOCKED_NOISE_TERMS.some((noise) => lower.includes(noise))) {
     return null;

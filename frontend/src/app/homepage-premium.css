@@ -196,7 +196,7 @@ div[class*="nextjs-toast"] {
   width: max-content !important;
   gap: 28px;
   padding: 0 20px;
-  animation: sarjomMarquee 34s linear infinite !important;
+  animation: sarjomMarquee  param($d) ([double]$d.Groups[1].Value * 1.8).ToString("0.#") + "s"  linear infinite !important;
 }
 
 .sarjom-marquee-active:hover {
@@ -761,4 +761,150 @@ div[class*="nextjs-toast"] {
   background: #0F172A;
   border-color: #334155;
   color: #F1F5F9 !important;
+}
+
+/* Full-bleed edge-to-edge LIVE notice rail */
+.sarjom-live-rail {
+  position: relative;
+  display: flex !important;
+  align-items: stretch !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+  border-radius: 0 !important;
+  border-left: none !important;
+  border-right: none !important;
+  box-sizing: border-box !important;
+}
+
+.sarjom-live-window {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+.sarjom-live-track {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.65rem !important;
+  white-space: nowrap !important;
+}
+
+.sarjom-live-track > a,
+.sarjom-live-track > span,
+.sarjom-live-track > div {
+  position: relative;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px;
+  color: #0F172A !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: #FFFFFF;
+  border: 1px solid #D8E2DC;
+  border-radius: 9999px;
+  padding: 0.28rem 0.88rem;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.sarjom-live-track > a:hover {
+  transform: translateY(-1px);
+  border-color: rgba(5, 150, 105, 0.5);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.12);
+}
+
+.sarjom-live-track [data-category*="Admit Card"] {
+  background: #EFF6FF !important;
+  border-color: #BFDBFE !important;
+  color: #1D4ED8 !important;
+}
+
+.sarjom-live-track [data-category*="Answer Key"] {
+  background: #F5F3FF !important;
+  border-color: #DDD6FE !important;
+  color: #6D28D9 !important;
+}
+
+.sarjom-live-track [data-category*="Result"] {
+  background: #ECFDF5 !important;
+  border-color: #A7F3D0 !important;
+  color: #047857 !important;
+}
+
+.sarjom-live-track [data-category*="Application Open"] {
+  background: #F0FDFA !important;
+  border-color: #99F6E4 !important;
+  color: #0F766E !important;
+}
+
+.sarjom-live-track [data-category*="Apply Last Date"],
+.sarjom-live-track [data-category*="Correction Date"] {
+  background: #FFFBEB !important;
+  border-color: #FDE68A !important;
+  color: #B45309 !important;
+}
+
+.dark .sarjom-live-track > a,
+.dark .sarjom-live-track > span,
+.dark .sarjom-live-track > div {
+  background: #0F172A;
+  border-color: #334155;
+  color: #F1F5F9 !important;
+}
+
+/* Slower, comfortable notice rail speed */
+.sarjom-live-track,
+.sarjom-marquee-active {
+  animation-duration: 75s !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sarjom-live-track,
+  .sarjom-marquee-active {
+    animation: none !important;
+  }
+}
+
+/* Notification red blink & right spacing */
+@keyframes sarjomNoticeBlink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.28;
+  }
+}
+
+.sarjom-live-label {
+  margin-left: clamp(1rem, 3vw, 2.5rem) !important;
+  padding: 0 14px !important;
+  border-radius: 9999px !important;
+  align-self: center !important;
+  min-height: 30px !important;
+  background: #FEF2F2 !important;
+  border: 1px solid #FECACA !important;
+  color: #DC2626 !important;
+}
+
+.sarjom-live-label .sarjom-live-pulse {
+  background: #DC2626 !important;
+  animation: sarjomNoticeBlink 1.1s ease-in-out infinite !important;
+}
+
+.sarjom-live-label .sarjom-live-word {
+  color: #DC2626 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em !important;
+  animation: sarjomNoticeBlink 1.1s ease-in-out infinite !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sarjom-live-label .sarjom-live-pulse,
+  .sarjom-live-label .sarjom-live-word {
+    animation: none !important;
+    opacity: 1 !important;
+  }
 }

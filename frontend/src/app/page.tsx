@@ -199,9 +199,9 @@ export default function HomePage() {
       >
         {/* LIVE NOTICES CONTINUOUS MARQUEE STRIP */}
         <div className="sarjom-live-rail mb-6">
-          <div className="sarjom-live-label" aria-label="Live notices">
+          <div className="sarjom-live-label" aria-label="Notification">
             <span className="sarjom-live-pulse" />
-            <span className="sarjom-live-word">LIVE</span>
+            <span className="sarjom-live-word">Notification</span>
           </div>
 
           <div className="sarjom-live-window group" aria-label="Latest LIVE UPDATES">
@@ -315,6 +315,29 @@ export default function HomePage() {
               </button>
             ))}
           </div>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
+            <span className="font-mono text-[11px] uppercase tracking-wider text-text-secondary">
+              Priority Focus:
+            </span>
+            <Link
+              href="/exams/details?id=ossc-cgl-specialist"
+              className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 font-semibold text-emerald-700 transition hover:bg-emerald-500/20 dark:text-emerald-300"
+            >
+              OSSC CGL Specialist Blueprint
+            </Link>
+            <Link
+              href="/pyq?exam=UGC+NET"
+              className="rounded-lg border border-border bg-surface px-3 py-1 font-semibold text-text-primary transition hover:border-primary"
+            >
+              UGC NET Dec 2026 PYQs
+            </Link>
+            <Link
+              href="/syllabus/opsc-aso"
+              className="rounded-lg border border-border bg-surface px-3 py-1 font-semibold text-text-primary transition hover:border-primary"
+            >
+              OPSC ASO Syllabus
+            </Link>
+          </div>
 
           {loading && (
             <div className="mt-5 flex items-center gap-2 font-mono text-xs text-text-secondary">
@@ -342,6 +365,20 @@ export default function HomePage() {
               {result.found ? (
                 <div className="mt-3 text-sm leading-relaxed text-text-primary">
                   <p>{result.answer || result.message}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                  <Link
+                    href={`/pyq?q=${encodeURIComponent(query || "Odisha")}`}
+                    className="rounded-lg bg-[#10B981] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#059669]"
+                  >
+                    Open PYQ Practice
+                  </Link>
+                  <Link
+                    href="/syllabus"
+                    className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold text-text-primary hover:border-primary"
+                  >
+                    Browse Syllabus
+                  </Link>
+                </div>
                 </div>
               ) : (
                 <div className="mt-3 flex items-start gap-3">
