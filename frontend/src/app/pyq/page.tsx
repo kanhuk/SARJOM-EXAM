@@ -1297,44 +1297,51 @@ const [questions, setQuestions] = useState<Question[]>([
               </div>
             )}
 
-            {/* TOP 4 REVISION PILLARS */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+                                    {/* TOP 4 REVISION PILLARS */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <button
                 type="button"
+                data-pyq-feature="rose"
                 onClick={() => setActiveToolView("bookmarks-page")}
-                className="group relative rounded-2xl border border-border bg-surface p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#131D32] hover:border-[#00DDB0]/60 hover:shadow-[0_8px_24px_rgba(0,221,176,0.12)] flex flex-col justify-between"
+                className="group relative overflow-hidden rounded-[18px] border border-rose-200/80 border-l-4 border-l-rose-400 bg-gradient-to-br from-[#FFE4E6]/85 via-[#FFF1F2]/75 to-[#FFFFFF] p-4.5 text-left text-slate-900 shadow-[0_6px_20px_-6px_rgba(225,29,72,0.12),inset_0_1px_0_rgba(255,255,255,0.85)] transition-all duration-200 hover:-translate-y-0.5 hover:from-[#FFE4E6] hover:via-[#FFF1F2] hover:to-[#FFF8F9] hover:border-rose-300 hover:border-l-rose-500 hover:shadow-[0_14px_30px_-6px_rgba(225,29,72,0.24)] dark:border-rose-500/30 dark:border-l-rose-400 dark:from-rose-950/60 dark:via-rose-950/30 dark:to-slate-900 dark:text-slate-100 flex flex-col justify-between"
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-xl transition-transform duration-200 group-hover:scale-110">🔖</span>
-                  <span className="rounded-full bg-[#00DDB0]/15 border border-[#00DDB0]/30 px-2.5 py-0.5 font-mono text-[10px] font-bold text-[#00DDB0]">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-rose-100 text-xl text-rose-700 shadow-xs ring-1 ring-rose-300/70 transition-transform duration-200 group-hover:scale-105 dark:bg-rose-500/20 dark:text-rose-300 dark:ring-rose-400/30">
+                    🔖
+                  </span>
+                  <span className="rounded-full bg-white/85 border border-rose-200/90 px-2.5 py-0.5 font-mono text-[10px] font-bold text-rose-800 shadow-2xs dark:bg-rose-500/15 dark:border-rose-400/30 dark:text-rose-200">
                     {bookmarkedIds.length} Saved
                   </span>
                 </div>
-                <div className="mt-3">
-                  <h4 className="text-sm font-bold text-text-primary group-hover:text-primary transition-colors">My Bookmark</h4>
-                  <p className="font-mono text-[11px] text-text-secondary mt-0.5 leading-snug">Your pinned tricky questions</p>
+                <div className="mt-3.5">
+                  <h4 className="text-sm font-bold text-slate-900 group-hover:text-rose-900 transition-colors dark:text-slate-100 dark:group-hover:text-rose-300">My Bookmark</h4>
+                  <p className="font-mono text-[11px] text-slate-600 mt-1 leading-relaxed dark:text-slate-400">Your pinned tricky questions</p>
                 </div>
               </button>
 
               <button
                 type="button"
+                data-pyq-feature="amber"
                 onClick={() => setActiveToolView("smart-quiz-hub")}
-                className="group relative rounded-2xl border border-border bg-surface p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#131D32] hover:border-amber-400/60 hover:shadow-[0_8px_24px_rgba(251,191,36,0.12)] flex flex-col justify-between"
+                className="group relative overflow-hidden rounded-[18px] border border-amber-200/85 border-l-4 border-l-amber-400 bg-gradient-to-br from-[#FEF3C7]/90 via-[#FFFBEB]/75 to-[#FFFFFF] p-4.5 text-left text-slate-900 shadow-[0_6px_20px_-6px_rgba(217,119,6,0.12),inset_0_1px_0_rgba(255,255,255,0.85)] transition-all duration-200 hover:-translate-y-0.5 hover:from-[#FEF3C7] hover:via-[#FFFBEB] hover:to-[#FFFDF5] hover:border-amber-300 hover:border-l-amber-500 hover:shadow-[0_14px_30px_-6px_rgba(217,119,6,0.24)] dark:border-amber-500/30 dark:border-l-amber-400 dark:from-amber-950/60 dark:via-amber-950/30 dark:to-slate-900 dark:text-slate-100 flex flex-col justify-between"
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-xl transition-transform duration-200 group-hover:scale-110">⚡</span>
-                  <span className="rounded-full bg-amber-400/15 border border-amber-400/30 px-2.5 py-0.5 font-mono text-[10px] font-bold text-amber-300">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-xl text-amber-800 shadow-xs ring-1 ring-amber-300/75 transition-transform duration-200 group-hover:scale-105 dark:bg-amber-500/20 dark:text-amber-300 dark:ring-amber-400/30">
+                    ⚡
+                  </span>
+                  <span className="rounded-full bg-white/85 border border-amber-200/90 px-2.5 py-0.5 font-mono text-[10px] font-bold text-amber-900 shadow-2xs dark:bg-amber-500/15 dark:border-amber-400/30 dark:text-amber-200">
                     {mistakesHistory.length} Mistakes
                   </span>
                 </div>
-                <div className="mt-3">
-                  <h4 className="text-sm font-bold text-text-primary group-hover:text-warning transition-colors">Smart Quiz</h4>
-                  <p className="font-mono text-[11px] text-text-secondary mt-0.5 leading-snug">Re-attempt wrong questions by paper</p>
+                <div className="mt-3.5">
+                  <h4 className="text-sm font-bold text-slate-900 group-hover:text-amber-950 transition-colors dark:text-slate-100 dark:group-hover:text-amber-300">Smart Quiz</h4>
+                  <p className="font-mono text-[11px] text-slate-600 mt-1 leading-relaxed dark:text-slate-400">Re-attempt wrong questions by paper</p>
                 </div>
               </button>
 
               <button
                 type="button"
+                data-pyq-feature="violet"
                 onClick={() => {
                   if (activeQuestions.length > 0) {
                     setSubmitted(true);
@@ -1343,34 +1350,39 @@ const [questions, setQuestions] = useState<Question[]>([
                     alert("Take a practice test first to generate your Mistakes Notebook.");
                   }
                 }}
-                className="group relative rounded-2xl border border-border bg-surface p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#131D32] hover:border-purple-400/60 hover:shadow-[0_8px_24px_rgba(168,85,247,0.12)] flex flex-col justify-between"
+                className="group relative overflow-hidden rounded-[18px] border border-violet-200/85 border-l-4 border-l-violet-400 bg-gradient-to-br from-[#EDE9FE]/85 via-[#F5F3FF]/75 to-[#FFFFFF] p-4.5 text-left text-slate-900 shadow-[0_6px_20px_-6px_rgba(124,58,237,0.12),inset_0_1px_0_rgba(255,255,255,0.85)] transition-all duration-200 hover:-translate-y-0.5 hover:from-[#EDE9FE] hover:via-[#F5F3FF] hover:to-[#FAF8FF] hover:border-violet-300 hover:border-l-violet-500 hover:shadow-[0_14px_30px_-6px_rgba(124,58,237,0.24)] dark:border-violet-500/30 dark:border-l-violet-400 dark:from-violet-950/60 dark:via-violet-950/30 dark:to-slate-900 dark:text-slate-100 flex flex-col justify-between"
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-xl transition-transform duration-200 group-hover:scale-110">📓</span>
-                  <span className="rounded-full bg-purple-500/15 border border-purple-500/30 px-2.5 py-0.5 font-mono text-[10px] font-bold text-purple-300">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-violet-100 text-xl text-violet-800 shadow-xs ring-1 ring-violet-300/75 transition-transform duration-200 group-hover:scale-105 dark:bg-violet-500/20 dark:text-violet-300 dark:ring-violet-400/30">
+                    📓
+                  </span>
+                  <span className="rounded-full bg-white/85 border border-violet-200/90 px-2.5 py-0.5 font-mono text-[10px] font-bold text-violet-900 shadow-2xs dark:bg-violet-500/15 dark:border-violet-400/30 dark:text-violet-200">
                     Notebook
                   </span>
                 </div>
-                <div className="mt-3">
-                  <h4 className="text-sm font-bold text-text-primary group-hover:text-primary transition-colors">Mistakes Notebook</h4>
-                  <p className="font-mono text-[11px] text-text-secondary mt-0.5 leading-snug">Review wrong & skipped queries</p>
+                <div className="mt-3.5">
+                  <h4 className="text-sm font-bold text-slate-900 group-hover:text-violet-950 transition-colors dark:text-slate-100 dark:group-hover:text-violet-300">Mistakes Notebook</h4>
+                  <p className="font-mono text-[11px] text-slate-600 mt-1 leading-relaxed dark:text-slate-400">Review wrong & skipped queries</p>
                 </div>
               </button>
 
               <button
                 type="button"
+                data-pyq-feature="sky"
                 onClick={() => setActiveToolView("heatmap-page")}
-                className="group relative rounded-2xl border border-border bg-surface p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#131D32] hover:border-indigo-400/60 hover:shadow-[0_8px_24px_rgba(129,140,248,0.12)] flex flex-col justify-between"
+                className="group relative overflow-hidden rounded-[18px] border border-sky-200/85 border-l-4 border-l-sky-400 bg-gradient-to-br from-[#E0F2FE]/85 via-[#F0F9FF]/75 to-[#FFFFFF] p-4.5 text-left text-slate-900 shadow-[0_6px_20px_-6px_rgba(2,132,199,0.12),inset_0_1px_0_rgba(255,255,255,0.85)] transition-all duration-200 hover:-translate-y-0.5 hover:from-[#E0F2FE] hover:via-[#F0F9FF] hover:to-[#F6FBFF] hover:border-sky-300 hover:border-l-sky-500 hover:shadow-[0_14px_30px_-6px_rgba(2,132,199,0.24)] dark:border-sky-500/30 dark:border-l-sky-400 dark:from-sky-950/60 dark:via-sky-950/30 dark:to-slate-900 dark:text-slate-100 flex flex-col justify-between"
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-xl transition-transform duration-200 group-hover:scale-110">📊</span>
-                  <span className="rounded-full bg-indigo-500/15 border border-indigo-500/30 px-2.5 py-0.5 font-mono text-[10px] font-bold text-indigo-300">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-sky-100 text-xl text-sky-800 shadow-xs ring-1 ring-sky-300/75 transition-transform duration-200 group-hover:scale-105 dark:bg-sky-500/20 dark:text-sky-300 dark:ring-sky-400/30">
+                    📊
+                  </span>
+                  <span className="rounded-full bg-white/85 border border-sky-200/90 px-2.5 py-0.5 font-mono text-[10px] font-bold text-sky-900 shadow-2xs dark:bg-sky-500/15 dark:border-sky-400/30 dark:text-sky-200">
                     Accuracy Map
                   </span>
                 </div>
-                <div className="mt-3">
-                  <h4 className="text-sm font-bold text-text-primary group-hover:text-primary transition-colors">Memory Heatmap</h4>
-                  <p className="font-mono text-[11px] text-text-secondary mt-0.5 leading-snug">Strong, average & weak areas</p>
+                <div className="mt-3.5">
+                  <h4 className="text-sm font-bold text-slate-900 group-hover:text-sky-950 transition-colors dark:text-slate-100 dark:group-hover:text-sky-300">Memory Heatmap</h4>
+                  <p className="font-mono text-[11px] text-slate-600 mt-1 leading-relaxed dark:text-slate-400">Strong, average & weak areas</p>
                 </div>
               </button>
             </div>
@@ -1526,51 +1538,52 @@ const [questions, setQuestions] = useState<Question[]>([
               </div>
             )}
 
-            {/* 4 CARDS PER ROW GRID */}
+                        {/* 4 CARDS PER ROW GRID */}
             <section className="mt-6">
-              <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {displayCards.map((card) => (
                   <div
                     key={card.id}
-                    className="flex flex-col justify-between rounded-2xl border border-border bg-surface p-4.5 text-text-primary transition hover:border-primary shadow-md"
+                    data-pyq-card="paper"
+                    className="group flex flex-col justify-between rounded-[18px] border border-slate-200/90 bg-white p-5 text-slate-900 shadow-[0_2px_8px_rgba(15,23,42,0.03),0_12px_28px_-8px_rgba(15,23,42,0.07)] transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300/90 hover:shadow-[0_6px_16px_rgba(15,23,42,0.05),0_18px_34px_-10px_rgba(5,150,105,0.14)] dark:border-slate-700/80 dark:bg-slate-900 dark:text-slate-100 dark:shadow-[0_10px_26px_-8px_rgba(2,6,23,0.45)]"
                   >
                     <div>
                       <div className="flex items-start justify-between gap-2">
-                        <span className="inline-flex items-center whitespace-nowrap shrink-0 rounded-md border border-[#00DDB0]/25 bg-[#00DDB0]/15 px-2 py-0.5 font-mono text-[10px] font-bold text-[#00DDB0]">
+                        <span className="inline-flex items-center whitespace-nowrap shrink-0 rounded-lg border border-emerald-600/20 bg-emerald-50 px-2.5 py-1 font-mono text-[10px] font-bold text-emerald-800 dark:border-emerald-400/25 dark:bg-emerald-500/15 dark:text-emerald-300">
                           {card.paper} • {card.year}
                         </span>
-                        <span className="inline-flex items-center whitespace-nowrap shrink-0 rounded-md bg-background border border-border px-2 py-0.5 font-mono text-[10px] text-text-secondary">
+                        <span className="inline-flex items-center whitespace-nowrap shrink-0 rounded-lg bg-slate-100 border border-slate-200/80 px-2.5 py-1 font-mono text-[10px] font-medium text-slate-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400">
                           {card.shift}
                         </span>
                       </div>
 
-                      <h3 className="mt-2.5 text-sm font-bold text-text-primary leading-snug line-clamp-2 overflow-hidden no-scrollbar">
+                      <h3 className="mt-3.5 text-[15px] font-extrabold text-slate-900 tracking-tight leading-snug line-clamp-2 overflow-hidden no-scrollbar dark:text-white">
                         {card.title}
                       </h3>
 
-                      <p className="mt-1 font-mono text-[11px] text-text-secondary truncate">
+                      <p className="mt-1.5 font-mono text-[11px] font-medium text-slate-500 truncate dark:text-slate-400">
                         {card.subject}
                       </p>
 
-                      <div className="mt-3 flex flex-wrap items-center gap-2 font-mono text-[10px] text-text-secondary border-t border-white/5 pt-2.5">
-                        <span className="inline-flex items-center whitespace-nowrap shrink-0">📝 {card.questionsCount} Qs</span>
-                        <span className="inline-flex items-center whitespace-nowrap shrink-0">⏱ {card.durationMinutes} Mins</span>
-                        {card.isBilingual && <span className="inline-flex items-center whitespace-nowrap shrink-0 rounded bg-[#00DDB0]/10 px-1.5 py-0.5 text-[#00DDB0] font-bold">🌐 Odia/Eng</span>}
+                      <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 font-mono text-[10px] font-medium text-slate-600 border-t border-slate-100 pt-3 dark:text-slate-400 dark:border-slate-800">
+                        <span className="inline-flex items-center gap-1 whitespace-nowrap shrink-0">📝 {card.questionsCount} Qs</span>
+                        <span className="inline-flex items-center gap-1 whitespace-nowrap shrink-0">⏱ {card.durationMinutes} Mins</span>
+                        {card.isBilingual && <span className="inline-flex items-center whitespace-nowrap shrink-0 rounded-md bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 text-emerald-800 font-bold dark:bg-emerald-500/15 dark:border-emerald-500/25 dark:text-emerald-300">🌐 Odia/Eng</span>}
                       </div>
                     </div>
 
-                    <div className="mt-4 flex items-center gap-2 border-t border-white/10 pt-3">
+                    <div className="mt-4.5 flex items-center gap-2.5 border-t border-slate-100 pt-3.5 dark:border-slate-800">
                       <button
                         type="button"
                         onClick={() => triggerInstructions(card, "cbt")}
-                        className="flex-1 rounded-xl bg-[#00DDB0] py-2 text-center font-mono text-[11px] font-black text-slate-950 transition hover:bg-[#00f2c3]"
+                        className="flex-1 rounded-xl bg-[#059669] py-2.5 text-center font-mono text-[11px] font-bold text-white shadow-[0_3px_10px_-2px_rgba(5,150,105,0.35)] transition-all duration-150 hover:bg-[#047857] hover:shadow-[0_6px_14px_-2px_rgba(5,150,105,0.42)]"
                       >
                         CBT Mode
                       </button>
                       <button
                         type="button"
                         onClick={() => triggerInstructions(card, "tutor")}
-                        className="flex-1 rounded-xl border border-border bg-background py-2 text-center font-mono text-[11px] font-bold text-text-primary transition hover:border-primary hover:text-primary"
+                        className="flex-1 rounded-xl border border-slate-200 bg-slate-50 py-2.5 text-center font-mono text-[11px] font-bold text-slate-700 transition-all duration-150 hover:border-emerald-600/40 hover:bg-emerald-50/70 hover:text-emerald-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-emerald-400/50 dark:hover:text-emerald-300"
                       >
                         Tutor Mode
                       </button>

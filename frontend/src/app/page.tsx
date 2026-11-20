@@ -257,18 +257,33 @@ export default function HomePage() {
 
         {/* HERO SECTION */}
         <header className="sarjom-hero-matrix">
-          <span className="sarjom-kicker-sm">ACADEMIC PREPARATION WORKSPACE</span>
+          <span className="sarjom-kicker-sm">Odisha &amp; National Competitive Exams</span>
 
           <h1 className="sarjom-core-heading">
-            <span className="sarjom-muted-line">TARGET YOUR EXAM</span>
+            <span className="sarjom-muted-line">Target Your Exam,</span>
             <span className="sarjom-electric-text">
-              STRUCTURE YOUR <span className="highlight-accent">PREPARATION</span>
+              Structure Your <span className="highlight-accent">Preparation</span>
             </span>
           </h1>
 
           <p className="sarjom-descriptor">
-            Verified official syllabus blueprints, real exam mode PYQs, and verified notifications for competitive examinations in one focused environment.
+            Verified official syllabus blueprints, timed CBT previous year papers, and timely recruitment updates in one calm, focused study workspace.
           </p>
+
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/pyq-practice"
+              className="rounded-xl bg-[#10B981] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#059669]"
+            >
+              Start PYQ Practice
+            </Link>
+            <Link
+              href="/syllabus"
+              className="rounded-xl border border-border bg-surface/90 px-5 py-3 text-sm font-semibold text-text-primary transition hover:border-[#10B981] hover:text-[#059669]"
+            >
+              Explore Syllabus
+            </Link>
+          </div>
 
           <form onSubmit={handleSearch} className="sarjom-omni-bar">
             <span className="sarjom-search-icon">⌕</span>
@@ -289,7 +304,10 @@ export default function HomePage() {
                 Clear
               </button>
             )}
-            <button type="submit" className="sarjom-btn-single-search">
+            <button
+              type="submit"
+              className="rounded-xl bg-[#10B981] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#059669]"
+            >
               Search
             </button>
           </form>

@@ -28,6 +28,16 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 12);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -125,33 +135,42 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-surface/95 text-text-primary backdrop-blur-md transition-colors">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-3 py-3 md:px-6">
+    <header
+      className={`sticky top-0 z-50 w-full border-b text-text-primary transition-all duration-200 ${
+        scrolled
+          ? "border-border/80 bg-surface/80 shadow-sm backdrop-blur-xl"
+          : "border-border bg-surface/95 backdrop-blur-md"
+      }`}
+    >
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-6 lg:px-8">
         <div className="flex items-center gap-4 md:gap-8">
           {/* Mobile Hamburger Button */}
           <button
             type="button"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-background/70 text-text-primary transition hover:border-primary/60 hover:text-primary md:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-background/80 text-text-primary transition hover:border-primary/60 hover:text-primary md:hidden"
             aria-label="Toggle mobile menu"
             aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
 
-          <Link href="/" className="flex items-center p-0 transition hover:opacity-90">
+          <Link href="/" className="flex items-center rounded-lg p-0.5 transition hover:opacity-90">
             <Image
               src="/logo 2.png"
               alt="SARJOM EXAM"
               width={190}
               height={50}
-              className="h-10 w-auto object-contain md:h-11 dark:mix-blend-screen dark:brightness-125 dark:contrast-110"
+              className="h-9 w-auto object-contain md:h-10 dark:mix-blend-screen dark:brightness-125 dark:contrast-110"
               priority
             />
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-2 md:flex" aria-label="Primary navigation">
+          <nav
+            className="hidden items-center gap-1.5 rounded-2xl border border-border/60 bg-background/60 p-1 md:flex"
+            aria-label="Primary navigation"
+          >
             {navItems.map((item) => {
               const active = isActiveLink(item.href);
               return (
@@ -159,15 +178,15 @@ export function Header() {
                   key={item.href}
                   href={item.href}
                   aria-current={active ? "page" : undefined}
-                  className={`relative rounded-xl px-3.5 py-2 text-sm font-semibold transition ${
+                  className={`relative rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-150 ${
                     active
-                      ? "bg-primary/15 text-primary"
-                      : "text-text-secondary hover:bg-background/70 hover:text-text-primary"
+                      ? "bg-primary/15 text-primary shadow-2xs"
+                      : "text-text-secondary hover:bg-surface hover:text-text-primary"
                   }`}
                 >
                   <span>{item.label}</span>
                   {active && (
-                    <span className="absolute inset-x-3 bottom-0.5 h-0.5 rounded-full bg-primary" />
+                    <span className="absolute inset-x-3.5 bottom-1 h-0.5 rounded-full bg-primary" />
                   )}
                 </Link>
               );
@@ -175,13 +194,13 @@ export function Header() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2.5 sm:gap-3">
           <ThemeToggle />
 
           {!checking && !user && (
             <Link
               href="/login"
-              className="rounded-xl bg-primary px-4 py-2 text-sm font-bold text-slate-950 shadow-sm transition hover:opacity-90 sm:px-5"
+              className="rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-primary-dark sm:px-5"
             >
               Login
             </Link>
@@ -194,9 +213,9 @@ export function Header() {
                 onClick={() => setMenuOpen((value) => !value)}
                 aria-expanded={menuOpen}
                 aria-label="Admin account menu"
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-background/80 px-3 py-1.5 text-sm font-bold text-text-primary shadow-sm transition hover:border-primary/60"
+                className="inline-flex items-center gap-2 rounded-xl border border-border bg-background/85 px-3 py-1.5 text-sm font-bold text-text-primary shadow-sm transition hover:border-primary/60"
               >
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary font-mono text-xs font-black text-slate-950">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary font-mono text-xs font-black text-white">
                   {initials}
                 </span>
                 <span className="hidden sm:inline">Admin</span>
@@ -242,9 +261,9 @@ export function Header() {
                 onClick={() => setMenuOpen((value) => !value)}
                 aria-expanded={menuOpen}
                 aria-label="Candidate account menu"
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-background/80 px-2.5 py-1.5 text-sm font-bold text-text-primary shadow-sm transition hover:border-primary/60 sm:px-3.5"
+                className="inline-flex items-center gap-2 rounded-xl border border-border bg-background/85 px-2.5 py-1.5 text-sm font-bold text-text-primary shadow-sm transition hover:border-primary/60 sm:px-3.5"
               >
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary font-mono text-xs font-black text-slate-950">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary font-mono text-xs font-black text-white">
                   {initials}
                 </span>
                 <span className="font-mono text-xs sm:text-sm">ID: {shortId}</span>
@@ -296,9 +315,9 @@ export function Header() {
             exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
             transition={{ duration: prefersReducedMotion ? 0 : 0.18 }}
             aria-label="Mobile navigation"
-            className="overflow-hidden border-t border-border bg-surface px-3 pb-4 pt-2 md:hidden"
+            className="overflow-hidden border-t border-border bg-surface/95 px-4 pb-4 pt-3 backdrop-blur-xl md:hidden"
           >
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-1.5 rounded-2xl border border-border/60 bg-background/60 p-2">
               {navItems.map((item) => {
                 const active = isActiveLink(item.href);
                 return (
@@ -307,13 +326,14 @@ export function Header() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${
+                    className={`flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${
                       active
                         ? "bg-primary/15 text-primary"
-                        : "text-text-secondary hover:bg-background hover:text-text-primary"
+                        : "text-text-secondary hover:bg-surface hover:text-text-primary"
                     }`}
                   >
-                    {item.label}
+                    <span>{item.label}</span>
+                    {active && <span className="h-2 w-2 rounded-full bg-primary" />}
                   </Link>
                 );
               })}
