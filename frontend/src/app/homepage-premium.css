@@ -1,4 +1,4 @@
-﻿/* SARJOM EXAM - REFINED CALM LIGHT & PYQ DARK DESIGN SYSTEM */
+﻿/* SARJOM EXAM - REFINED CALM HOMEPAGE SYSTEM */
 
 nextjs-portal,
 [data-nextjs-toast-wrapper],
@@ -10,7 +10,7 @@ div[class*="nextjs-toast"] {
   --hp-bg: #F8FAFC;
   --hp-bg-gradient: transparent;
   --hp-surface: #FFFFFF;
-  --hp-hero-bg: rgba(255, 255, 255, 0.95);
+  --hp-hero-bg: rgba(255, 255, 255, 0.96);
   --hp-hero-border: #E2E8F0;
   --hp-card-bg: #FFFFFF;
   --hp-card-hover: #FFFFFF;
@@ -37,11 +37,39 @@ div[class*="nextjs-toast"] {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
+.sarjom-viewport::before {
+  content: "";
+  position: fixed;
+  top: -120px;
+  left: -120px;
+  width: 460px;
+  height: 460px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.13) 0%, rgba(16, 185, 129, 0) 72%);
+  filter: blur(110px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sarjom-viewport::after {
+  content: "";
+  position: fixed;
+  right: -140px;
+  bottom: -140px;
+  width: 480px;
+  height: 480px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(148, 163, 184, 0.14) 0%, rgba(203, 213, 225, 0) 72%);
+  filter: blur(115px);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .dark .sarjom-viewport {
   --hp-bg: #0F172A;
   --hp-bg-gradient: transparent;
   --hp-surface: #1E293B;
-  --hp-hero-bg: rgba(30, 41, 59, 0.9);
+  --hp-hero-bg: rgba(30, 41, 59, 0.92);
   --hp-hero-border: #334155;
   --hp-card-bg: #1E293B;
   --hp-card-hover: #243247;
@@ -59,19 +87,24 @@ div[class*="nextjs-toast"] {
   --hp-accent: #34D399;
 }
 
+.dark .sarjom-viewport::before,
+.dark .sarjom-viewport::after {
+  opacity: 0.05;
+}
+
 .sarjom-canvas {
   position: relative;
   z-index: 2;
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
-  padding: 1.25rem 2rem 3.5rem;
+  padding: 1.5rem 2rem 4rem;
   animation: softFadeInUp 0.35s ease-out both;
 }
 
 @media (max-width: 768px) {
   .sarjom-canvas {
-    padding: 0.9rem 1rem 2.5rem;
+    padding: 1rem 1rem 2.75rem;
   }
 }
 
@@ -175,42 +208,45 @@ div[class*="nextjs-toast"] {
   50% { opacity: 0.6; transform: scale(0.88); }
 }
 
-/* HERO SECTION */
+/* HERO SECTION WITH SUBTLE MESH WASH */
 .sarjom-hero-matrix {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   position: relative;
-  background: linear-gradient(180deg, rgba(236, 253, 245, 0.35) 0%, #FFFFFF 34%);
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 56%),
+    radial-gradient(ellipse at 85% 15%, rgba(203, 213, 225, 0.22) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(240, 253, 244, 0.45) 0%, #FFFFFF 42%);
   border: 1px solid #E2E8F0;
-  border-top: 3px solid rgba(5, 150, 105, 0.35);
   border-radius: 18px;
-  padding: 2.75rem 2.25rem;
+  padding: 3rem 2.35rem;
   box-shadow:
     0 1px 2px rgba(15, 23, 42, 0.03),
-    0 10px 28px -8px rgba(15, 23, 42, 0.06);
-  margin-bottom: 2.25rem;
+    0 12px 30px -10px rgba(15, 23, 42, 0.06);
+  margin-bottom: 2.75rem;
 }
 
 .dark .sarjom-hero-matrix {
   background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, rgba(30, 41, 59, 0.92) 32%);
   border-color: #334155;
-  border-top-color: rgba(16, 185, 129, 0.4);
   box-shadow: 0 12px 30px -8px rgba(2, 6, 23, 0.32);
 }
 
 @media (max-width: 768px) {
   .sarjom-hero-matrix {
-    padding: 1.65rem 1.15rem 1.75rem;
+    padding: 1.85rem 1.2rem 2rem;
+    margin-bottom: 2rem;
   }
 }
 
 .sarjom-kicker-sm {
+  display: inline-block;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   color: #047857;
   text-transform: uppercase;
 }
@@ -221,13 +257,13 @@ div[class*="nextjs-toast"] {
 
 .sarjom-core-heading {
   font-family: var(--font-sans);
-  font-size: 2.5rem;
+  font-size: 2.55rem;
   font-weight: 800;
-  line-height: 1.14;
+  line-height: 1.12;
   letter-spacing: -0.035em;
   color: #0F172A;
-  max-width: 900px;
-  margin-top: 0.55rem;
+  max-width: 880px;
+  margin-top: 0.65rem;
 }
 
 .dark .sarjom-core-heading {
@@ -236,8 +272,8 @@ div[class*="nextjs-toast"] {
 
 @media (max-width: 768px) {
   .sarjom-core-heading {
-    font-size: 1.68rem;
-    line-height: 1.2;
+    font-size: 1.7rem;
+    line-height: 1.18;
   }
 }
 
@@ -253,7 +289,7 @@ div[class*="nextjs-toast"] {
 .sarjom-electric-text {
   display: block;
   color: #0F172A;
-  margin-top: 0.15rem;
+  margin-top: 0.2rem;
 }
 
 .dark .sarjom-electric-text {
@@ -269,11 +305,11 @@ div[class*="nextjs-toast"] {
 }
 
 .sarjom-descriptor {
-  margin-top: 0.95rem;
+  margin-top: 1rem;
   font-size: 1rem;
-  line-height: 1.65;
+  line-height: 1.68;
   color: #475569;
-  max-width: 660px;
+  max-width: 650px;
   font-weight: 400;
 }
 
@@ -287,15 +323,15 @@ div[class*="nextjs-toast"] {
   }
 }
 
-/* SEARCH BAR */
+/* SEARCH BAR & PRIMARY ACTION */
 .sarjom-omni-bar {
   display: flex;
   align-items: center;
-  margin-top: 1.5rem;
+  margin-top: 1.6rem;
   background: #F4F7F5;
   border: 1px solid #DCE5E0;
   border-radius: 14px;
-  padding: 0.35rem 0.45rem 0.35rem 1rem;
+  padding: 0.35rem 0.45rem 0.35rem 1.05rem;
   gap: 0.75rem;
   width: 100%;
   max-width: 740px;
@@ -345,17 +381,19 @@ div[class*="nextjs-toast"] {
   background: #059669;
   color: #FFFFFF;
   border: none;
-  border-radius: 10px;
-  padding: 0.6rem 1.25rem;
+  border-radius: 11px;
+  padding: 0.65rem 1.35rem;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.18);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   white-space: nowrap;
 }
 
 .sarjom-btn-single-search:hover {
   background: #047857;
+  box-shadow: 0 6px 14px rgba(5, 150, 105, 0.24);
   transform: translateY(-1px);
 }
 
@@ -365,16 +403,16 @@ div[class*="nextjs-toast"] {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: 0.55rem;
+  margin-top: 1.1rem;
 }
 
 .sarjom-strip-head {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: #475569;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   margin-right: 0.25rem;
 }
 
@@ -383,17 +421,18 @@ div[class*="nextjs-toast"] {
   color: #0F172A;
   border: 1px solid #DCE5E0;
   border-radius: 9999px;
-  padding: 0.35rem 0.85rem;
+  padding: 0.38rem 0.9rem;
   font-size: 0.78rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
 }
 
 .sarjom-speed-pill:hover {
   background: #ECFDF5;
   border-color: rgba(5, 150, 105, 0.45);
   color: #047857;
+  transform: translateY(-1px);
 }
 
 .dark .sarjom-speed-pill {
@@ -404,31 +443,34 @@ div[class*="nextjs-toast"] {
 
 /* SECTION HEADERS */
 .sarjom-section-meta {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.35rem;
+  margin-top: 0.5rem;
 }
 
 .sarjom-section-meta h2 {
-  font-size: 1.5rem;
+  font-size: 1.52rem;
   font-weight: 700;
   color: #0F172A;
   letter-spacing: -0.03em;
-  margin-top: 0.25rem;
+  margin-top: 0.3rem;
 }
 
 .dark .sarjom-section-meta h2 {
   color: #F1F5F9;
 }
 
-/* WORKSPACES GRID */
+/* ACTIVE WORKSPACES GRID */
 .sarjom-bento-trio {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.35rem;
+  gap: 1.45rem;
+  margin-bottom: 2.75rem;
 }
 
 @media (max-width: 960px) {
   .sarjom-bento-trio {
     grid-template-columns: 1fr;
+    margin-bottom: 2rem;
   }
 }
 
@@ -436,25 +478,25 @@ div[class*="nextjs-toast"] {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: linear-gradient(180deg, rgba(236, 253, 245, 0.28) 0%, #FFFFFF 28%);
+  background: linear-gradient(180deg, rgba(236, 253, 245, 0.35) 0%, #FFFFFF 30%);
   border: 1px solid #E2E8F0;
-  border-left: 3px solid rgba(5, 150, 105, 0.32);
+  border-left: 3px solid rgba(5, 150, 105, 0.35);
   border-radius: 18px;
-  padding: 1.55rem;
+  padding: 1.65rem;
   box-shadow:
-    0 1px 2px rgba(15, 23, 42, 0.03),
-    0 8px 24px -6px rgba(15, 23, 42, 0.05);
+    0 2px 6px rgba(15, 23, 42, 0.03),
+    0 12px 28px -8px rgba(15, 23, 42, 0.06);
   transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
   text-decoration: none;
 }
 
 .sarjom-bento-tile:hover {
-  transform: translateY(-2.5px);
+  transform: translateY(-3px);
   border-color: #CBD5E1;
   border-left-color: #059669;
   box-shadow:
-    0 4px 10px rgba(15, 23, 42, 0.04),
-    0 14px 28px -8px rgba(15, 23, 42, 0.08);
+    0 6px 14px rgba(15, 23, 42, 0.04),
+    0 18px 34px -10px rgba(5, 150, 105, 0.12);
 }
 
 .dark .sarjom-bento-tile {
@@ -473,35 +515,37 @@ div[class*="nextjs-toast"] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  margin-bottom: 1.05rem;
 }
 
 .sarjom-icon-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: #ECFDF5;
+  width: 42px;
+  height: 42px;
+  border-radius: 9999px;
+  background: rgba(209, 250, 229, 0.65);
+  border: 1px solid rgba(16, 185, 129, 0.18);
   color: #047857;
 }
 
 .dark .sarjom-icon-badge {
   background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(16, 185, 129, 0.22);
   color: #10B981;
 }
 
 .sarjom-tile-num {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  color: #475569;
-  letter-spacing: 0.06em;
+  color: #64748B;
+  letter-spacing: 0.08em;
 }
 
 .sarjom-bento-tile h3 {
-  font-size: 1.12rem;
+  font-size: 1.14rem;
   font-weight: 700;
   color: #0F172A;
   letter-spacing: -0.02em;
@@ -514,7 +558,7 @@ div[class*="nextjs-toast"] {
 .sarjom-bento-tile p {
   margin-top: 0.45rem;
   font-size: 0.9rem;
-  line-height: 1.62;
+  line-height: 1.64;
   color: #475569;
 }
 
@@ -523,7 +567,7 @@ div[class*="nextjs-toast"] {
 }
 
 .sarjom-tile-footer {
-  margin-top: 1.25rem;
+  margin-top: 1.35rem;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
@@ -536,7 +580,7 @@ div[class*="nextjs-toast"] {
   color: #10B981;
 }
 
-/* ROADMAP GRID */
+/* UPCOMING MODULES GRID (MUTED SECONDARY WEIGHT) */
 .sarjom-roadmap-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -550,53 +594,51 @@ div[class*="nextjs-toast"] {
 }
 
 .sarjom-roadmap-card {
-  background: linear-gradient(180deg, rgba(241, 246, 243, 0.55) 0%, #FFFFFF 30%);
-  border: 1px solid #E2E8F0;
-  border-left: 3px solid #CBD5E1;
+  background: rgba(248, 250, 252, 0.85);
+  border: 1px dashed #CBD5E1;
   border-radius: 18px;
-  padding: 1.45rem;
-  box-shadow:
-    0 1px 2px rgba(15, 23, 42, 0.03),
-    0 6px 20px -6px rgba(15, 23, 42, 0.04);
-  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+  padding: 1.4rem;
+  box-shadow: 0 2px 10px -4px rgba(15, 23, 42, 0.03);
+  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .sarjom-roadmap-card:hover {
-  transform: translateY(-2px);
-  border-color: #CBD5E1;
-  box-shadow:
-    0 4px 10px rgba(15, 23, 42, 0.04),
-    0 12px 24px -8px rgba(15, 23, 42, 0.07);
+  transform: translateY(-1.5px);
+  border-color: #94A3B8;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .dark .sarjom-roadmap-card {
-  background: #1E293B;
-  border-color: #334155;
-  border-left-color: #475569;
+  background: rgba(30, 41, 59, 0.65);
+  border-color: #475569;
 }
 
 .sarjom-status-pill {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   border-radius: 9999px;
-  padding: 0.25rem 0.7rem;
+  padding: 0.24rem 0.72rem;
+  border: 1px solid #E2E8F0;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  background: #F1F6F3;
+  text-transform: uppercase;
+  background: #F1F5F9;
   color: #475569;
 }
 
 .dark .sarjom-status-pill {
   background: #0F172A;
+  border-color: #334155;
   color: #94A3B8;
 }
 
 .sarjom-roadmap-card h3 {
-  margin-top: 0.75rem;
-  font-size: 1.02rem;
-  font-weight: 700;
-  color: #0F172A;
+  margin-top: 0.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1E293B;
   letter-spacing: -0.02em;
 }
 
@@ -606,11 +648,117 @@ div[class*="nextjs-toast"] {
 
 .sarjom-roadmap-card p {
   margin-top: 0.4rem;
-  font-size: 0.88rem;
-  line-height: 1.6;
-  color: #475569;
+  font-size: 0.87rem;
+  line-height: 1.58;
+  color: #64748B;
 }
 
 .dark .sarjom-roadmap-card p {
   color: #94A3B8;
+}
+.sarjom-live-track {
+  display: inline-flex;
+  align-items: center;
+  color: #0F172A;
+  font-size: 0.84rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.dark .sarjom-live-track {
+  color: #F1F5F9;
+}
+
+.sarjom-live-track > a,
+.sarjom-live-track > span,
+.sarjom-live-track > div {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #0F172A !important;
+  font-weight: 600;
+  text-decoration: none;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 9999px;
+  padding: 0.28rem 0.85rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.sarjom-live-track > a:hover {
+  background: #ECFDF5;
+  border-color: rgba(5, 150, 105, 0.45);
+  color: #047857;
+}
+
+.dark .sarjom-live-track > a,
+.dark .sarjom-live-track > span,
+.dark .sarjom-live-track > div {
+  color: #F1F5F9;
+  background: #0F172A;
+  border-color: #334155;
+}
+.sarjom-live-track > a,
+.sarjom-live-track > span,
+.sarjom-live-track > div {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #0F172A !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: #FFFFFF;
+  border: 1px solid #D8E2DC;
+  border-radius: 9999px;
+  padding: 0.28rem 0.88rem;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.sarjom-live-track > a:hover {
+  transform: translateY(-1px);
+  border-color: rgba(5, 150, 105, 0.5);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.12);
+}
+
+.sarjom-live-track [data-category*="Admit Card"] {
+  background: #EFF6FF;
+  border-color: #BFDBFE;
+  color: #1D4ED8 !important;
+}
+
+.sarjom-live-track [data-category*="Answer Key"] {
+  background: #F5F3FF;
+  border-color: #DDD6FE;
+  color: #6D28D9 !important;
+}
+
+.sarjom-live-track [data-category*="Result"] {
+  background: #ECFDF5;
+  border-color: #A7F3D0;
+  color: #047857 !important;
+}
+
+.sarjom-live-track [data-category*="Application Open"] {
+  background: #F0FDFA;
+  border-color: #99F6E4;
+  color: #0F766E !important;
+}
+
+.sarjom-live-track [data-category*="Apply Last Date"],
+.sarjom-live-track [data-category*="Correction Date"] {
+  background: #FFFBEB;
+  border-color: #FDE68A;
+  color: #B45309 !important;
+}
+
+.dark .sarjom-live-track > a,
+.dark .sarjom-live-track > span,
+.dark .sarjom-live-track > div {
+  background: #0F172A;
+  border-color: #334155;
+  color: #F1F5F9 !important;
 }

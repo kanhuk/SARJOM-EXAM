@@ -114,34 +114,26 @@ export default function HomePage() {
 
     async function loadLiveNotices() {
       try {
-        const types = ["exam", "admit-card", "answer-key", "result"] as const;
-        const responses = await Promise.all(
-          types.map(async (type) => {
-            const res = await getContent(type);
-            const records = Array.isArray(res.records) ? res.records : [];
-            return records.slice(0, 2).map((r: any) => ({
-              id: String(r.id),
-              title: String(r.title || "Official Notification"),
-              category: type,
-              label:
-                type === "admit-card"
-                  ? "ADMIT CARD"
-                  : type === "answer-key"
-                  ? "ANSWER KEY"
-                  : type === "result"
-                  ? "RESULT"
-                  : "NOTIFICATION",
-              link: `/exams/${type}/${encodeURIComponent(r.id)}`,
-              source: r.officialSource ? String(r.officialSource) : undefined,
-            }));
-          })
-        );
+        const res = await fetch("/api/live-notices", { cache: "no-store" });
+        if (!res.ok) return;
+        const data = await res.json();
+        const rawList = Array.isArray(data?.notices) ? data.notices : [];
 
-        if (active) {
-          const flat = responses.flat();
-          if (flat.length > 0) {
-            setTickerItems([...initialNotices, ...flat]);
-          }
+        const mapped: TickerItem[] = rawList.map((n: any, idx: number) => {
+          const catText = String(n.category || "Notification");
+          const upper = catText.toUpperCase();
+          return {
+            id: String(n.id || `live-${idx}`),
+            title: String(n.title || "Official Notification"),
+            category: catText,
+            label: upper,
+            link: String(n.link || "/exams"),
+            source: n.source ? String(n.source) : undefined,
+          };
+        });
+
+        if (active && mapped.length > 0) {
+          setTickerItems(mapped);
         }
       } catch {}
     }
@@ -161,7 +153,7 @@ export default function HomePage() {
     setResult(null);
 
     try {
-      const res = await fetch(`/api/search?q=${encodeURIComponent(clean)}`);
+      const res = await fetch("/api/live-notices");
       const data = await res.json();
       setResult(data);
     } catch {
@@ -210,16 +202,14 @@ export default function HomePage() {
           <div className="sarjom-live-label" aria-label="Live notices">
             <span className="sarjom-live-pulse" />
             <span className="sarjom-live-word">LIVE</span>
-            <span className="sarjom-live-divider" />
-            <span className="sarjom-live-label-detail">OFFICIAL UPDATES</span>
           </div>
 
-          <div className="sarjom-live-window group" aria-label="Latest official updates">
+          <div className="sarjom-live-window group" aria-label="Latest LIVE UPDATES">
             <div className="sarjom-live-track sarjom-marquee-active group-hover:[animation-play-state:paused]">
               {displayNotices.map((item, idx) =>
                 item.link.startsWith("http") ? (
                   <a
-                    key={`${item.id}-${idx}`}
+                    key={`${item.id}-${idx}`} data-category={item.category || "Notification"}
                     href={item.link}
                     target="_blank"
                     rel="noreferrer"

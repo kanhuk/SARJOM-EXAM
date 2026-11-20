@@ -152,7 +152,7 @@
 }
 
 /* --- UNIFY CARDS ACROSS ALL OTHER PAGES IN LIGHT MODE --- */
-html.light main :is(div, section, article, a):not([data-pyq-feature]):not([data-pyq-card])[class*="rounded-2xl"][class*="border"],
+html.light main :is(div, section, article, a):not([data-pyq-feature]):not([data-pyq-card]):not([class*="sarjom-roadmap-card"])[class*="rounded-2xl"][class*="border"],
 html.light main :is(div, section, article, a):not([data-pyq-feature]):not([data-pyq-card])[class*="rounded-3xl"][class*="border"],
 html.light main :is(div, section, article, a):not([data-pyq-feature]):not([data-pyq-card])[class*="bg-slate-900"],
 html.light main :is(div, section, article, a):not([data-pyq-feature]):not([data-pyq-card])[class*="bg-slate-800"],
