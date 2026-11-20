@@ -2,7 +2,14 @@
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: [{ userAgent: "*", allow: "/", disallow: ["/login", "/signup", "/api/"] }],
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/admin", "/api/", "/auth/", "/site-editing"],
+      },
+    ],
     sitemap: "https://www.sarjomexam.in/sitemap.xml",
+    host: "https://www.sarjomexam.in",
   };
 }
