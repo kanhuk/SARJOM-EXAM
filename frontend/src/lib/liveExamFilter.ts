@@ -55,6 +55,12 @@ const GENERIC_BLOCKED_KEYWORDS = new Set([
 
 const EXTRA_EXAM_RULES: ExamRule[] = [
   {
+    id: "ssb-odisha-recruitment",
+    title: "SSB Odisha (Junior Assistant / Lecturer)",
+    officialUrl: "https://ssbodisha.ac.in",
+    keywords: ["ssb odisha", "state selection board", "ssb junior assistant", "junior assistant", "ssb lecturer"],
+  },
+  {
     id: "odisha-junior-regular-teacher",
     title: "Odisha Junior & Regular Teacher",
     officialUrl: "https://osepa.odisha.gov.in",
@@ -163,7 +169,7 @@ function buildExamKeywords(id: string, title: string): string[] {
     "nda-na": ["nda & na", "nda and na", "national defence academy"],
     "cds": ["combined defence services", "cds examination"],
     "agniveer-vayu-army": ["agniveer", "agnipath"],
-    "gate": ["gate 2025", "gate 2026", "gate 2027", "graduate aptitude test"],
+    "gate": ["gate 2026", "gate 2027", "graduate aptitude test"],
     "ojee": ["ojee", "odisha joint entrance"],
     "ojee-odisha": ["ojee", "odisha joint entrance"],
     "neet-ug": ["neet (ug)", "neet ug"],
@@ -244,7 +250,7 @@ export function classifyNoticeCategory(text: string): NoticeCategory | null {
   if (/(correction window|application correction|edit window|modify application|correction date)/.test(lower)) {
     return "Correction Date";
   }
-  if (/(admit card|hall ticket|call letter|e-admit|exam city|city intimation)/.test(lower)) {
+  if (/(admit card|hall ticket|call letter|admission letter|e-admit|exam city|city intimation)/.test(lower)) {
     return "Admit Card";
   }
   if (/(answer key|provisional key|final key|response sheet|objection tracker|scoring key)/.test(lower)) {
@@ -263,16 +269,48 @@ export function classifyNoticeCategory(text: string): NoticeCategory | null {
   return null;
 }
 
-function computePriorityScore(text: string, category: NoticeCategory): number {
-  let score = 0;
-  if (/\b2026\b/.test(text)) score += 60;
-  else if (/\b2025\b/.test(text)) score += 35;
-  else if (/\b2024\b/.test(text)) score += 10;
-  else if (/\b2023\b/.test(text)) score -= 10;
+function parseNoticeTimestamp(text: string, publishedAt?: string): number {
+  if (publishedAt) {
+    const parsed = Date.parse(publishedAt);
+    if (!Number.isNaN(parsed)) return parsed;
+  }
 
-  if (category === "Application Open" || category === "Apply Last Date") score += 20;
-  else if (category === "Admit Card" || category === "Correction Date") score += 15;
-  else if (category === "Result" || category === "Answer Key") score += 10;
+  const isoMatch = text.match(/\b(20\d{2})[-/](\d{1,2})[-/](\d{1,2})\b/);
+  if (isoMatch) {
+    const d = new Date(Number(isoMatch[1]), Number(isoMatch[2]) - 1, Number(isoMatch[3]));
+    if (!Number.isNaN(d.getTime())) return d.getTime();
+  }
+
+  const dmyMatch = text.match(/\b(\d{1,2})[\/\-](\d{1,2})[\/\-](20\d{2})\b/);
+  if (dmyMatch) {
+    const d = new Date(Number(dmyMatch[3]), Number(dmyMatch[2]) - 1, Number(dmyMatch[1]));
+    if (!Number.isNaN(d.getTime())) return d.getTime();
+  }
+
+  return 0;
+}
+
+function computePriorityScore(text: string, category: NoticeCategory, publishedAt?: string): number {
+  let score = 0;
+  const ts = parseNoticeTimestamp(text, publishedAt);
+  const now = Date.now();
+
+  if (ts > 0) {
+    const ageDays = Math.max(0, (now - ts) / (1000 * 60 * 60 * 24));
+    if (ageDays <= 1) score += 250;
+    else if (ageDays <= 3) score += 190;
+    else if (ageDays <= 7) score += 150;
+    else if (ageDays <= 30) score += 110;
+    else score += 40;
+  }
+
+  if (/\b2027\b/.test(text)) score += 75;
+  else if (/\b2026\b/.test(text)) score += 60;
+  else if (/\b2025\b/.test(text)) score += 20;
+
+  if (category === "Admit Card" || category === "Result" || category === "Answer Key") score += 25;
+  else if (category === "Application Open" || category === "Apply Last Date") score += 20;
+  else if (category === "Correction Date") score += 15;
 
   return score;
 }
@@ -285,15 +323,32 @@ export function matchAndFilterExamNotice(
   publishedAt?: string,
 ): FilteredLiveNotice | null {
   const cleanTitle = rawTitle.replace(/^[»•\-–]+\s*/, "").replace(/\s+/g, " ").trim();
-  if (cleanTitle.length < 10 || cleanTitle.length > 260) return null;
+  if (cleanTitle.length < 10 || cleanTitle.length > 480) return null;
   const lower = cleanTitle.toLowerCase();
 
-  if (/\b(2023|2024)\b/.test(lower) && !/\b2026\b/.test(lower)) {
+  const hasCurrentOrUpcomingYear = /\b(2026|2027)\b/.test(lower);
+  if (/(?:^|[^0-9])(2020|2021|2022|2023|2024|2025)(?:[^0-9]|$)/.test(lower) && !hasCurrentOrUpcomingYear) {
+    return null;
+  }
+
+  if (/ugc[\s\-]*net|nta[\s\-]*net/i.test(lower) && !hasCurrentOrUpcomingYear) {
     return null;
   }
 
   if (BLOCKED_NOISE_TERMS.some((noise) => lower.includes(noise))) {
     return null;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const dmyMatches = Array.from(cleanTitle.matchAll(/\b(\d{1,2})[\/\-](\d{1,2})[\/\-](20\d{2})\b/g));
+  if (dmyMatches.length > 0 && !/(admit card|result|answer key)/i.test(lower)) {
+    const parsedDates = dmyMatches
+      .map((m) => new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1])))
+      .filter((d) => !Number.isNaN(d.getTime()));
+    if (parsedDates.length > 0 && parsedDates.every((d) => d < today)) {
+      return null;
+    }
   }
 
   const matchedExam = rules.find((rule) =>
@@ -322,6 +377,9 @@ export function matchAndFilterExamNotice(
     link: rawLink || matchedExam.officialUrl,
     source: sourceName,
     publishedAt,
-    priorityScore: computePriorityScore(cleanTitle, category),
+    priorityScore: computePriorityScore(cleanTitle, category, publishedAt),
   };
 }
+
+
+

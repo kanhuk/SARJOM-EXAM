@@ -196,7 +196,7 @@ div[class*="nextjs-toast"] {
   width: max-content !important;
   gap: 28px;
   padding: 0 20px;
-  animation: sarjomMarquee  param($d) ([double]$d.Groups[1].Value * 1.8).ToString("0.#") + "s"  linear infinite !important;
+  animation: sarjomMarquee 45s linear infinite !important;
 }
 
 .sarjom-marquee-active:hover {
@@ -853,19 +853,6 @@ div[class*="nextjs-toast"] {
   background: #0F172A;
   border-color: #334155;
   color: #F1F5F9 !important;
-}
-
-/* Slower, comfortable notice rail speed */
-.sarjom-live-track,
-.sarjom-marquee-active {
-  animation-duration: 75s !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .sarjom-live-track,
-  .sarjom-marquee-active {
-    animation: none !important;
-  }
 }
 
 /* Notification red blink & right spacing */

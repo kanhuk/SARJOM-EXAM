@@ -6,6 +6,7 @@ import PyqThemeScope from "@/components/PyqThemeScope";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "./globals.css";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -54,6 +55,7 @@ export default function RootLayout({
             <Footer />
           </LanguageProvider>
         </ThemeProvider>
+        <ScrollToTop />
       </body>
     </html>
   );
