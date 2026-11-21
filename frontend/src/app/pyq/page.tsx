@@ -72,7 +72,11 @@ type QuestionReport = {
 };
 
 const curatedCatalog: PaperCard[] = [
-  // 2023 PAPERS
+      { id: "opsc-ag-aso-pyq-1", exam: "OPSC AG ASO", title: "OPSC AG ASO Official General Awareness & Odisha GK Paper", subject: "General Awareness", category: "pyq", year: "2024", paper: "Paper 1", shift: "Morning Session", questionsCount: 10, durationMinutes: 15, marksPerQuestion: 1, negativeMark: 0.25, expectedCutoffPercent: 68, isBilingual: true },
+  { id: "opsc-ag-aso-subj-1", exam: "OPSC AG ASO", title: "OPSC AG ASO Reasoning & Mental Ability Drill", subject: "Reasoning & Aptitude", category: "subject", year: "2025", paper: "Paper 2", shift: "Practice Set", questionsCount: 10, durationMinutes: 15, marksPerQuestion: 1, negativeMark: 0.25, expectedCutoffPercent: 70, isBilingual: true },
+  { id: "opsc-ag-aso-topic-1", exam: "OPSC AG ASO", title: "Odisha History, Culture & Polity High-Yield Drill", subject: "Odisha Studies", category: "topic", year: "2025", paper: "Topic Drill", shift: "Instant", questionsCount: 10, durationMinutes: 12, marksPerQuestion: 1, negativeMark: 0.25, expectedCutoffPercent: 72, isBilingual: true, topicTag: "Odisha History" },
+{ id: "opsc-ag-aso-ga-1", exam: "OPSC AG ASO", title: "OPSC AG ASO General Awareness and Odisha GK Practice Set", subject: "General Awareness", category: "subject", year: "2025", paper: "Paper 1", shift: "Practice Set", questionsCount: 25, durationMinutes: 30, marksPerQuestion: 1, negativeMark: 0.25, expectedCutoffPercent: 68, isBilingual: true, topicTag: "Odisha GK" },
+// 2023 PAPERS
   { 
     id: "opsi-2023-p1-official", 
     exam: "Odisha Police SI", 
@@ -1415,7 +1419,7 @@ const [questions, setQuestions] = useState<Question[]>([
                         autoFocus
                       />
                       <div className="mt-2 max-h-56 space-y-1 overflow-y-auto">
-                        {["Odisha Police SI", "OPSC ASO", "OPSC OCS"].map((exam) => (
+                        {Array.from(new Set(["Odisha Police SI", "OPSC AG ASO", "OPSC ASO", "OPSC OCS", ...curatedCatalog.map((c) => c.exam)])).filter((ex) => !examSearch.trim() || ex.toLowerCase().includes(examSearch.trim().toLowerCase())).map((exam) => (
                           <button
                             key={exam}
                             type="button"
