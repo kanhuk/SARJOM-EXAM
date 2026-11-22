@@ -121,13 +121,13 @@ export function Header() {
     router.refresh();
   }
 
+  if (pathname.startsWith("/admin") || pathname.startsWith("/site-editing")) return null;
+
   const shortId = user?.id ? user.id.slice(0, 8).toUpperCase() : "";
   const initials =
     user?.email?.[0]?.toUpperCase() ||
     user?.user_metadata?.full_name?.[0]?.toUpperCase() ||
     (isAdmin ? "A" : "S");
-
-  if (pathname.startsWith("/admin") || pathname.startsWith("/site-editing")) return null;
 
   const isActiveLink = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -136,71 +136,60 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full border-b text-text-primary transition-all duration-200 ${
+      className={`sticky top-2.5 z-50 mx-auto w-full max-w-4xl rounded-2xl border px-2 text-text-primary transition-[background-color,border-color,backdrop-filter,box-shadow] duration-200 ease-out sm:px-3 ${
         scrolled
-          ? "border-border/80 bg-surface/80 shadow-sm backdrop-blur-xl"
-          : "border-border bg-surface/95 backdrop-blur-md"
+          ? "border-border/75 bg-surface/90 shadow-sm backdrop-blur-xl"
+          : "border-border/60 bg-surface/80 backdrop-blur-md"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-6 lg:px-8">
-        <div className="flex items-center gap-4 md:gap-8">
-          {/* Mobile Hamburger Button */}
+      <div className="mx-auto grid max-w-4xl grid-cols-[auto_1fr_auto] items-center gap-3 px-3 py-1.5 md:px-4">
+        <div className="flex items-center gap-2 justify-self-start">
           <button
             type="button"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-background/80 text-text-primary transition hover:border-primary/60 hover:text-primary md:hidden"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-border/70 bg-surface/80 text-text-primary transition hover:border-primary/60 hover:text-primary md:hidden"
             aria-label="Toggle mobile menu"
             aria-expanded={mobileMenuOpen}
           >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
 
-          <Link href="/" className="flex items-center rounded-lg p-0.5 transition hover:opacity-90">
-            <Image
-              src="/logo 2.png"
-              alt="SARJOM EXAM"
-              width={190}
-              height={50}
-              className="h-9 w-auto object-contain md:h-10 dark:mix-blend-screen dark:brightness-125 dark:contrast-110"
-              priority
-            />
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav
-            className="hidden items-center gap-1.5 rounded-2xl border border-border/60 bg-background/60 p-1 md:flex"
-            aria-label="Primary navigation"
-          >
-            {navItems.map((item) => {
-              const active = isActiveLink(item.href);
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  aria-current={active ? "page" : undefined}
-                  className={`relative rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-150 ${
-                    active
-                      ? "bg-primary/15 text-primary shadow-2xs"
-                      : "text-text-secondary hover:bg-surface hover:text-text-primary"
-                  }`}
-                >
-                  <span>{item.label}</span>
-                  {active && (
-                    <span className="absolute inset-x-3.5 bottom-1 h-0.5 rounded-full bg-primary" />
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
+          <Link href="/" className="flex items-center rounded-full transition hover:opacity-90"><Image src="/logo-rounded.png" alt="SARJOM EXAM" width={64} height={64} className="h-11 w-11 rounded-full object-contain md:h-14 md:w-14" priority /></Link>
         </div>
 
-        <div className="flex items-center gap-2.5 sm:gap-3">
+        <nav
+          className="hidden items-center justify-center gap-5 md:flex lg:gap-7"
+          aria-label="Primary navigation"
+        >
+          {navItems.map((item) => {
+            const active = isActiveLink(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                className={`relative py-1 text-[13px] font-medium tracking-tight transition-colors duration-150 ${
+                  active
+                    ? "font-semibold text-text-primary"
+                    : "text-text-secondary hover:text-text-primary"
+                }`}
+              >
+                <span>{item.label}</span>
+                {active && (
+                  <span className="absolute inset-x-0 -bottom-0.5 h-[1.5px] rounded-full bg-text-primary" />
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="flex items-center justify-self-end gap-2">
           <ThemeToggle />
 
           {!checking && !user && (
             <Link
               href="/login"
-              className="rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-primary-dark sm:px-5"
+              className="rounded-xl bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white shadow-2xs transition hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200 sm:px-3.5"
             >
               Login
             </Link>
@@ -213,13 +202,13 @@ export function Header() {
                 onClick={() => setMenuOpen((value) => !value)}
                 aria-expanded={menuOpen}
                 aria-label="Admin account menu"
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-background/85 px-3 py-1.5 text-sm font-bold text-text-primary shadow-sm transition hover:border-primary/60"
+                className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-primary transition hover:border-primary/60"
               >
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary font-mono text-xs font-black text-white">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-900 font-mono text-[11px] font-bold text-white dark:bg-white dark:text-slate-950">
                   {initials}
                 </span>
                 <span className="hidden sm:inline">Admin</span>
-                <ChevronDown className="h-4 w-4 text-text-secondary" />
+                <ChevronDown className="h-3.5 w-3.5 text-text-secondary" />
               </button>
 
               <AnimatePresence>
@@ -234,7 +223,7 @@ export function Header() {
                     <Link
                       href="/admin"
                       onClick={() => setMenuOpen(false)}
-                      className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-text-primary transition hover:bg-background"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-text-primary transition hover:bg-background"
                     >
                       <ShieldCheck className="h-4 w-4 text-primary" />
                       <span>Admin Dashboard</span>
@@ -243,7 +232,7 @@ export function Header() {
                       type="button"
                       onClick={signOut}
                       disabled={signingOut}
-                      className="mt-1 flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm font-bold text-danger transition hover:bg-danger/10 disabled:opacity-50"
+                      className="mt-1 flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-xs font-bold text-danger transition hover:bg-danger/10 disabled:opacity-50"
                     >
                       <LogOut className="h-4 w-4" />
                       <span>{signingOut ? "Signing out…" : "Logout"}</span>
@@ -261,13 +250,13 @@ export function Header() {
                 onClick={() => setMenuOpen((value) => !value)}
                 aria-expanded={menuOpen}
                 aria-label="Candidate account menu"
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-background/85 px-2.5 py-1.5 text-sm font-bold text-text-primary shadow-sm transition hover:border-primary/60 sm:px-3.5"
+                className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-primary transition hover:border-primary/60"
               >
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary font-mono text-xs font-black text-white">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-900 font-mono text-[11px] font-bold text-white dark:bg-white dark:text-slate-950">
                   {initials}
                 </span>
-                <span className="font-mono text-xs sm:text-sm">ID: {shortId}</span>
-                <ChevronDown className="h-4 w-4 text-text-secondary" />
+                <span className="font-mono text-xs">ID: {shortId}</span>
+                <ChevronDown className="h-3.5 w-3.5 text-text-secondary" />
               </button>
 
               <AnimatePresence>
@@ -293,7 +282,7 @@ export function Header() {
                       type="button"
                       onClick={signOut}
                       disabled={signingOut}
-                      className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-danger px-4 py-2.5 text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-50"
+                      className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-danger px-4 py-2 text-xs font-bold text-white transition hover:opacity-90 disabled:opacity-50"
                     >
                       <LogOut className="h-4 w-4" />
                       <span>{signingOut ? "Signing out…" : "Logout"}</span>
@@ -306,7 +295,6 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.nav
@@ -315,9 +303,9 @@ export function Header() {
             exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
             transition={{ duration: prefersReducedMotion ? 0 : 0.18 }}
             aria-label="Mobile navigation"
-            className="overflow-hidden border-t border-border bg-surface/95 px-4 pb-4 pt-3 backdrop-blur-xl md:hidden"
+            className="overflow-hidden rounded-b-2xl border-t border-border bg-surface/95 px-4 pb-4 pt-3 backdrop-blur-xl md:hidden"
           >
-            <div className="flex flex-col gap-1.5 rounded-2xl border border-border/60 bg-background/60 p-2">
+            <div className="flex flex-col gap-1">
               {navItems.map((item) => {
                 const active = isActiveLink(item.href);
                 return (
@@ -326,14 +314,14 @@ export function Header() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${
+                    className={`flex items-center justify-between rounded-xl px-3.5 py-2 text-sm font-medium transition ${
                       active
-                        ? "bg-primary/15 text-primary"
-                        : "text-text-secondary hover:bg-surface hover:text-text-primary"
+                        ? "bg-background font-semibold text-text-primary"
+                        : "text-text-secondary hover:bg-background/60 hover:text-text-primary"
                     }`}
                   >
                     <span>{item.label}</span>
-                    {active && <span className="h-2 w-2 rounded-full bg-primary" />}
+                    {active && <span className="h-1.5 w-1.5 rounded-full bg-text-primary" />}
                   </Link>
                 );
               })}

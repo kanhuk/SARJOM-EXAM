@@ -2,15 +2,10 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/ThemeProvider";
 
 function isPyqRoute(pathname: string): boolean {
-  return (
-    pathname === "/pyq" ||
-    pathname.startsWith("/pyq/") ||
-    pathname === "/pyq-practice" ||
-    pathname.startsWith("/pyq-practice/")
-  );
+  return pathname === "/pyq" || pathname.startsWith("/pyq/");
 }
 
 export default function PyqThemeScope() {
@@ -19,16 +14,15 @@ export default function PyqThemeScope() {
 
   useEffect(() => {
     const root = document.documentElement;
-    const onPyq = isPyqRoute(pathname);
+    const active = theme === "dark" || resolvedTheme === "dark" ? "dark" : "light";
 
-    if (!onPyq) {
-      root.classList.remove("dark");
-      root.classList.add("light");
-      root.style.colorScheme = "light";
+    if (!isPyqRoute(pathname)) {
+      root.classList.toggle("dark", active === "dark");
+      root.classList.toggle("light", active === "light");
+      root.style.colorScheme = active;
       return;
     }
 
-    const active = theme === "dark" || resolvedTheme === "dark" ? "dark" : "light";
     root.classList.remove("light", "dark");
     root.classList.add(active);
     root.style.colorScheme = active;

@@ -1,25 +1,24 @@
-﻿"use client"
+﻿"use client";
 
-import * as React from "react"
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
-import { motion } from "framer-motion"
+import { Moon, Sun } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useTheme } from "@/components/ThemeProvider";
 
 export function ThemeToggle() {
-  const { setTheme, theme } = useTheme()
+  const { setTheme, theme } = useTheme();
 
   return (
     <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-        className="rounded-full relative"
+      type="button"
+      variant="ghost"
+      size="icon"
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      className="relative rounded-full"
+      aria-label="Toggle theme"
     >
-        <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-amber-500" />
-        <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-blue-400" />
-        <span className="sr-only">Toggle theme</span>
+      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 text-amber-500 transition-all dark:-rotate-90 dark:scale-0" />
+      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 text-blue-400 transition-all dark:rotate-0 dark:scale-100" />
+      <span className="sr-only">Toggle theme</span>
     </Button>
-  )
+  );
 }

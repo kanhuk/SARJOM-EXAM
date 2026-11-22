@@ -18,7 +18,7 @@ const robotoMono = Roboto_Mono({
   variable: "--font-mono",
 });
 
-export const metadata: Metadata = {
+export const metadata: Metadata = { icons: { icon: "/favicon.png", shortcut: "/favicon.png", apple: "/favicon.png" },
   metadataBase: new URL("https://www.sarjomexam.in"),
   title: {
     default: "SARJOM EXAM | PYQ Practice, Syllabus & Mock Tests",

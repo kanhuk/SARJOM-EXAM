@@ -55,7 +55,7 @@ export default function Page() {
               Explore Official Syllabus
             </Link>
             <Link
-              href="/pyq-practice"
+              href="/pyq"
               className="rounded-lg border border-border bg-background px-4 py-2 text-xs font-semibold text-text-primary transition hover:border-primary sm:text-sm"
             >
               Start PYQ Practice

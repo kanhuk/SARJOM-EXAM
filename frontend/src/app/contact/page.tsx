@@ -57,7 +57,7 @@ export default function Page() {
                 Syllabus Explorer
               </Link>
               <Link
-                href="/pyq-practice"
+                href="/pyq"
                 className="rounded-lg border border-border bg-background px-3.5 py-2 text-text-primary transition hover:border-primary"
               >
                 PYQ CBT Practice

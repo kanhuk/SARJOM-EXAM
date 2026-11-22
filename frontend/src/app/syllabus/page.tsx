@@ -180,7 +180,7 @@ export default function SyllabusPage() {
 
             <div className="flex items-center gap-3">
               <Link
-                href="/pyq-practice"
+                href="/pyq"
                 className="rounded-md border border-border bg-surface px-3.5 py-2 text-xs font-semibold text-text-primary transition hover:border-text-primary"
               >
                 PYQ Practice -&gt;

@@ -262,7 +262,7 @@ export default function HomePage() {
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <Link
-              href="/pyq-practice"
+              href="/pyq"
               className="rounded-xl bg-[#10B981] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#059669]"
             >
               Start PYQ Practice

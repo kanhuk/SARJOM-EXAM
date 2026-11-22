@@ -782,6 +782,7 @@ const [questions, setQuestions] = useState<Question[]>([
   const [reportComment, setReportComment] = useState("");
   const [reportsList, setReportsList] = useState<QuestionReport[]>([]);
   const [reportSuccessToast, setReportSuccessToast] = useState(false);
+  const [mistakesNotice, setMistakesNotice] = useState("");
 
   const [pendingTest, setPendingTest] = useState<{
     paperId: string;
@@ -812,6 +813,40 @@ const [questions, setQuestions] = useState<Question[]>([
   useEffect(() => {
     let active = true;
     try {
+    try {
+      const uploadedRaw = localStorage.getItem("sarjom_uploaded_pyqs");
+      if (uploadedRaw) {
+        const uploadedCards = JSON.parse(uploadedRaw);
+        if (Array.isArray(uploadedCards) && uploadedCards.length > 0) {
+          const mappedUploaded: Question[] = uploadedCards
+            .filter((c: any) => c?.metadata?.question)
+            .map((c: any, idx: number) => ({
+              id: String(c.id || `uploaded-pyq-${idx}`),
+              title: String(c.title || c.metadata.question),
+              metadata: {
+                examName: c.metadata.examName || c.exam || "General",
+                subject: c.metadata.subject || c.subject || "General",
+                topic: c.metadata.topic || "Uploaded PYQ",
+                year: c.metadata.year || "2026",
+                paper: c.metadata.paper || "Practice Set",
+                question: String(c.metadata.question),
+                question_or: c.metadata.question_or,
+                options: Array.isArray(c.metadata.options) ? c.metadata.options : [],
+                options_or: Array.isArray(c.metadata.options_or) ? c.metadata.options_or : undefined,
+                answerIndex: Number(c.metadata.answerIndex ?? 0),
+                explanation: c.metadata.explanation,
+              },
+            }));
+          if (mappedUploaded.length > 0) {
+            setQuestions((prev) => {
+              const map = new Map(prev.map((item) => [item.id, item]));
+              mappedUploaded.forEach((item) => map.set(item.id, item));
+              return Array.from(map.values());
+            });
+          }
+        }
+      }
+    } catch {}
       const savedBm = localStorage.getItem("sarjom_my_bookmarks");
       if (savedBm) setBookmarkedIds(JSON.parse(savedBm));
 
@@ -1118,25 +1153,41 @@ const [questions, setQuestions] = useState<Question[]>([
   }, [mistakesHistory]);
 
   const heatmapMetrics = useMemo(() => {
-    const totalAttempted = 7;
-    const totalCorrect = 2;
-    const overallAcc = Math.round((totalCorrect / totalAttempted) * 100);
-
-    const topicsData = [
-      { name: "Reading Comprehension", subject: "General English", accuracy: 25, questions: 4, status: "weak" },
-      { name: "Vocabulary and Grammar", subject: "General English", accuracy: 66, questions: 3, status: "average" },
-      { name: "Odia Byakarana", subject: "Odia Language", accuracy: 75, questions: 4, status: "strong" },
-      { name: "General Science", subject: "General Studies", accuracy: 20, questions: 5, status: "weak" },
-      { name: "Computer Knowledge", subject: "General Studies", accuracy: 100, questions: 3, status: "strong" }
-    ];
-
+    const qMap = new Map(questions.map((item) => [item.id, item]));
+    const latestByQ = new Map<string, { isCorrect: boolean; subject: string; topic: string }>();
+    Object.entries(answers).forEach(([qId, ansIdx]) => {
+      const item = qMap.get(qId);
+      if (!item) return;
+      latestByQ.set(qId, { isCorrect: ansIdx === item.metadata.answerIndex, subject: item.metadata.subject || "General", topic: item.metadata.topic || "Core" });
+    });
+    mistakesHistory.forEach((m) => {
+      if (!latestByQ.has(m.questionId)) {
+        const item = qMap.get(m.questionId);
+        latestByQ.set(m.questionId, { isCorrect: false, subject: m.subject || item?.metadata.subject || "General", topic: m.topic || item?.metadata.topic || "Core" });
+      }
+    });
+    const topicAgg = new Map<string, { name: string; subject: string; correct: number; total: number }>();
+    latestByQ.forEach((rec) => {
+      const key = rec.subject + "::" + rec.topic;
+      const cur = topicAgg.get(key) || { name: rec.topic, subject: rec.subject, correct: 0, total: 0 };
+      cur.total += 1;
+      if (rec.isCorrect) cur.correct += 1;
+      topicAgg.set(key, cur);
+    });
+    const topicsData = Array.from(topicAgg.values()).map((d) => {
+      const accuracy = d.total > 0 ? Math.round((d.correct / d.total) * 100) : 0;
+      const status = accuracy >= 70 ? "strong" : accuracy >= 50 ? "average" : "weak";
+      return { name: d.name, subject: d.subject, accuracy, questions: d.total, status };
+    });
+    const totalAttempted = latestByQ.size;
+    const totalCorrect = Array.from(latestByQ.values()).filter((v) => v.isCorrect).length;
+    const overallAcc = totalAttempted > 0 ? Math.round((totalCorrect / totalAttempted) * 100) : 0;
     const strongCount = topicsData.filter((t) => t.accuracy >= 70).length;
     const avgCount = topicsData.filter((t) => t.accuracy >= 50 && t.accuracy < 70).length;
     const weakCount = topicsData.filter((t) => t.accuracy < 50).length;
-    const focusTopic = topicsData.find((t) => t.status === "weak") || topicsData[0];
-
+    const focusTopic = topicsData.find((t) => t.status === "weak") || topicsData[0] || { name: "Attempt a test to unlock focus topic", subject: selectedExam, accuracy: 0, questions: 0, status: "weak" };
     return { overallAcc, totalAttempted, totalCorrect, strongCount, avgCount, weakCount, topicsData, focusTopic };
-  }, []);
+  }, [questions, answers, mistakesHistory, selectedExam]);
 
   function triggerInstructions(paper: PaperCard, type: "cbt" | "tutor") {
     setActivePaper(paper);
@@ -1347,12 +1398,7 @@ const [questions, setQuestions] = useState<Question[]>([
                 type="button"
                 data-pyq-feature="violet"
                 onClick={() => {
-                  if (activeQuestions.length > 0) {
-                    setSubmitted(true);
-                    setMode("result");
-                  } else {
-                    alert("Take a practice test first to generate your Mistakes Notebook.");
-                  }
+                  if (activeQuestions.length > 0) { setMistakesNotice(""); setSubmitted(true); setMode("result"); } else { setMistakesNotice("Complete a practice test first to generate your Mistakes Notebook."); }
                 }}
                 className="group relative overflow-hidden rounded-[18px] border border-violet-200/85 border-l-4 border-l-violet-400 bg-gradient-to-br from-[#EDE9FE]/85 via-[#F5F3FF]/75 to-[#FFFFFF] p-4.5 text-left text-slate-900 shadow-[0_6px_20px_-6px_rgba(124,58,237,0.12),inset_0_1px_0_rgba(255,255,255,0.85)] transition-all duration-200 hover:-translate-y-0.5 hover:from-[#EDE9FE] hover:via-[#F5F3FF] hover:to-[#FAF8FF] hover:border-violet-300 hover:border-l-violet-500 hover:shadow-[0_14px_30px_-6px_rgba(124,58,237,0.24)] dark:border-violet-500/30 dark:border-l-violet-400 dark:from-violet-950/60 dark:via-violet-950/30 dark:to-slate-900 dark:text-slate-100 flex flex-col justify-between"
               >
@@ -1809,7 +1855,7 @@ const [questions, setQuestions] = useState<Question[]>([
                           <span className="text-2xl font-black">{item.accuracy}%</span>
                           <span className="text-xs text-text-secondary">{item.questions} Questions</span>
                         </div>
-                      </div>
+        </div>
                     );
                   })}
                 </div>
@@ -2848,122 +2894,62 @@ const [questions, setQuestions] = useState<Question[]>([
                 </div>
               </div>
 
-              <div className="space-y-6">
-                {activeQuestions.map((item, idx) => {
-                  const userAns = answers[item.id];
-                  const isRight = userAns === item.metadata.answerIndex;
-                  const isSkipped = userAns === undefined;
-
-                  if (solutionFilter === "correct" && !isRight) return null;
-                  if (solutionFilter === "incorrect" && (isRight || isSkipped)) return null;
-                  if (solutionFilter === "skipped" && !isSkipped) return null;
-
-                  return (
-                    <div
-                      key={`sol-${item.id}`}
-                      className={`rounded-2xl border p-6 transition ${
-                        isRight
-                          ? "border-emerald-500/30 bg-[#0C1717]"
-                          : isSkipped
-                          ? "border-white/10 bg-[#0A0F1A]"
-                          : "border-red-500/30 bg-[#1A1015]"
-                      }`}
-                    >
-                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/5 pb-3">
-                        <div className="flex items-center gap-2 font-mono text-xs">
-                          <span className="font-bold text-[#00DDB0]">Question {idx + 1}</span>
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                            isRight ? "bg-emerald-500/20 text-emerald-300" : isSkipped ? "bg-slate-800 text-slate-400" : "bg-red-500/20 text-red-300"
-                          }`}>
-                            {isRight ? "CORRECT" : isSkipped ? "SKIPPED" : "INCORRECT"}
-                          </span>
-                          <span className="text-slate-400">{item.metadata.subject} • {item.metadata.topic}</span>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => toggleBookmark(item.id)}
-                          className="font-mono text-xs text-amber-300 hover:underline flex items-center gap-1"
-                        >
-                          <span>{bookmarkedIds.includes(item.id) ? "★ Saved" : "☆ Bookmark"}</span>
-                        </button>
-                      </div>
-
-                      <p className="mt-4 text-base font-semibold text-white leading-relaxed whitespace-pre-line">
-                        {item.metadata.question}
-                      </p>
-
-                      <div className="mt-5 space-y-2 font-mono text-xs">
-                        {item.metadata.options.map((opt, oIdx) => {
-                          const isCorrectKey = oIdx === item.metadata.answerIndex;
-                          const isYourChoice = oIdx === userAns;
-
-                          let style = "border-white/5 bg-slate-950/40 text-slate-400";
-                          if (isCorrectKey) style = "border-emerald-500 bg-emerald-500/15 text-emerald-200 font-bold ring-1 ring-emerald-500/40";
-                          else if (isYourChoice && !isCorrectKey) style = "border-red-500 bg-red-500/15 text-red-200 font-bold";
-
-                          return (
-                            <div key={`sol-opt-${item.id}-${oIdx}`} className={`rounded-xl border p-3 flex items-center justify-between ${style}`}>
-                              <span>{String.fromCharCode(65 + oIdx)}. {opt}</span>
-                              {isCorrectKey && <span className="text-emerald-400 font-bold">Official Key</span>}
-                              {isYourChoice && !isCorrectKey && <span className="text-red-400 font-bold">Your Choice</span>}
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                      <div className="mt-4 rounded-xl border border-emerald-500/20 bg-emerald-950/20 p-4 font-mono text-xs text-slate-300">
-                        <p className="font-bold text-emerald-400 mb-1">Verified Explanation:</p>
-                        <p className="font-sans text-xs leading-relaxed text-slate-200">
-                          {item.metadata.explanation || "Official answer key verified by examination authorities."}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
+<div className="space-y-6">
+  {pageSlice.map(({ item, originalIdx }) => {
+    const userAns = answers[item.id];
+    const isRight = userAns === item.metadata.answerIndex;
+    const isSkipped = userAns === undefined;
+    const boxClass = isRight ? "rounded-2xl border border-emerald-500/30 bg-[#0C1717] p-6 transition" : isSkipped ? "rounded-2xl border border-white/10 bg-[#0A0F1A] p-6 transition" : "rounded-2xl border border-red-500/30 bg-[#1A1015] p-6 transition";
+    const badgeClass = isRight ? "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300" : isSkipped ? "px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-400" : "px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/20 text-red-300";
+    return (
+      <div key={`sol-${item.id}`} className={boxClass}>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/5 pb-3">
+          <div className="flex items-center gap-2 font-mono text-xs">
+            <span className="font-bold text-[#00DDB0]">Question {originalIdx + 1}</span>
+            <span className={badgeClass}>{isRight ? "CORRECT" : isSkipped ? "SKIPPED" : "INCORRECT"}</span>
+            <span className="text-slate-400">{item.metadata.subject} • {item.metadata.topic}</span>
+          </div>
+          <button type="button" onClick={() => toggleBookmark(item.id)} className="font-mono text-xs text-amber-300 hover:underline flex items-center gap-1">
+            <span>{bookmarkedIds.includes(item.id) ? "★ Saved" : "☆ Bookmark"}</span>
+          </button>
+        </div>
+        <p className="mt-4 text-base font-semibold text-white leading-relaxed whitespace-pre-line">{item.metadata.question}</p>
+        <div className="mt-5 space-y-2 font-mono text-xs">
+          {item.metadata.options.map((opt, oIdx) => {
+            const isCorrectKey = oIdx === item.metadata.answerIndex;
+            const isYourChoice = oIdx === userAns;
+            const optClass = isCorrectKey ? "border-emerald-500 bg-emerald-500/15 text-emerald-200 font-bold ring-1 ring-emerald-500/40" : isYourChoice && !isCorrectKey ? "border-red-500 bg-red-500/15 text-red-200 font-bold" : "border-white/5 bg-slate-950/40 text-slate-400";
+            return (
+              <div key={`sol-opt-${item.id}-${oIdx}`} className={`rounded-xl border p-3 flex items-center justify-between ${optClass}`}>
+                <span>{String.fromCharCode(65 + oIdx)}. {opt}</span>
+                {isCorrectKey && <span className="text-emerald-400 font-bold">Official Key</span>}
+                {isYourChoice && !isCorrectKey && <span className="text-red-400 font-bold">Your Choice</span>}
               </div>
-
-              {totalPages > 1 && (
-                <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4 font-mono text-xs">
-                  <button
-                    type="button"
-                    disabled={safePage <= 1}
-                    onClick={() => setSolutionPage((p) => Math.max(1, p - 1))}
-                    className="rounded-xl border border-white/10 bg-slate-900 px-4 py-2 font-bold text-slate-300 hover:text-white disabled:opacity-40"
-                  >
-                    ← Previous 10
-                  </button>
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-                      <button
-                        key={`sol-page-${pageNum}`}
-                        type="button"
-                        onClick={() => setSolutionPage(pageNum)}
-                        className={`h-8 w-8 rounded-lg font-bold transition ${
-                          pageNum === safePage
-                            ? "bg-[#00DDB0] text-slate-950"
-                            : "bg-slate-900 text-slate-400 hover:text-white"
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    ))}
-                  </div>
-                  <button
-                    type="button"
-                    disabled={safePage >= totalPages}
-                    onClick={() => setSolutionPage((p) => Math.min(totalPages, p + 1))}
-                    className="rounded-xl border border-white/10 bg-slate-900 px-4 py-2 font-bold text-slate-300 hover:text-white disabled:opacity-40"
-                  >
-                    Next 10 →
-                  </button>
-                </div>
-              )}
+            );
+          })}
+        </div>
+        <div className="mt-4 rounded-xl border border-emerald-500/20 bg-emerald-950/20 p-4 font-mono text-xs text-slate-300">
+          <p className="font-bold text-emerald-400 mb-1">Verified Explanation:</p>
+          <p className="font-sans text-xs leading-relaxed text-slate-200">{item.metadata.explanation || "Official answer key verified by examination authorities."}</p>
+        </div>
+      </div>
+    );
+  })}
+</div>
+{totalPages > 1 && (
+  <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4 font-mono text-xs">
+    <button type="button" disabled={safePage <= 1} onClick={() => setSolutionPage((p) => Math.max(1, p - 1))} className="rounded-xl border border-white/10 bg-slate-900 px-4 py-2 font-bold text-slate-300 hover:text-white disabled:opacity-40">← Previous 10</button>
+    <div className="flex flex-wrap items-center gap-1.5">
+      {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (<button key={`sol-page-${pageNum}`} type="button" onClick={() => setSolutionPage(pageNum)} className={`h-8 w-8 rounded-lg font-bold transition ${pageNum === safePage ? "bg-[#00DDB0] text-slate-950" : "bg-slate-900 text-slate-400 hover:text-white"}`}>{pageNum}</button>))}
+    </div>
+    <button type="button" disabled={safePage >= totalPages} onClick={() => setSolutionPage((p) => Math.min(totalPages, p + 1))} className="rounded-xl border border-white/10 bg-slate-900 px-4 py-2 font-bold text-slate-300 hover:text-white disabled:opacity-40">Next 10 →</button>
+  </div>
+)}
             </div>
-              );
           </div>
         )}
       </div>
-    </div>
+      </div>
   );
 }
+
