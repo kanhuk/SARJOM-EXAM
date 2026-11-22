@@ -82,7 +82,7 @@ export default function SignupPage() {
         className="w-full max-w-md rounded-2xl border border-border bg-surface p-7 shadow-xl sm:p-8"
       >
         <p className="font-mono text-xs font-bold uppercase tracking-widest text-primary">
-          SARJOM EXAM
+          SARJOM <span className="font-semibold text-primary">EXAM</span>
         </p>
         <h1 className="mt-2 text-2xl font-extrabold tracking-tight">
           Create your free account

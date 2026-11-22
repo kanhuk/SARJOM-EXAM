@@ -81,7 +81,7 @@ export default function Page() {
           </h2>
           <p className="mt-1.5 text-xs leading-relaxed text-text-secondary sm:text-sm">
             Fill out the details below to format your support or correction message for{" "}
-            <span className="font-medium text-text-primary">support@sarjomexam.in</span>.
+            support@sarjomexam.in.
           </p>
 
           <div className="mt-5">

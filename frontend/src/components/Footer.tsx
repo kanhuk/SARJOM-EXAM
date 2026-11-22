@@ -22,9 +22,7 @@ export default function Footer() {
     <footer className="border-t border-border bg-surface/90 text-text-secondary transition-colors">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 text-xs sm:flex-row md:px-6">
         <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-          <span className="font-mono font-bold text-text-primary">SARJOM EXAM</span>
-          <span>•</span>
-          <span>© 2026 Academic Examination &amp; Practice Portal</span>
+          <span>&copy; 2026 SARJOM <span className="font-semibold text-primary">EXAM</span>. All rights reserved.</span>
         </div>
 
         <nav aria-label="Footer navigation" className="flex flex-wrap items-center justify-center gap-5 font-medium">

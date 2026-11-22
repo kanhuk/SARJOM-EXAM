@@ -18,7 +18,7 @@ export default function Page() {
           <section className="space-y-2">
             <h2 className="text-base font-bold text-text-primary">1. No Government Affiliation</h2>
             <p>
-              SARJOM EXAM is an independent educational preparation platform and is not affiliated with, endorsed by, or connected to any government department or recruiting commission.
+              SARJOM <span className="font-semibold text-primary">EXAM</span> is an independent educational preparation platform and is not affiliated with, endorsed by, or connected to any government department or recruiting commission.
             </p>
           </section>
 

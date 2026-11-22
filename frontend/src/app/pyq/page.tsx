@@ -2117,7 +2117,7 @@ const [questions, setQuestions] = useState<Question[]>([
               <div className="flex items-center gap-3 min-w-0">
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <span className="h-2.5 w-2.5 rounded-full bg-[#00DDB0] animate-pulse" />
-                  <span className="font-mono text-sm font-black tracking-wider text-white">SARJOM EXAM</span>
+                  <span className="font-mono text-sm font-black tracking-wider text-white">SARJOM <span className="font-semibold text-primary">EXAM</span></span>
                 </div>
                 <span className="text-slate-600 hidden sm:inline">|</span>
                 <span className="font-mono text-xs text-slate-300 font-semibold truncate">

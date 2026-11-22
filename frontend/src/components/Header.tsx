@@ -135,14 +135,8 @@ export function Header() {
   };
 
   return (
-    <header
-      className={`sticky top-2.5 z-50 mx-auto w-full max-w-4xl rounded-2xl border px-2 text-text-primary transition-[background-color,border-color,backdrop-filter,box-shadow] duration-200 ease-out sm:px-3 ${
-        scrolled
-          ? "border-border/75 bg-surface/90 shadow-sm backdrop-blur-xl"
-          : "border-border/60 bg-surface/80 backdrop-blur-md"
-      }`}
-    >
-      <div className="mx-auto grid max-w-4xl grid-cols-[auto_1fr_auto] items-center gap-3 px-3 py-1.5 md:px-4">
+    <header className={`sticky top-2.5 z-50 mx-auto rounded-2xl border px-2 text-text-primary transition-all duration-300 ease-out sm:px-3 ${scrolled ? "w-[calc(100%-1rem)] max-w-4xl border-border/75 bg-surface/90 shadow-sm backdrop-blur-xl" : "w-[calc(100%-1.5rem)] max-w-6xl border-border/60 bg-surface/80 backdrop-blur-md sm:w-[calc(100%-3rem)] md:w-[calc(100%-6rem)]"}`}>
+      <div className={`mx-auto grid items-center gap-3 transition-all duration-300 ease-out md:px-4 ${scrolled ? "max-w-4xl grid-cols-[auto_1fr_auto] px-2.5 py-1" : "max-w-6xl grid-cols-[auto_1fr_auto] px-3 py-2"}`}>
         <div className="flex items-center gap-2 justify-self-start">
           <button
             type="button"
@@ -154,7 +148,7 @@ export function Header() {
             {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
 
-          <Link href="/" className="flex items-center rounded-full transition hover:opacity-90"><Image src="/logo-rounded.png" alt="SARJOM EXAM" width={64} height={64} className="h-11 w-11 rounded-full object-contain md:h-14 md:w-14" priority /></Link>
+          <Link href="/" className="group flex items-center gap-2.5 rounded-full pr-1 transition hover:opacity-95"><Image src="/logo-rounded.png" alt="SARJOM EXAM" width={64} height={64} className={`${scrolled ? "h-8 w-8 md:h-9 md:w-9" : "h-11 w-11 md:h-14 md:w-14"} rounded-full object-contain transition-all duration-200 ease-out`} priority /><span className="flex flex-col items-center leading-none"><span className={`whitespace-nowrap font-serif font-semibold uppercase tracking-[0.04em] text-text-primary transition-all duration-200 ease-out ${scrolled ? "text-xs md:text-[14px]" : "text-sm md:text-[18px]"}`}>SARJOM</span><span className={`whitespace-nowrap font-sans font-semibold uppercase text-primary transition-all duration-200 ease-out ${scrolled ? "mt-0.5 text-[7px] tracking-[0.28em] md:text-[8px]" : "mt-1 text-[8px] tracking-[0.34em] md:text-[9px]"}`}>EXAM</span></span></Link>
         </div>
 
         <nav
@@ -189,7 +183,7 @@ export function Header() {
           {!checking && !user && (
             <Link
               href="/login"
-              className="rounded-xl bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white shadow-2xs transition hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200 sm:px-3.5"
+              className="rounded-full bg-gradient-to-r from-[#090d0b] via-[#0d3b27] to-[#0f764b] px-4 py-1.5 text-xs font-semibold text-white shadow-[0_6px_20px_-4px_rgba(15,118,75,0.45)] transition-all duration-200 hover:brightness-110 active:scale-[0.98] sm:px-4"
             >
               Login
             </Link>

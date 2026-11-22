@@ -19,7 +19,7 @@ export default function Page() {
           <section className="space-y-2">
             <h2 className="text-base font-bold text-text-primary">1. Personal Academic Use</h2>
             <p>
-              SARJOM EXAM is an educational preparation platform. Syllabus trees, mock test consoles, explanations, and previous year question compilations are provided strictly for personal, non-commercial study by candidates.
+              SARJOM <span className="font-semibold text-primary">EXAM</span> is an educational preparation platform. Syllabus trees, mock test consoles, explanations, and previous year question compilations are provided strictly for personal, non-commercial study by candidates.
             </p>
           </section>
 

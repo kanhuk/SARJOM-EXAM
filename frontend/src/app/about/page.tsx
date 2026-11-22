@@ -28,14 +28,14 @@ export default function Page() {
       <div className="mx-auto max-w-4xl space-y-6">
         <article className="rounded-2xl border border-border bg-surface p-7 shadow-sm sm:p-10">
           <p className="font-mono text-xs font-bold uppercase tracking-widest text-primary">
-            ABOUT SARJOM EXAM
+            ABOUT SARJOM <span className="font-semibold text-primary">EXAM</span>
           </p>
           <h1 className="mt-2 text-2xl font-extrabold tracking-tight sm:text-3xl">
             Structured Competitive Exam Preparation Built on Official Sources
           </h1>
           <div className="mt-5 space-y-4 text-sm leading-relaxed text-text-secondary sm:text-base">
             <p>
-              SARJOM EXAM is an exam preparation workspace focused on Odisha state examinations
+              SARJOM <span className="font-semibold text-primary">EXAM</span> is an exam preparation workspace focused on Odisha state examinations
               alongside key national competitive exams. Candidates can browse unit-wise syllabus
               structures, practice previous year papers in a computer-based test (CBT) interface,
               and track official exam updates without clutter.
@@ -107,7 +107,7 @@ export default function Page() {
           </div>
 
           <div className="mt-6 rounded-xl border border-border bg-background p-4 text-xs leading-relaxed text-text-secondary sm:text-sm">
-            <strong className="text-text-primary">Source Transparency Note:</strong> SARJOM EXAM is an
+            <strong className="text-text-primary">Source Transparency Note:</strong> SARJOM <span className="font-semibold text-primary">EXAM</span> is an
             independent preparation resource and is not affiliated with UPSC, OPSC, OSSC, OSSSC,
             NTA, or any recruitment board. Always verify final dates, eligibility rules, and official
             cutoffs on the respective conducting authority&apos;s website.

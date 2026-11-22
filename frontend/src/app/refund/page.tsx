@@ -19,7 +19,7 @@ export default function Page() {
           <section className="space-y-2">
             <h2 className="text-base font-bold text-text-primary">1. Free &amp; Paid Plans Scope</h2>
             <p>
-              SARJOM EXAM provides free study resources alongside optional paid plans, mock test series, or premium study modules as introduced on the platform. Plan validity, inclusions, and pricing are displayed clearly prior to checkout.
+              SARJOM <span className="font-semibold text-primary">EXAM</span> provides free study resources alongside optional paid plans, mock test series, or premium study modules as introduced on the platform. Plan validity, inclusions, and pricing are displayed clearly prior to checkout.
             </p>
           </section>
 

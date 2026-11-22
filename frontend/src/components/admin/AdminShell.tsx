@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -109,7 +109,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         <div className="rounded-2xl border border-[#dce7dd] bg-white p-7 text-center shadow-sm">
           <div className="mx-auto mb-3 h-7 w-7 animate-spin rounded-full border-2 border-[#d7e6da] border-t-[#167447]" />
           <p className="font-semibold">Checking secure admin session…</p>
-          <p className="mt-1 text-sm text-slate-500">SARJOM EXAM Control Center</p>
+          <p className="mt-1 text-sm text-slate-500">SARJOM <span className="font-semibold text-primary">EXAM</span> Control Center</p>
         </div>
       </main>
     );

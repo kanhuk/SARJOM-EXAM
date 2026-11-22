@@ -99,13 +99,13 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-[calc(100vh-4.5rem)] items-center justify-center bg-background px-4 py-10 text-text-primary transition-colors">
       <motion.section
-        initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 12 }}
+        initial={{ opacity: 1, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: prefersReducedMotion ? 0 : 0.25 }}
         className="w-full max-w-md rounded-2xl border border-border bg-surface p-7 shadow-xl sm:p-8"
       >
         <p className="font-mono text-xs font-bold uppercase tracking-widest text-primary">
-          SARJOM EXAM
+          SARJOM <span className="font-semibold text-primary">EXAM</span>
         </p>
         <h1 className="mt-2 text-2xl font-extrabold tracking-tight sm:text-3xl">
           Welcome back
