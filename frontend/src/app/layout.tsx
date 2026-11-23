@@ -1,4 +1,5 @@
-﻿import type { Metadata } from "next";
+﻿import Script from "next/script";
+import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { LanguageProvider } from "@/components/language/LanguageProvider";
@@ -42,7 +43,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${robotoMono.variable}`} suppressHydrationWarning>
       <body className="font-sans antialiased">
-        <div aria-hidden="true" className="ambient-orbs-layer">
+      <Script id="adsense-init" strategy="afterInteractive" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4028405880527185" crossOrigin="anonymous" />
+              <div aria-hidden="true" className="ambient-orbs-layer">
           <span className="ambient-orb ambient-orb--emerald-top" />
           <span className="ambient-orb ambient-orb--blue-right" />
           <span className="ambient-orb ambient-orb--emerald-bottom" />
