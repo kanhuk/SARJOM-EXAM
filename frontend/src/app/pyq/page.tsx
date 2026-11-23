@@ -687,7 +687,7 @@ const fallbackExtractedQuestions: Question[] = [
 
 export default function PyqPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#07090E] flex items-center justify-center font-mono text-slate-500">Loading Practice Workspace...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#07090E] px-6 py-16 text-center text-slate-300"><p className="text-lg font-semibold text-white">Previous Year Questions (PYQ) Practice</p><p className="mt-2 text-sm text-slate-400">Timed practice sets, syllabus wise questions, and exam archives for competitive exam preparation.</p></div>}>
       <PyqContentInner />
     </Suspense>
   );
