@@ -13,8 +13,9 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/exams", label: "Exams" },
-  { href: "/pyq", label: "PYQ Practice" },
   { href: "/syllabus", label: "Syllabus" },
+  { href: "/pyq", label: "PYQ" },
+  { href: "/mock-test", label: "Mock Test" },
 ];
 
 export function Header() {
