@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import "./homepage-premium.css";
 
@@ -25,6 +25,7 @@ type TickerItem = {
 };
 
 const initialNotices: TickerItem[] = [
+  { id: "ssb-ja-admit-1", title: "SSB Odisha Junior Assistant Admit Card Out: Download Hall Ticket from Official Portal", category: "admit-card", label: "ADMIT CARD OUT", link: "https://ssbodisha.ac.in/", source: "SSB Odisha" },
   { id: "notif-opsi-1", title: "Odisha Police SI 2023 Official Paper 1 and Paper 2 CBT Tests with Bilingual Explanations Live", category: "pyq", label: "NEW TEST LIVE", link: "/pyq?exam=Odisha+Police+SI" },
   { id: "ousssc-dir-1", title: "OUSSSC Official Directive: Police SI CPSE Candidate Profile Data Validation Active on ousssc.odisha.gov.in", category: "exam", label: "OFFICIAL DIRECTIVE", link: "https://ousssc.odisha.gov.in/", source: "OUSSSC" },
   { id: "notif-opsi-2", title: "Odisha Police SI 2022 Official CBT Mode with Timed Examination Interface Added to Portal", category: "pyq", label: "NEW TEST LIVE", link: "/pyq?exam=Odisha+Police+SI" },
