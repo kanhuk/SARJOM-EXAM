@@ -1,4 +1,4 @@
-﻿const API_BASE_URL =
+const API_BASE_URL =
   process.env.NEXT_PUBLIC_SARJOM_API_URL ||
   "http://localhost:4000";
 
